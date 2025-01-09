@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloFrankController {
 
-    private HelloFrankComponent component;
+    private HelloFrankService component;
 
-    public HelloFrankController(HelloFrankComponent component) {
+    public HelloFrankController(HelloFrankService component) {
         this.component = component;
     }
     
