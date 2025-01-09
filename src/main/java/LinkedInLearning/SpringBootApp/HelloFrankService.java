@@ -1,8 +1,6 @@
 package LinkedInLearning.SpringBootApp;
 
-import org.springframework.stereotype.Service;
 
-@Service
 public class HelloFrankService {
 
     public String hello() {
