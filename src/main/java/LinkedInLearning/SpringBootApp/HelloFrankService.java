@@ -1,7 +1,9 @@
 package LinkedInLearning.SpringBootApp;
 
+import org.springframework.stereotype.Service;
 
-public class HelloFrankService {
+@Service
+public class HelloFrankService implements GrettingService{
 
     public String hello() {
         return "America, I'm only getting started.";

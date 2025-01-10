@@ -1,19 +1,22 @@
 package LinkedInLearning.SpringBootApp;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HelloFrankController {
 
-    private HelloFrankService component;
+    @Autowired
+    private GrettingService service;
 
-    public HelloFrankController(HelloFrankService component) {
-        this.component = component;
-    }
+    // Konstruktor injection
+    // public HelloFrankController(HelloFrankService service) {
+    //    this.service = service;
+    // }
     
     @GetMapping("/")
     public String get() {
-        return this.component.hello();
+        return this.service.hello();
     }
 }
