@@ -27,4 +27,15 @@ public class DirtySecretsRepository {
     return this.secrets.size();
   }
 
+  DirtySecret save(DirtySecret secret) {
+    // Id generieren
+    secret.setId(UUID.randomUUID().toString());
+
+    // Secret merken
+    this.secrets.put(secret.getId(), secret);
+
+    // Secret mit Id zurück geben
+    return secret;
+  }
+
 }
