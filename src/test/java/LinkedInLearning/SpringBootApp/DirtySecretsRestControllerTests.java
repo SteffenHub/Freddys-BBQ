@@ -31,4 +31,35 @@ public class DirtySecretsRestControllerTests {
         .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty());
   }
 
+  
+  @Test
+  public void shouldIncreaseCount() throws Exception{
+    int initialCount = this.getCount();
+
+    // POST ein neues DirtySecret
+    this.mockMvc.perform(MockMvcRequestBuilders.post("/dirty-secrets")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {
+                    "name": "Alice",
+                    "secret": "Loves pineapple on pizza"
+                }
+                """))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty());
+
+    // Count prüfen
+    int newCount = this.getCount();
+
+    // Sicherstellen, dass der Count um 1 erhöht wurde
+    assertEquals(initialCount + 1, newCount);
+  }
+
+  private int getCount() throws Exception{
+    MvcResult count = this.mockMvc.perform(MockMvcRequestBuilders.get("/dirty-secrets/count"))
+    .andExpect(MockMvcResultMatchers.status().isOk())
+    .andReturn();
+    return Integer.parseInt(count.getResponse().getContentAsString());
+  }
+
 }
