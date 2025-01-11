@@ -4,12 +4,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,51 +20,28 @@ public class DirtySecretsRestController {
 
     private DirtySecretsRepository repository;
 
-    public DirtySecretsRestController(DirtySecretsRepository repository){
+    public DirtySecretsRestController(DirtySecretsRepository repository) {
         this.repository = repository;
     }
 
-
-    @GetMapping("/count")
-    public int count() {
-        return this.repository.count();
-    }
-
-    @GetMapping("/e1/{id}")
-    public DirtySecret getByIdE1(@PathVariable String id) {
-        return this.repository.getById(id)
-        .orElseThrow(() -> new ResponseStatusException(
-            HttpStatus.NOT_FOUND,
-            "Entry not found!"
-        ));
-    }
-
-    @GetMapping("/e2/{id}")
-    public DirtySecret getByIdE2(@PathVariable String id) {
-        return this.repository.getById(id)
-        .orElseThrow(() -> new NoSecretFoundWebException());
-    }
-
-    @GetMapping("/e3/{id}")
-    public DirtySecret getByIdE3(@PathVariable String id) {
-        return this.repository.getById(id)
-        .orElseThrow(() -> new NoSecretFoundException());
-    }
-
-    @ExceptionHandler({NoSecretFoundException.class})
-    public ResponseEntity<String> handleNoSecretException() {
-        return ResponseEntity.internalServerError().body("No Entry found!");
+    @GetMapping
+    public Iterable<DirtySecret> get() {
+        return this.repository.findAll();
     }
 
     @GetMapping("/{id}")
     public DirtySecret getById(@PathVariable String id) {
-        var secret = this.repository.getById(id);
-        return secret.orElse(null);
+        return this.repository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Found nothing."));
     }
 
     @PostMapping
-    public DirtySecret post(@RequestBody DirtySecret secret){
-        return this.repository.save(secret);
+    public DirtySecret post(@RequestBody DirtySecret secret) {
+        // Secret speichern
+        var savedSecret = this.repository.save(secret);
+
+        // Secret mit Id zurück geben
+        return savedSecret;
     }
 
 }
