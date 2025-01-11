@@ -1,10 +1,10 @@
-package LinkedInLearning.SpringBootApp;
+package linkedin.bbq_joint;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringBootAppApplicationTests {
+class DemoApplicationTests {
 
 	@Test
 	void contextLoads() {

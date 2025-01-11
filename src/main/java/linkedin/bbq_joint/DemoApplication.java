@@ -1,13 +1,13 @@
-package LinkedInLearning.SpringBootApp;
+package linkedin.bbq_joint;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringBootAppApplication {
+public class DemoApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringBootAppApplication.class, args);
+		SpringApplication.run(DemoApplication.class, args);
 	}
 
 }
