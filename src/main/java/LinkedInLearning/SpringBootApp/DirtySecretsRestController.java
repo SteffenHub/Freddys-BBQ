@@ -29,6 +29,11 @@ public class DirtySecretsRestController {
         return this.repository.findAll();
     }
 
+    @GetMapping("/count")
+    public long count() {
+        return this.repository.count();
+    }
+
     @GetMapping("/{id}")
     public DirtySecret getById(@PathVariable String id) {
         return this.repository.findById(UUID.fromString(id))
