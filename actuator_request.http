@@ -1,0 +1,12 @@
+GET http://localhost:9090/actuator
+
+###
+
+GET http://localhost:8080/log
+
+###
+
+POST http://localhost:9090/actuator/loggers/LinkedInLearning.SpringBootApp
+Content-Type: application/json
+
+{ "configuredLevel": "ERROR" }
