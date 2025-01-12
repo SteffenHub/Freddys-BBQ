@@ -1,41 +1,13 @@
 package linkedin.bbq_joint;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.CrudRepository;
 
-@Repository
-public class MenuItemRepository {
+public interface MenuItemRepository extends CrudRepository<MenuItem, UUID> {
 
-  private Map<UUID, MenuItem> menuItems = new TreeMap<>();
+  Iterable<MenuItem> findByOrderByDrinkDescNameDesc();
 
-  public Optional<MenuItem> findById(UUID id) {
-    if (!menuItems.containsKey(id)) {
-      return Optional.empty();
-    }
-    return Optional.ofNullable(menuItems.get(id));
-  }
-
-  MenuItem save(MenuItem menuItem) {
-    if (menuItem.getId() == null) {
-      menuItem.setId(UUID.randomUUID());
-    }
-    menuItems.put(menuItem.getId(), menuItem);
-    return menuItem;
-  }
-
-  public Iterable<MenuItem> findByOrderByDrinkDescNameDesc() {
-    return menuItems.values();
-  }
-
-  public Iterable<MenuItem> findByDrinkOrderByNameDesc(boolean drink) {
-    return menuItems.values().stream()
-        .filter((menuItem) -> menuItem.isDrink() == drink)
-        .collect(Collectors.toList());
-  }
+  Iterable<MenuItem> findByDrinkOrderByNameDesc(boolean drink);
 
 }
