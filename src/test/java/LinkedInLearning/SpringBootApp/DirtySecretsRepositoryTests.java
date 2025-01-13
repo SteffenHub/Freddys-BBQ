@@ -1,4 +1,4 @@
-package LinkedInLearning.SpringBootApp;
+package linkedinlearning.springbootapp;
 /*
  * import static org.junit.Assert.assertNotNull;
  * 

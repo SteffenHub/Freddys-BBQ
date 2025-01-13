@@ -1,4 +1,4 @@
-package LinkedInLearning.SpringBootApp;
+package linkedinlearning.springbootapp;
 
 public class NoSecretFoundException extends RuntimeException{
     

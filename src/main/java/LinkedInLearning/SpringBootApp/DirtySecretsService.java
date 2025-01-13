@@ -1,4 +1,4 @@
-package LinkedInLearning.SpringBootApp;
+package linkedinlearning.springbootapp;
 
 import java.util.List;
 import java.util.UUID;

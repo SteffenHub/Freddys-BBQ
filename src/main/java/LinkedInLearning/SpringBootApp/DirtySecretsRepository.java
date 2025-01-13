@@ -1,4 +1,4 @@
-package LinkedInLearning.SpringBootApp;
+package linkedinlearning.springbootapp;
 
 import org.springframework.data.repository.CrudRepository;
 import java.util.UUID;

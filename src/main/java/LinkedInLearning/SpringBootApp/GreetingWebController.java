@@ -1,4 +1,4 @@
-package LinkedInLearning.SpringBootApp;
+package linkedinlearning.springbootapp;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
