@@ -13,8 +13,10 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @Tag(name = "Menu", description = "Menu Resource")
@@ -42,6 +44,26 @@ public class MenuRestController {
     }
 
     // TODO: Patch
+    @PatchMapping("/menu-items/{key}")
+    public MenuItem update(@PathVariable UUID key, @RequestBody MenuItem menuItemPatch) {
+
+        MenuItem menuItem = this.menuRepository.findItemById(key);
+
+        if (menuItemPatch.getPrice() != null) {
+            menuItem.setPrice(menuItemPatch.getPrice());
+        }
+        if (menuItemPatch.getTitle() != null) {
+            menuItem.setTitle(menuItemPatch.getTitle());
+        }
+        if (menuItemPatch.getDescription() != null) {
+            menuItem.setDescription(menuItemPatch.getDescription());
+        }
+        if (menuItemPatch.getImageUrl() != null) {
+            menuItem.setImageUrl(menuItemPatch.getImageUrl());
+        }
+
+        return menuItem;
+    }
 
     // TODO: Delete
 
