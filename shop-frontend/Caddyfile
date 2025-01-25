@@ -1,0 +1,29 @@
+:4200 {
+
+	log {
+		output stdout
+		format console
+	}
+
+	handle /order/* {
+		uri strip_prefix /order
+		reverse_proxy order:8060
+	}
+
+	handle /delivery/* {
+		uri strip_prefix /delivery
+		reverse_proxy delivery:8050
+	}
+
+	handle /kitchen/* {
+		uri strip_prefix /kitchen
+		reverse_proxy kitchen:8070
+	}
+
+	handle {
+		root * /usr/share/caddy
+		encode gzip
+		try_files {path} /index.html
+		file_server
+	}
+}

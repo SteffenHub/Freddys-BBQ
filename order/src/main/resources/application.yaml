@@ -1,0 +1,9 @@
+server:
+  port: 8060
+  # Problem Details without Stacktrace
+  error:
+    include-stacktrace: never
+
+spring:
+  application:
+    name: order

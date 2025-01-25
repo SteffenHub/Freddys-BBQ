@@ -1,0 +1,23 @@
+### Hello Order
+
+GET localhost:8060/
+
+
+### Menu
+
+GET localhost:8060/api/menu
+
+
+### Menu filtered by Category Key
+
+GET localhost:8060/api/menu/sides/items
+
+
+### Menu filtered by Category Key Sorted By Proce
+
+GET localhost:8060/api/menu/main-course/menu-items?sort=price
+
+
+### Menu filtered by unkown Category Key
+
+GET localhost:8060/api/menu/-nothing-

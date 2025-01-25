@@ -1,0 +1,30 @@
+name: freddy-bbq
+
+services:
+
+  shop-frontend:
+     container_name: shop-frontend
+     build: shop-frontend
+     ports:
+        - "4200:4200"
+
+  order:
+     container_name: order
+     build: order
+     environment:
+       - DELIVERY_SERVICE_URL=http://delivery:8050
+       - KITCHEN_SERVICE_URL=http://kitchen:8070
+     ports:
+        - "8060:8060"
+
+  delivery:
+    container_name: delivery
+    build: delivery
+    ports:
+      - "8050:8050"
+
+  kitchen:
+     container_name: kitchen
+     build: kitchen
+     ports:
+        - "8070:8070"
