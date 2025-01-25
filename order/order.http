@@ -3,6 +3,45 @@
 GET localhost:8060/
 
 
+### Post Valid Order
+
+POST localhost:8060/api/order
+Content-Type: application/json
+
+{
+  "cart": {
+    "items": [
+      {
+        "itemId": "item-1",
+        "itemTitle": "Spare Ribs",
+        "count": 2,
+        "itemPrice": 10.0,
+        "total": 20.0
+      }
+    ]
+  },
+  "billingAddress": {
+    "name": "Frank",
+    "city": "Washington",
+    "street": "Pennsylvania Avenue 1600",
+    "zip": "12345"
+  }
+}
+
+### Post Invalid Order
+
+POST localhost:8060/api/order
+Content-Type: application/json
+
+{
+  "cart": {
+    "items": []
+  },
+  "billingAddress": {
+  }
+}
+
+
 ### Menu
 
 GET localhost:8060/api/menu
@@ -21,3 +60,28 @@ GET localhost:8060/api/menu/main-course/menu-items?sort=price
 ### Menu filtered by unkown Category Key
 
 GET localhost:8060/api/menu/-nothing-
+
+
+### Challenge: Reduce Menu Item Price
+
+PATCH localhost:8060/api/menu/menu-items/0da7f6f4-a472-4ff7-89e2-0e416942614c
+Content-Type: application/json
+
+{
+  "price": 19.99
+}
+
+
+### Challenge: Delete Menu Item
+
+DELETE localhost:8060/api/menu/menu-items/0da7f6f4-a472-4ff7-89e2-0e416942614c
+
+
+### Menu with Response Entity
+
+GET localhost:8060/api/menu/response-entity
+
+
+### API Docs
+
+GET http://localhost:8060/v3/api-docs.yaml
