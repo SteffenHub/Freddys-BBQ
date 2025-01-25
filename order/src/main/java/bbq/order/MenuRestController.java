@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@Tag(name = "Menu", description = "Menu Resource")
 @RestController
+@Tag(name = "Menu", description = "Menu Resource")
 @RequestMapping("/api/menu")
 @RequiredArgsConstructor
 public class MenuRestController {
@@ -40,6 +40,10 @@ public class MenuRestController {
     public List<MenuItem> getByKey(@PathVariable String key, @RequestParam Optional<String> sort) {
         return menuRepository.findItemsByCategoryKey(key, sort);
     }
+
+    // TODO: Patch
+
+    // TODO: Delete
 
     @Hidden
     @GetMapping("/response-entity")
