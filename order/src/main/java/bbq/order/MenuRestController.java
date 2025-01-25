@@ -43,7 +43,6 @@ public class MenuRestController {
         return menuRepository.findItemsByCategoryKey(key, sort);
     }
 
-    // TODO: Patch
     @PatchMapping("/menu-items/{key}")
     public MenuItem update(@PathVariable UUID key, @RequestBody MenuItem menuItemPatch) {
 
@@ -65,7 +64,10 @@ public class MenuRestController {
         return menuItem;
     }
 
-    // TODO: Delete
+    @DeleteMapping("/menu-items/{key}")
+    public void delete(@PathVariable UUID key) {
+        this.menuRepository.deleteMenuItemById(key);
+    }
 
     @Hidden
     @GetMapping("/response-entity")
