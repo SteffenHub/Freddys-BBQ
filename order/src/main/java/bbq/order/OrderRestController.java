@@ -4,6 +4,7 @@ import bbq.order.model.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -32,6 +33,13 @@ public class OrderRestController {
 
         // 3. Return order
         return savedOrder;
+    }
+
+    @GetMapping("/crash")
+    public String crash() {
+        // throw new IllegalArgumentException("Don't get it");
+        // throw new RuntimeException("Bam!");
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
 }
