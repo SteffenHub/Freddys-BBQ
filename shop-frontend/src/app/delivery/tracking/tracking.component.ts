@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import {of, switchMap, takeUntil, timer} from "rxjs";
+import { of, switchMap, timer} from "rxjs";
 import {AsyncPipe, JsonPipe, NgStyle} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
 import {DeliveryService} from "../services/delivery.service";
-import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-tracking',
@@ -24,8 +23,7 @@ export class TrackingComponent {
     switchMap(() => {
       let orderId = this.route.snapshot.params['orderId'];
       return this.deliveryService.get(orderId)
-    }),
-    takeUntilDestroyed(),
+    })
   );
 
 

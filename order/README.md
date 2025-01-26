@@ -1,12 +1,8 @@
 # Order Service
 
-## Open API Documentation
+## TODO
+- klären ob wir prom metriken brauchen
 
-### Swagger UI
+## Sample Metriken
 
-http://localhost:8060/swagger-ui.html
-
-### Raw OpenAPI Yaml
-
-http://localhost:8060/v3/api-docs.yaml
-
+system_cpu_usage

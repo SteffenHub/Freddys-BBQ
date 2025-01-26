@@ -12,19 +12,33 @@ services:
      container_name: order
      build: order
      environment:
-       - DELIVERY_SERVICE_URL=http://delivery:8050
-       - KITCHEN_SERVICE_URL=http://kitchen:8070
+       - SPRING_RABBITMQ_HOST=rabbitmq
      ports:
         - "8060:8060"
 
   delivery:
     container_name: delivery
     build: delivery
+    depends_on:
+      - order
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
     ports:
       - "8050:8050"
 
   kitchen:
      container_name: kitchen
      build: kitchen
+     environment:
+       - KITCHEN_RABBITMQHOST=rabbitmq
+     depends_on:
+      - order
      ports:
         - "8070:8070"
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
