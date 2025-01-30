@@ -4,6 +4,7 @@ package linkedin.bbq_joint;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.not;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,5 +46,17 @@ class MenuControllerTest {
                 .andExpect(view().name("index"))  // View-Name ist "index"
                 .andExpect(model().attributeExists("menuItems"))  // "menuItems" ist im Model vorhanden
                 .andExpect(model().attribute("menuItems", this.menuItems));  // Vergleicht den Inhalt
+    }
+
+
+    @Test
+    void testIndexEndpointFalse() throws Exception {
+        List<MenuItem> copyMenu = new java.util.ArrayList<>(this.menuItems);
+        copyMenu.remove(0);
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())  // HTTP 200 OK
+                .andExpect(view().name("index"))  // View-Name ist "index"
+                .andExpect(model().attributeExists("menuItems"))  // "menuItems" ist im Model vorhanden
+                .andExpect(model().attribute("menuItems", not(copyMenu)));  // Vergleicht den Inhalt
     }
 }
