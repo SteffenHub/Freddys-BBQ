@@ -16,6 +16,15 @@ public class MenuItem {
 
   private boolean drink = false;
 
+  public MenuItem() {}
+
+  public MenuItem(UUID id, String name, Integer price, boolean drink) {
+    this.id = id;
+    this.name = name;
+    this.price = price;
+    this.drink = drink;
+  }
+
   public UUID getId() {
     return id;
   }
