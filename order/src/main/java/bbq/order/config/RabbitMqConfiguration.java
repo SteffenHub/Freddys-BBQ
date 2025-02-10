@@ -1,10 +1,7 @@
 package bbq.order.config;
 
 
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Declarables;
-import org.springframework.amqp.core.FanoutExchange;
-import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.support.converter.Jackson2JavaTypeMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -36,14 +33,16 @@ public class RabbitMqConfiguration {
 
         // b) kitchen orders
         // 2. Queue
-        // TODO
+        var kitchenOrdersQueue = QueueBuilder.nonDurable("kitchen.orders").build();
         // 3. Binding
-        // TODO
+        var kitchenOrdersBinding = BindingBuilder.bind(kitchenOrdersQueue).to(ordersExchange);
 
         return new Declarables(
                 ordersExchange,
                 deliveryOrdersQueue,
-                deliveryOrdersBinding
+                deliveryOrdersBinding,
+                kitchenOrdersBinding,
+                kitchenOrdersQueue
         );
     }
 }
