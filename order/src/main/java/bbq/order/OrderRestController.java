@@ -1,9 +1,11 @@
 package bbq.order;
 
+
 import bbq.order.model.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.kafka.core.KafkaTemplate;
 
 @RestController
 @RequestMapping("/api/order")
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 public class OrderRestController {
 
     private final OrderRepository orderRepository;
+
+    private final KafkaTemplate<String, Order> kafkaTemplate;
 
     @GetMapping
     public Iterable<Order> getOrders() {
@@ -24,7 +28,7 @@ public class OrderRestController {
         var savedOrder = orderRepository.save(order);
 
         // 2. Publish order
-        // TODO
+        kafkaTemplate.send("orders", order);
 
         // 3. Return order
         return savedOrder;

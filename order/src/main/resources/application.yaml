@@ -3,6 +3,10 @@ server:
 spring:
   application:
     name: order
+  kafka:
+    bootstrap-servers: localhost:29092
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
   jackson:
     serialization:
       write-dates-as-timestamps: false
