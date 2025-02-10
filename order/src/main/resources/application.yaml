@@ -1,6 +1,8 @@
 server:
   port: 8060
-
 spring:
   application:
     name: order
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false

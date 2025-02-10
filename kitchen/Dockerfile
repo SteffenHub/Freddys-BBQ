@@ -17,4 +17,4 @@ RUN apk update --no-cache \
 
 EXPOSE 9090
 
-CMD ["dockerize", "-wait", "tcp://rabbitmq:5672", "-timeout", "60s", "/usr/bin/kitchen"]
+CMD ["dockerize", "-wait", "tcp://kafka:9092", "-timeout", "60s", "/usr/bin/kitchen"]

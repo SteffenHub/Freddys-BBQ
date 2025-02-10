@@ -11,12 +11,12 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/kelseyhightower/envconfig"
-	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/segmentio/kafka-go"
 	"github.com/sethvargo/go-retry"
 )
 
 type Config struct {
-	RabbitMQHost string `default:"localhost"`
+	KafkaServers string `default:"localhost:29092"`
 }
 
 func main() {
@@ -35,43 +35,27 @@ func main() {
 		fmt.Fprintf(w, "Hello Kitchen")
 	})
 
-	rabbitMqConn := fmt.Sprintf("amqp://guest:guest@%s:5672/", config.RabbitMQHost)
-	slog.Info("connecting to rabbit", "rabbitMqConn", rabbitMqConn)
+	slog.Info("connecting to kafka", "KafkaServers", config.KafkaServers)
 
 	retrier := retry.NewFibonacci(3 * time.Second)
 	retrier = retry.WithMaxDuration(60*time.Second, retrier)
 
-	var conn *amqp.Connection
-	var msgs <-chan amqp.Delivery
+	var conn *kafka.Reader
 	err = retry.Do(context.Background(), retrier, func(ctx context.Context) error {
-		conn, err = amqp.Dial(rabbitMqConn)
-		if err != nil {
-			return retry.RetryableError(err)
-		}
-		ch, err := conn.Channel()
-		if err != nil {
-			return retry.RetryableError(err)
-		}
-
-		slog.Info("Looking for queue kitchen.orders")
-
-		msgs, err = ch.Consume(
-			"kitchen.orders", // queue
-			"",               // consumer
-			true,             // auto-ack
-			false,            // exclusive
-			false,            // no-local
-			false,            // no-wait
-			nil,              // args
+		conn = kafka.NewReader(
+			kafka.ReaderConfig{
+				Brokers: []string{config.KafkaServers},
+				Topic:   "orders",
+				GroupID: "kitchen",
+				//				Partition: 0,
+				MaxBytes: 10e6, // 10MB
+			},
 		)
-
-		slog.Info("Not connected", err)
-
 		if err != nil {
 			return retry.RetryableError(err)
 		}
 
-		slog.Info("Succesfully connected to queue kitchen.orders")
+		slog.Info("Succesfully connected to topic orders")
 
 		return nil
 	})
@@ -83,8 +67,12 @@ func main() {
 	defer conn.Close()
 
 	go func() {
-		for d := range msgs {
-			log.Printf("Received a message: %s", d.Body)
+		for {
+			m, err := conn.ReadMessage(context.Background())
+			if err != nil {
+				break
+			}
+			fmt.Printf("message at offset %d: %s = %s\n", m.Offset, string(m.Key), string(m.Value))
 		}
 	}()
 

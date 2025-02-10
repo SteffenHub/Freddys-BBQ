@@ -21,4 +21,4 @@ RUN apt-get update \
 
 COPY --from=builder /app/build/libs/order-0.0.1-SNAPSHOT.jar /app/order.jar
 
-CMD ["dockerize", "-wait", "tcp://rabbitmq:5672", "-timeout", "60s", "java", "-jar", "/app/order.jar"]
+CMD ["dockerize", "-wait", "tcp://kafka:9092", "-timeout", "60s", "java", "-jar", "/app/order.jar"]

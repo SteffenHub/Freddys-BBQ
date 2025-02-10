@@ -2,7 +2,6 @@ package bbq.order;
 
 import bbq.order.model.Order;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +10,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class OrderRestController {
 
-    private final OrderRabbitMQPublisher publisher;
-
     private final OrderRepository orderRepository;
+
+    @GetMapping
+    public Iterable<Order> getOrders() {
+        return orderRepository.findAll();
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -22,7 +24,7 @@ public class OrderRestController {
         var savedOrder = orderRepository.save(order);
 
         // 2. Publish order
-        publisher.publish(savedOrder);
+        // TODO
 
         // 3. Return order
         return savedOrder;

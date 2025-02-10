@@ -21,4 +21,4 @@ RUN apt-get update \
 
 COPY --from=builder /app/build/libs/delivery-0.0.1-SNAPSHOT.jar /app/delivery.jar
 
-ENTRYPOINT ["dockerize", "-wait", "tcp://rabbitmq:5672", "-timeout", "60s", "java", "-jar", "/app/delivery.jar"]
+CMD ["dockerize", "-wait", "tcp://kafka:9092", "-timeout", "60s", "java", "-jar", "/app/delivery.jar"]
