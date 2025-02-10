@@ -1,5 +1,6 @@
 package bbq.delivery.config;
 
+
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Declarables;
 import org.springframework.amqp.core.QueueBuilder;
@@ -21,23 +22,30 @@ public class RabbitMqConfiguration {
         return messageConverter;
     }
 
+    @Bean
     public Declarables rabbitDeclarables() {
-
-        var updateExchange = new TopicExchange("delivery.updates");
-
+        // Topic
+        // 1. Exchange
+        var updatesExchange = new TopicExchange("delivery.updates");
+        // 2. Queue
+        //  a) delivered
         var deliveredQueue = QueueBuilder.durable("orders.delivered").build();
+        //  a) inprogress
         var inProgressQueue = QueueBuilder.durable("orders.inprogress").build();
-
-        var deliveredBinding = BindingBuilder.bind(deliveredQueue).to(updateExchange).with("delivered");
-
-        var inprogressBinding = BindingBuilder.bind(inProgressQueue).to(updateExchange).with("inprogess");
+        // 3. Bindings
+        var deliveredBinding = BindingBuilder.bind(deliveredQueue)
+                .to(updatesExchange)
+                .with("delivered");
+        var inProgressBinding = BindingBuilder.bind(inProgressQueue)
+                .to(updatesExchange)
+                .with("inprogress");
 
         return new Declarables(
-                updateExchange,
+                updatesExchange,
                 deliveredQueue,
                 inProgressQueue,
                 deliveredBinding,
-                inprogressBinding
+                inProgressBinding
         );
     }
 }

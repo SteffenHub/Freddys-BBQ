@@ -3,7 +3,6 @@ package bbq.delivery;
 import bbq.delivery.model.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,7 @@ public class OrderListener {
 
     @RabbitListener(queues = "delivery.orders")
     public void onOrder(Order order) {
-        log.info("receive order: {}", order);
-        this.deliveryRepository.addNewOrder(order);
+     log.info("receive order: {}", order);
+     deliveryRepository.addNewOrder(order);
     }
 }

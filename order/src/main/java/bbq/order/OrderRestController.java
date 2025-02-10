@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class OrderRestController {
 
-    private final OrderRepository orderRepository;
+    private final OrderRabbitMQPublisher publisher;
 
-    private final RabbitTemplate rabbitTemplate;
+    private final OrderRepository orderRepository;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -22,7 +22,7 @@ public class OrderRestController {
         var savedOrder = orderRepository.save(order);
 
         // 2. Publish order
-        rabbitTemplate.convertAndSend("orders", "", order);
+        publisher.publish(savedOrder);
 
         // 3. Return order
         return savedOrder;

@@ -1,5 +1,6 @@
 package bbq.order.config;
 
+
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Declarables;
 import org.springframework.amqp.core.FanoutExchange;
@@ -14,23 +15,35 @@ import org.springframework.stereotype.Component;
 @Configuration
 public class RabbitMqConfiguration {
 
+    @Bean
+    public Jackson2JsonMessageConverter messageConverter() {
+        var messageConverter = new Jackson2JsonMessageConverter();
+        messageConverter.setTypePrecedence(Jackson2JavaTypeMapper.TypePrecedence.INFERRED);
+        return messageConverter;
+    }
 
-     @Bean
-     public Jackson2JsonMessageConverter messageConverter() {
-          var messageConverter = new Jackson2JsonMessageConverter();
-          messageConverter.setTypePrecedence(Jackson2JavaTypeMapper.TypePrecedence.INFERRED);
-          return messageConverter;
-     }
+    @Bean
+    public Declarables rabbitDeclarables() {
+        // Publish/Subscribe
+        // 1. Exchange
+        var ordersExchange = new FanoutExchange("orders");
 
-     @Bean
-     public Declarables rabbitDeclarables() {
-          var exchange = new FanoutExchange("orders");
-          var queue = QueueBuilder.nonDurable("delivery.orders").build();
-          var binding = BindingBuilder.bind(queue).to(exchange);
-          return new Declarables(
-                  exchange,
-                  queue,
-                  binding
-          );
-     }
+        // a) delivery orders
+        // 2. Queue
+        var deliveryOrdersQueue = QueueBuilder.nonDurable("delivery.orders").build();
+        // 3. Binding
+        var deliveryOrdersBinding = BindingBuilder.bind(deliveryOrdersQueue).to(ordersExchange);
+
+        // b) kitchen orders
+        // 2. Queue
+        // TODO
+        // 3. Binding
+        // TODO
+
+        return new Declarables(
+                ordersExchange,
+                deliveryOrdersQueue,
+                deliveryOrdersBinding
+        );
+    }
 }
