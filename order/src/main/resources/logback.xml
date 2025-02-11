@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+    <!--
+    <springProperty scope="context" name="springAppName" source="spring.application.name"/>
+    <springProperty scope="context" name="springAppVersion" source="spring.application.version"/>
+    -->
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+        <fieldNames>
+            <timestamp>timestamp</timestamp>
+            <message>message</message>
+            <level>level</level>
+            <logger>logger</logger>
+            <thread>thread</thread>
+            <levelValue>[ignore]</levelValue>
+            <version>[ignore]</version>
+        </fieldNames>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="console"/>
+    </root>
+</configuration>
