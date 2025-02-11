@@ -1,30 +1,14 @@
 spring:
   application:
     name: delivery
-  main:
-    banner-mode: off
   jackson:
     serialization:
       write-dates-as-timestamps: false
 management:
-  otlp:
-    metrics:
-      export:
-        url: http://${OTEL_HOST:localhost}:4318/v1/metrics
-        batch-size: 1
-        step: 10s
-    tracing:
-      endpoint: http://${OTEL_HOST:localhost}:4318/v1/traces
-  tracing:
-    sampling:
-      probability: 1
   endpoints:
     web:
       exposure:
         include: health,metrics,prometheus
-#  metrics:
-#    tags:
-#      service: kitchen
 
 server:
   port: 8050
