@@ -1,8 +1,16 @@
 :4200 {
+	tracing {
+		span "{method} {scheme}://{hostport}{uri}"
+	}
 
 	log {
 		output stdout
-		format console
+		format json {
+			message_key "message"
+			time_key "timestamp"
+			time_format "rfc3339"
+			level_format upper
+		}
 	}
 
 	handle /order/* {

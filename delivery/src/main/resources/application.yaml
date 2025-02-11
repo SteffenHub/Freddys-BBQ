@@ -1,17 +1,33 @@
 spring:
   application:
     name: delivery
-  kafka:
-    bootstrap-servers: localhost:29092
-    consumer:
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
-        spring.json.use.type.headers: false
-    producer:
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  main:
+    banner-mode: off
   jackson:
     serialization:
       write-dates-as-timestamps: false
+management:
+  otlp:
+    metrics:
+      export:
+        url: http://${OTEL_HOST:localhost}:4318/v1/metrics
+        batch-size: 1
+        step: 10s
+    tracing:
+      endpoint: http://${OTEL_HOST:localhost}:4318/v1/traces
+  tracing:
+    sampling:
+      probability: 1
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+#  metrics:
+#    tags:
+#      service: kitchen
+
 server:
   port: 8050
+
+kitchen-service:
+  url: http://localhost:8070

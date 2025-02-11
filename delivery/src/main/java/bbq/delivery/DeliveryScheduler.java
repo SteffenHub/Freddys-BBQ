@@ -3,7 +3,6 @@ package bbq.delivery;
 import bbq.delivery.model.Delivery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +13,9 @@ import java.time.LocalDateTime;
 @Slf4j
 public class DeliveryScheduler {
 
-    private final KafkaTemplate kafkaTemplate;
-
     private final DeliveryRepository deliveryRepository;
 
-    @Scheduled(fixedRateString = "PT10S")
+    @Scheduled(fixedRateString = "PT5S")
     public void scheduleFixedRateTask() {
         log.info("Sending delivery updates at {}", LocalDateTime.now());
         deliveryRepository.getAll().forEach(this::process);
@@ -27,9 +24,6 @@ public class DeliveryScheduler {
     private void process(Delivery delivery) {
         // 1. Advance status
         delivery.nextStatus();
-
-        // 2. Publish update to Topic
-        kafkaTemplate.send("delivery_updates", delivery);
     }
 
 }

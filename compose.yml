@@ -3,67 +3,112 @@ name: freddy-bbq
 services:
 
   shop-frontend:
-     container_name: shop-frontend
-     build: shop-frontend
-     ports:
-        - "4200:4200"
+    container_name: shop-frontend
+    build: shop-frontend
+    environment:
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
+      - OTEL_SERVICE_NAME=shop-frontend
+      - OTEL_TRACES_SAMPLER=always_on
+    ports:
+      - "4200:4200"
 
   order:
-     container_name: order
-     build: order
-     environment:
-       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-     ports:
-        - "8060:8060"
+    container_name: order
+    build: order
+    environment:
+      - DELIVERY_SERVICE_URL=http://delivery:8050
+      - KITCHEN_SERVICE_URL=http://kitchen:8070
+      - OTEL_HOST=otel-collector
+    ports:
+      - "8060:8060"
 
   delivery:
     container_name: delivery
     build: delivery
     environment:
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - OTEL_HOST=otel-collector
     ports:
       - "8050:8050"
 
   kitchen:
-     container_name: kitchen
-     build: kitchen
-     environment:
-       - KITCHEN_KAFKASERVERS=kafka:9092
-     depends_on:
-      - order
-     ports:
-        - "8070:8070"
-
-  kafka-zookeeper:
-    image: confluentinc/cp-zookeeper:7.7.0
+    container_name: kitchen
+    build: kitchen
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
+      - OTEL_HOST=otel-collector
     ports:
-      - 22181:2181
+      - "8070:8070"
 
-  kafka:
-    image: confluentinc/cp-kafka:7.7.0
+  otel-collector:
+    container_name: otel-collector
+    image: otel/opentelemetry-collector-contrib:latest
+    command:
+      - --config=/etc/otelcol-contrib/otel-collector.yml
+    volumes:
+      - ./docker/collector/otel-collector.yml:/etc/otelcol-contrib/otel-collector.yml
+    ports:
+      - "1888:1888" # pprof extension
+      - "8888:8888" # Prometheus metrics exposed by the collector
+      - "8889:8889" # Prometheus exporter metrics
+      - "13133:13133" # health_check extension
+      - "4317:4317" # OTLP gRPC receiver
+      - "4318:4318" # OTLP http receiver
+      - "55679:55679" # zpages extension
     depends_on:
-      - kafka-zookeeper
-    ports:
-      - 29092:29092
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: kafka-zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TOPIC_AUTO_CREATE: true
+      - jaeger-all-in-one
 
-  kafka-ui:
-    image: provectuslabs/kafka-ui:v0.7.2
-    depends_on:
-      - kafka
+  promtail:
+    container_name: promtail
+    image: grafana/promtail
+    volumes:
+      # custom config will read logs from the containers of
+      # this project
+      - ./docker/loki/promtail-config.yaml:/etc/promtail/config.yml
+      # to read container labels and logs
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers:/var/lib/docker/containers
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
-      - 8090:8080
+      - "9090:9090"
+
+  loki:
+    container_name: loki
+    image: grafana/loki:latest
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+
+  tempo:
+    container_name: tempo
+    image: grafana/tempo:latest
+    command: [ "-config.file=/etc/tempo.yml" ]
+    volumes:
+      - ./docker/tempo/tempo.yml:/etc/tempo.yml
+    ports:
+      - "3200:3200"   # tempo
+      - "4317"  # otlp grpc
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    volumes:
+      - ./docker/grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    ports:
+      - "3000:3000"
     environment:
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
-      KAFKA_CLUSTERS_0_ZOOKEEPER: kafka-zookeeper:2181
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+
+  # Jaeger
+  jaeger-all-in-one:
+    container_name: jaeger-all-in-one
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"

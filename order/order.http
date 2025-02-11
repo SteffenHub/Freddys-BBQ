@@ -1,35 +1,33 @@
-GET localhost:8060/api/order
-
-### Send Order
-
-GET localhost:8060/api/order/send
+GET localhost:8080/api/order
 
 ### Menu
 
 GET localhost:8060/api/menu
 
+### Order to Kitchen
 
-### Post Valid Order
+GET localhost:8060/api/order-to-kitchen
 
-POST localhost:8060/api/order
-Content-Type: application/json
+### Actuator Endpoints
 
-{
-  "cart": {
-    "items": [
-      {
-        "itemId": "item-1",
-        "itemTitle": "Spare Ribs",
-        "count": 2,
-        "itemPrice": 10.0,
-        "total": 20.0
-      }
-    ]
-  },
-  "billingAddress": {
-    "name": "Frank",
-    "city": "Washington",
-    "street": "Pennsylvania Avenue 1600",
-    "zip": "12345"
-  }
-}
+http://localhost:8060/actuator
+
+### Actuator Prometheus Registry
+
+http://localhost:8060/actuator/prometheus
+
+### Actuator Info
+
+http://localhost:8060/actuator/info
+
+### Actuator health
+
+http://localhost:8060/actuator/health
+
+### Actuator health liveness
+
+http://localhost:8060/actuator/health/liveness
+
+### Actuator health readiness
+
+http://localhost:8060/actuator/health/readiness

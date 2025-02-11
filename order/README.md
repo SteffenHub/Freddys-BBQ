@@ -1,8 +1,5 @@
 # Order Service
 
-## TODO
-- klären ob wir prom metriken brauchen
-
-## Sample Metriken
+## Sample Metrics
 
 system_cpu_usage

@@ -1,18 +1,16 @@
 package bbq.order;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/")
-@RequiredArgsConstructor
-public class HelloRestController {
+@RequestMapping("/api/order")
+public class HelloOrderRestService {
 
     @GetMapping
     public String get() {
-        return "Hello Order!";
+        return "Hello Order";
     }
 
 }

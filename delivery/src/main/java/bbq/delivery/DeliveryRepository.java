@@ -14,7 +14,7 @@ public class DeliveryRepository {
 
     private final List<Delivery> deliveries = new ArrayList<>();
 
-    public void addNewOrder(Order order) {
+    public Delivery addNewOrder(Order order) {
         var delivery = Delivery.builder()
                 .receivedAt(LocalDateTime.now())
                 .status("Received")
@@ -22,6 +22,7 @@ public class DeliveryRepository {
                 .order(order)
                 .build();
         deliveries.add(delivery);
+        return delivery;
     }
 
     public List<Delivery> getAll() {
