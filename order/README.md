@@ -1,5 +1,12 @@
 # Order Service
 
-## Sample Metrics
+## Open API Documentation
 
-system_cpu_usage
+### Swagger UI
+
+http://localhost:8060/swagger-ui.html
+
+### Raw OpenAPI Yaml
+
+http://localhost:8060/v3/api-docs.yaml
+

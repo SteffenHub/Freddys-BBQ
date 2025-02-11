@@ -7,5 +7,7 @@ RUN CGO_ENABLED=0 go build -ldflags="-w -s" -o build/kitchen .
 # 2. Container
 FROM alpine:3.20
 COPY --from=builder /app/build/kitchen /usr/bin/
-EXPOSE 9090
-ENTRYPOINT ["/usr/bin/kitchen"]
+
+EXPOSE 8070
+
+CMD ["/usr/bin/kitchen"]

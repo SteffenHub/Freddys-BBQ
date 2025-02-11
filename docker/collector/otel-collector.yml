@@ -1,10 +1,8 @@
 receivers:
   otlp:
     protocols:
-      grpc:
-        endpoint: 0.0.0.0:4317
       http:
-        endpoint: 0.0.0.0:4318
+      grpc:
 
 processors:
   # batch metrics before sending to reduce API usage
@@ -19,6 +17,8 @@ exporters:
 
   prometheus:
     endpoint: "0.0.0.0:8889"
+    const_labels:
+      label1: value1
 
   otlp:
     endpoint: tempo:4317

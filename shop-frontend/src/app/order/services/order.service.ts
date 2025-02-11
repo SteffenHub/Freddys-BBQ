@@ -21,7 +21,7 @@ export class OrderService {
   orderTo(billingAddress: BillingAddress) {
     let order = { cart: this.cart$.getValue(), billingAddress } as Order;
     return this.httpClient.post<{ id: string }>("/order/api/order", order).pipe(
-      tap(() =>  this.reset())
+      tap(value =>  this.reset())
     );
   }
 

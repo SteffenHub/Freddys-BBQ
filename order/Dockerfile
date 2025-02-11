@@ -1,12 +1,13 @@
-FROM eclipse-temurin:21 AS builder
+# 1. Builder
+FROM gradle:8.10-jdk21-alpine AS builder
 
 WORKDIR /app
-
 ADD . /app
 
-RUN ./gradlew build
+RUN gradle build --no-daemon
 
 
+# 2. Spring Container
 FROM eclipse-temurin:21
 
 EXPOSE 8060
