@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 public class KafkaConfiguration {
 
     @Bean
-    public NewTopic oderTopic() {
+    public NewTopic ordersTopic() {
         return TopicBuilder.name("orders").build();
     }
+
 }

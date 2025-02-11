@@ -1,6 +1,15 @@
 spring:
   application:
     name: delivery
+  kafka:
+    bootstrap-servers: localhost:29092
+    consumer:
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
   jackson:
     serialization:
       write-dates-as-timestamps: false
