@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order
+  template:
+    metadata:
+      labels:
+        app: order
+    spec:
+      containers:
+        - name: order
+          image: order:0.0.1-SNAPSHOT
+          # Probes
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8060
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8060
+          ports:
+            - containerPort: 8060
