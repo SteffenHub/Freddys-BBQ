@@ -28,6 +28,8 @@ dependencies {
 	compileOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.kafka:spring-kafka'
 }
 
 tasks.named('test') {

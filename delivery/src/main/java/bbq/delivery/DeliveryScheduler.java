@@ -15,7 +15,7 @@ public class DeliveryScheduler {
 
     private final DeliveryRepository deliveryRepository;
 
-    @Scheduled(fixedRateString = "PT10S")
+    @Scheduled(fixedRateString = "PT5S")
     public void scheduleFixedRateTask() {
         log.info("Sending delivery updates at {}", LocalDateTime.now());
         deliveryRepository.getAll().forEach(this::process);

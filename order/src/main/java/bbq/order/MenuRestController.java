@@ -13,7 +13,6 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,30 +42,16 @@ public class MenuRestController {
         return menuRepository.findItemsByCategoryKey(key, sort);
     }
 
-    @PatchMapping("/menu-items/{key}")
-    public MenuItem update(@PathVariable UUID key, @RequestBody MenuItem menuItemPatch) {
-
-        MenuItem menuItem = this.menuRepository.findItemById(key);
-
-        if (menuItemPatch.getPrice() != null) {
-            menuItem.setPrice(menuItemPatch.getPrice());
-        }
-        if (menuItemPatch.getTitle() != null) {
-            menuItem.setTitle(menuItemPatch.getTitle());
-        }
-        if (menuItemPatch.getDescription() != null) {
-            menuItem.setDescription(menuItemPatch.getDescription());
-        }
-        if (menuItemPatch.getImageUrl() != null) {
-            menuItem.setImageUrl(menuItemPatch.getImageUrl());
-        }
-
-        return menuItem;
+    @PatchMapping("/menu-items/{id}")
+    public MenuItem reduceMenuItemPrice(@PathVariable UUID id, @RequestBody MenuItem menuItem) {
+        var foundItem = menuRepository.findItemById(id);
+        foundItem.setPrice(menuItem.getPrice());
+        return foundItem;
     }
 
-    @DeleteMapping("/menu-items/{key}")
-    public void delete(@PathVariable UUID key) {
-        this.menuRepository.deleteMenuItemById(key);
+    @DeleteMapping("/menu-items/{id}")
+    public void deleteMenuItem(@PathVariable UUID id) {
+        menuRepository.deleteMenuItemById(id);
     }
 
     @Hidden

@@ -24,7 +24,17 @@ GET localhost:8060/api/menu
 
 ### Menu filtered by Category Key
 
-GET localhost:8060/api/menu/main-course/menu-items
+GET localhost:8060/api/menu/sides/items
+
+
+### Menu filtered by Category Key Sorted By Proce
+
+GET localhost:8060/api/menu/main-course/menu-items?sort=price
+
+
+### Menu filtered by unkown Category Key
+
+GET localhost:8060/api/menu/-nothing-
 
 
 ### Challenge: Reduce Menu Item Price
@@ -40,3 +50,23 @@ Content-Type: application/json
 ### Challenge: Delete Menu Item
 
 DELETE localhost:8060/api/menu/menu-items/0da7f6f4-a472-4ff7-89e2-0e416942614c
+
+
+### Menu with Response Entity
+
+GET localhost:8060/api/menu/response-entity
+
+
+### API Docs
+
+GET http://localhost:8060/v3/api-docs.yaml
+
+
+### Order Crash with Exception
+
+GET localhost:8060/api/order/crash
+
+
+### Order to Kitchen
+
+GET localhost:8060/api/order-to-kitchen

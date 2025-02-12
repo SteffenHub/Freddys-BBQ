@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -29,7 +27,6 @@ public class Delivery {
 
     public void nextStatus() {
         var now = LocalDateTime.now();
-        var ageMinutes = ChronoUnit.MINUTES.between(getReceivedAt(), now);
 
         switch (status) {
             case "Received":
