@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Hello", description = "Hello Resource")
 public class HelloRestController {
 
-    @Value("${order.greeting:Hello Order!}")
-    private String greeting;
+    private String greeting = "Hello :)";
 
     @GetMapping
     public String get() {
