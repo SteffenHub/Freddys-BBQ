@@ -1,8 +1,0 @@
-spring:
-  application:
-    name: delivery
-  jackson:
-    serialization:
-      write-dates-as-timestamps: false
-server:
-  port: 8050

@@ -1,5 +1,0 @@
-# Frontend Container
-FROM caddy:latest
-EXPOSE 4200
-COPY Caddyfile /etc/caddy/Caddyfile
-COPY ./dist/shop-frontend/browser/* /usr/share/caddy
