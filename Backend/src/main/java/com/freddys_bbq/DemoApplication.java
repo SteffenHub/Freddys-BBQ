@@ -1,4 +1,4 @@
-package linkedin.bbq_joint;
+package com.freddys_bbq;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

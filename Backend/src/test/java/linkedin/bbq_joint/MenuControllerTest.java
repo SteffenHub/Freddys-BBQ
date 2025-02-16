@@ -1,4 +1,4 @@
-package linkedin.bbq_joint;
+package com.freddys_bbq;
 
 
 import static org.mockito.Mockito.when;
