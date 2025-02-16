@@ -1,4 +1,8 @@
 package com.freddys_bbq_frontend;
+
+/**
+import com.freddys_bbq_frontend.model.MenuItem;
+import com.freddys_bbq_frontend.model.Order;
 import org.springframework.stereotype.Controller;
 
 import java.util.UUID;
@@ -61,3 +65,5 @@ public class OrderController {
     return "order-success"; // Erfolgsseite
   }
 }
+
+ */

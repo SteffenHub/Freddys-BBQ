@@ -86,6 +86,11 @@
 <body>
   <h1>Freddy's Menu</h1>
 
+  <!-- Falls ein Fehler auftritt, zeige die Meldung an -->
+  <p th:if="${errorMessage}" style="color: red; font-weight: bold;">
+    <span th:text="${errorMessage}"></span>
+  </p>
+
   <!-- Prüfen, ob die Liste leer ist -->
   <div th:if="${menuItems.size() == 0}" class="menu-container empty-message">
     <p>Menu currently empty</p>

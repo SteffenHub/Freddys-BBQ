@@ -1,13 +1,14 @@
 package com.freddys_bbq;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
-@Controller
-@RequestMapping("/")
+@RestController
+@RequestMapping("/menu")
 public class MenuController {
 
   private final MenuItemRepository menuItemRepository;
@@ -17,9 +18,7 @@ public class MenuController {
   }
 
   @GetMapping
-  public String index(Model model){
-    Iterable<MenuItem> menu = menuItemRepository.findByOrderByDrinkDescNameDesc();
-    model.addAttribute("menuItems", menu);
-    return "index";
+  public List<MenuItem> index(){
+    return (List<MenuItem>) menuItemRepository.findByOrderByDrinkDescNameDesc();
   }
 }

@@ -1,5 +1,6 @@
 package com.freddys_bbq_frontend;
-
+/**
+import com.freddys_bbq_frontend.model.MenuItem;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,3 +30,4 @@ public class MenuItemController {
   }
 
 }
+*/
