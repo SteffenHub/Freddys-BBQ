@@ -1,4 +1,4 @@
-package com.freddys_bbq;
+package com.freddys_bbq_frontend;
 
 
 import static org.mockito.Mockito.when;
