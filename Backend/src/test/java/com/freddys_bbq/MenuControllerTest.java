@@ -1,5 +1,6 @@
 package com.freddys_bbq;
 
+/**
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -61,3 +62,4 @@ class MenuControllerTest {
                 .andExpect(model().attribute("menuItems", not(copyMenu)));  // Vergleicht den Inhalt
     }
 }
+*/

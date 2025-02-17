@@ -1,8 +1,8 @@
 package com.freddys_bbq_frontend;
 
 import com.freddys_bbq_frontend.model.MenuItem;
-import com.freddys_bbq_frontend.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
@@ -28,14 +28,16 @@ public class OrderController {
     this.restTemplate = restTemplate;
   }
 
+  @Value("${BACKEND_URL:http://localhost:8080}")
+  private String backendUrl;
 
   @GetMapping
   public String showOrderForm(Model model) {
 
     try {
-      ResponseEntity<MenuItem[]> response = restTemplate.getForEntity("http://localhost:8080/menu-items?drink=true", MenuItem[].class);
+      ResponseEntity<MenuItem[]> response = restTemplate.getForEntity(backendUrl + "/menu-items?drink=true", MenuItem[].class);
       Iterable<MenuItem> drinks = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
-      response = restTemplate.getForEntity("http://localhost:8080/menu-items?drink=false", MenuItem[].class);
+      response = restTemplate.getForEntity(backendUrl + "/menu-items?drink=false", MenuItem[].class);
       Iterable<MenuItem> foods = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
 
       model.addAttribute("drinks", drinks);
