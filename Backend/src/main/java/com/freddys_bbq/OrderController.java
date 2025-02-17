@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/orders")
 public class OrderController {
 
-  @Autowired
-  private MenuItemRepository menuItemRepository;
+  private final MenuItemRepository menuItemRepository;
 
-  @Autowired
-  private OrderRepository orderRepository;
+  private final OrderRepository orderRepository;
+
+  public OrderController(MenuItemRepository menuItemRepository, OrderRepository orderRepository) {
+    this.menuItemRepository = menuItemRepository;
+    this.orderRepository = orderRepository;
+  }
 
   @PostMapping
   public ResponseEntity<UUID> placeOrder(@RequestBody OrderRequest request) {
