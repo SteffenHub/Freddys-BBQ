@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Order Success</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+  <p th:if="${errorMessage}" style="color: red; font-weight: bold;">
+    <span th:text="${errorMessage}"></span>
+  </p>
+  <h1>Order Successfully Placed!</h1>
+  <p>Thank you for your order, <span th:text="${order.getName()}"></span></p>
+  <p>Your order ID: <span th:text="${order.getId()}"></span></p>
+  <p>Selected Drink: <span th:text="${order.getDrink().getName()}"></span></p>
+  <p>Selected Food: <span th:text="${order.getFood().getName()}"></span></p>
+</body>
+
+</html>

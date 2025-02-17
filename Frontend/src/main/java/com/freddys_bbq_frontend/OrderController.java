@@ -1,6 +1,7 @@
 package com.freddys_bbq_frontend;
 
 import com.freddys_bbq_frontend.model.MenuItem;
+import com.freddys_bbq_frontend.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +11,7 @@ import java.util.*;
 
 
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -30,6 +28,18 @@ public class OrderController {
 
   @Value("${BACKEND_URL:http://localhost:8080}")
   private String backendUrl;
+
+  @GetMapping("/{id}")
+  public String getOrder(@PathVariable UUID id, Model model) {
+    ResponseEntity<Order> response = restTemplate.getForEntity(backendUrl + "/orders/" + id, Order.class);
+    if (response.getStatusCode().is2xxSuccessful()) {
+      model.addAttribute("order", response.getBody());
+    }else{
+      model.addAttribute("order", new Order());
+      model.addAttribute("errorMessage", "The order could not be found or the Backend does not answer");
+    }
+    return "order-info";
+  }
 
   @GetMapping
   public String showOrderForm(Model model) {
@@ -72,21 +82,15 @@ public class OrderController {
               UUID.class
       );
 
-      // Falls Bestellung erfolgreich gespeichert wurde
       if (response.getStatusCode().is2xxSuccessful()) {
         UUID orderId = response.getBody();
-
-        // Füge die Order-ID und andere Daten zum Model hinzu
-        model.addAttribute("orderId", orderId);
-
-        return "order-success"; // Erfolgsseite anzeigen
+        return "redirect:/order/" + orderId;
       }
-
     } catch (RestClientException e) {
       //model.addAttribute("errorMessage", "Bestellung konnte nicht verarbeitet werden. Bitte versuchen Sie es erneut.");
     }
     model.addAttribute("errorMessage", "The Order cannot be placed");
-    return "order"; // Fehlerseite anzeigen
+    return "order";
   }
 
 }
