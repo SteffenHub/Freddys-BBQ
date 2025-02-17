@@ -64,6 +64,11 @@
   <div class="order-form">
     <h1>Place Your Order</h1>
 
+    <!-- Falls ein Fehler auftritt, zeige die Meldung an -->
+    <p th:if="${errorMessage}" style="color: red; font-weight: bold;">
+      <span th:text="${errorMessage}"></span>
+    </p>
+
     <form th:action="@{/order}" method="post">
       <label for="name">Your Name:</label>
       <input type="text" id="name" name="name" placeholder="Enter your name" required />

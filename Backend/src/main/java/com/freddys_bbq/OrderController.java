@@ -1,17 +1,19 @@
 package com.freddys_bbq;
+import com.freddys_bbq.model.MenuItem;
+import com.freddys_bbq.model.Order;
+import com.freddys_bbq.model.OrderRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/order")
+@RequestMapping("/orders")
 public class OrderController {
 
   @Autowired
@@ -20,44 +22,26 @@ public class OrderController {
   @Autowired
   private OrderRepository orderRepository;
 
-  @GetMapping
-  public String showOrderForm(Model model) {
-    // Liste der Getränke und Speisen laden
-    Iterable<MenuItem> drinks = menuItemRepository.findByDrinkOrderByNameDesc(true);
-    Iterable<MenuItem> foods = menuItemRepository.findByDrinkOrderByNameDesc(false);
-
-    // Füge die Listen zum Model hinzu
-    model.addAttribute("drinks", drinks);
-    model.addAttribute("foods", foods);
-
-    return "order";
-  }
-
   @PostMapping
-  public String placeOrder(@RequestParam String name,
-      @RequestParam UUID drinkId,
-      @RequestParam UUID foodId,
-      Model model) {
+  public ResponseEntity<UUID> placeOrder(@RequestBody OrderRequest request) {
+    try {
+      // Bestellte Objekte anhand der IDs finden
+      MenuItem drink = menuItemRepository.findById(request.getDrinkId())
+              .orElseThrow(() -> new IllegalArgumentException("Invalid drink ID"));
+      MenuItem food = menuItemRepository.findById(request.getFoodId())
+              .orElseThrow(() -> new IllegalArgumentException("Invalid food ID"));
 
-    // Bestellte Objekte anhand der IDs finden
-    MenuItem drink = menuItemRepository.findById(drinkId)
-        .orElseThrow(() -> new IllegalArgumentException("Invalid drink ID"));
-    MenuItem food = menuItemRepository.findById(foodId)
-        .orElseThrow(() -> new IllegalArgumentException("Invalid food ID"));
+      Order order = new Order();
+      order.setId(UUID.randomUUID());
+      order.setName(request.getName());
+      order.setDrink(drink);
+      order.setFood(food);
+      orderRepository.save(order);
 
-    // Bestellung erstellen und speichern
-    Order order = new Order();
-    order.setId(UUID.randomUUID());
-    order.setName(name);
-    order.setDrink(drink);
-    order.setFood(food);
-    orderRepository.save(order);
+      return ResponseEntity.status(HttpStatus.CREATED).body(order.getId());
 
-    // Füge die Listen zum Model hinzu
-    model.addAttribute("name", name);
-    model.addAttribute("drink", drink);
-    model.addAttribute("food", food);
-
-    return "order-success"; // Erfolgsseite
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
   }
 }

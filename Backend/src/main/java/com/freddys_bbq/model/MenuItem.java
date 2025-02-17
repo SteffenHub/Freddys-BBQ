@@ -1,4 +1,4 @@
-package com.freddys_bbq;
+package com.freddys_bbq.model;
 
 import java.util.UUID;
 import jakarta.persistence.Entity;

@@ -1,5 +1,6 @@
 package com.freddys_bbq;
 
+import com.freddys_bbq.model.MenuItem;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
