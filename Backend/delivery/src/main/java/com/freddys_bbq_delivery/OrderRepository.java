@@ -8,5 +8,22 @@ import java.util.List;
 
 public class OrderRepository{
 
-    List<Order> orders = new ArrayList<Order>();
+    private final List<Order> orders;
+
+    public OrderRepository(){
+        this.orders = new ArrayList<>();
+    }
+
+    public List<Order> getOrders(){
+        return this.orders;
+    }
+
+    public void addOrder(Order order){
+        this.orders.add(order);
+    }
+
+    public void removeOrder(Order order){
+        this.orders.remove(order);
+    }
+
 }
