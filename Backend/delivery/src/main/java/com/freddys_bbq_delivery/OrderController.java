@@ -1,4 +1,4 @@
-package com.freddys_bbq;
+package com.freddys_bbq_delivery;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

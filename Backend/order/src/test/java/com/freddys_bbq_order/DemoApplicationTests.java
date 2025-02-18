@@ -1,4 +1,4 @@
-package com.freddys_bbq;
+package com.freddys_bbq_order;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

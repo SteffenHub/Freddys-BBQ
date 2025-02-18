@@ -1,4 +1,4 @@
-package com.freddys_bbq.model;
+package com.freddys_bbq_delivery.model;
 
 
 import java.util.UUID;

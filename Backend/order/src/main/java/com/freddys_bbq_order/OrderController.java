@@ -1,16 +1,14 @@
-package com.freddys_bbq;
+package com.freddys_bbq_order;
 
-import com.freddys_bbq.model.MenuItem;
-import com.freddys_bbq.model.Order;
-import com.freddys_bbq.model.OrderRequest;
+import com.freddys_bbq_order.model.MenuItem;
+import com.freddys_bbq_order.model.Order;
+import com.freddys_bbq_order.model.OrderRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
