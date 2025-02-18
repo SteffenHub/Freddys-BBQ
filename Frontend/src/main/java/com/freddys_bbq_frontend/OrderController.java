@@ -77,7 +77,7 @@ public class OrderController {
 
       // POST-Request an das Backend senden
       ResponseEntity<UUID> response = restTemplate.postForEntity(
-              "http://localhost:8080/orders",
+              backendUrl + "/orders",
               orderRequest,
               UUID.class
       );
