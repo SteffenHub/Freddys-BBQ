@@ -84,7 +84,7 @@ public class OrderController {
 
       if (response.getStatusCode().is2xxSuccessful()) {
         UUID orderId = response.getBody();
-        return "redirect:/order/" + orderId;
+        return "redirect:/delivery/" + orderId;
       }
     } catch (RestClientException e) {
       //model.addAttribute("errorMessage", "Bestellung konnte nicht verarbeitet werden. Bitte versuchen Sie es erneut.");
