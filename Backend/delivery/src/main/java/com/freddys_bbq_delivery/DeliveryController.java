@@ -35,4 +35,10 @@ public class DeliveryController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+    @GetMapping
+    public ResponseEntity<Delivery[]> getOrder() {
+        Delivery[] deliveries = this.deliveryRepository.getDeliveries().toArray(new Delivery[0]);
+        return ResponseEntity.status(HttpStatus.OK).body(deliveries);
+    }
 }

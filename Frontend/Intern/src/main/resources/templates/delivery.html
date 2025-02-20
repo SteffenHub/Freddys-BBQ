@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lieferübersicht</title>
+    <meta charset="UTF-8">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 18px;
+            text-align: left;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Lieferübersicht</h1>
+
+<p th:if="${errorMessage}" class="error">
+    <span th:text="${errorMessage}"></span>
+</p>
+
+<table th:if="${not #lists.isEmpty(deliveries)}">
+    <thead>
+    <tr>
+        <th>Bestell-ID</th>
+        <th>Kunde</th>
+        <th>Getränk</th>
+        <th>Essen</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="delivery : ${deliveries}">
+        <td th:text="${delivery.order.id}"></td>
+        <td th:text="${delivery.order.name}"></td>
+        <td th:text="${delivery.order.drink.name}"></td>
+        <td th:text="${delivery.order.food.name}"></td>
+        <td th:text="${delivery.status}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<p th:if="${#lists.isEmpty(deliveries)}">
+    Keine Lieferungen vorhanden.
+</p>
+
+</body>
+</html>
