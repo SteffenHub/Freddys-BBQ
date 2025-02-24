@@ -22,7 +22,36 @@
             color: red;
             font-weight: bold;
         }
+        .btn {
+            padding: 8px 12px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
     </style>
+    <script>
+        function startDelivery(orderId, button) {
+            fetch('/delivery/start', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderId) // ✅ UUID als String
+            })
+                .then(response => {
+                    if (response.ok) {
+                        button.innerText = "In Lieferung";
+                        button.disabled = true;
+                    } else {
+                        alert("Fehler beim Starten der Lieferung!");
+                    }
+                })
+                .catch(error => console.error("Fehler:", error));
+        }
+    </script>
 </head>
 <body>
 
@@ -40,6 +69,7 @@
         <th>Getränk</th>
         <th>Essen</th>
         <th>Status</th>
+        <th>Aktion</th>
     </tr>
     </thead>
     <tbody>
@@ -49,6 +79,13 @@
         <td th:text="${delivery.order.drink.name}"></td>
         <td th:text="${delivery.order.food.name}"></td>
         <td th:text="${delivery.status}"></td>
+        <td>
+            <button class="btn"
+                    th:text="${delivery.status == 'Received' ? 'Lieferung starten' : 'In Lieferung'}"
+                    th:attr="onclick='startDelivery(\'' + ${delivery.order.id} + '\', this)'"
+                    th:disabled="${delivery.status == 'In Delivery'}">
+            </button>
+        </td>
     </tr>
     </tbody>
 </table>

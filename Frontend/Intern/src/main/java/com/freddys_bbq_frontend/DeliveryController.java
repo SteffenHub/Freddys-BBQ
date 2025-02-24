@@ -2,14 +2,14 @@ package com.freddys_bbq_frontend;
 
 
 import com.freddys_bbq_frontend.model.Delivery;
-import com.freddys_bbq_frontend.model.Order;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/delivery")
@@ -24,7 +24,6 @@ public class DeliveryController {
         this.restTemplate = restTemplate;
     }
 
-
     @GetMapping
     public String getAllDeliveries(Model model) {
 
@@ -36,5 +35,16 @@ public class DeliveryController {
             model.addAttribute("errorMessage", "The Deliveries could not be found or the Backend does not answer");
         }
         return "delivery";
+    }
+
+    @PostMapping("/start")
+    public ResponseEntity<String> startDelivery(@RequestBody UUID id) {
+        //UUID uuid = UUID.fromString(id);
+        ResponseEntity<String> response = restTemplate.postForEntity(deliveryBackendUrl + "/delivery/start", id, String.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.ok("Lieferung gestartet");
+        }else{
+            return ResponseEntity.notFound().build();
+        }
     }
 }

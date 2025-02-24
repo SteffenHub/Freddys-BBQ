@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -40,5 +41,16 @@ public class DeliveryController {
     public ResponseEntity<Delivery[]> getOrder() {
         Delivery[] deliveries = this.deliveryRepository.getDeliveries().toArray(new Delivery[0]);
         return ResponseEntity.status(HttpStatus.OK).body(deliveries);
+    }
+
+    @PostMapping("/start")
+    public ResponseEntity<String> startDelivery(@RequestBody UUID id) {
+        Optional<Delivery> delivery = this.deliveryRepository.getDeliveryByOrderId(id);
+        if (delivery.isPresent()) {
+            delivery.get().setStatus("In Delivery");
+            return ResponseEntity.ok("Started Delivery");
+        }else{
+            return ResponseEntity.badRequest().body("order not found");
+        }
     }
 }
