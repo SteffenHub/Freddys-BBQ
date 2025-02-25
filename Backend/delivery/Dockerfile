@@ -10,8 +10,8 @@ RUN gradle build --no-daemon
 # 2. Spring Container
 FROM eclipse-temurin:21
 
-EXPOSE 8080
+EXPOSE 8081
 
-COPY --from=builder /app/build/libs/freddy_bbq-0.0.1.jar /app/backend.jar
+COPY --from=builder /app/build/libs/freddy_bbq_backend_delivery-0.0.1.jar /app/backend_delivery.jar
 
-CMD ["java", "-jar", "/app/backend.jar"]
+CMD ["java", "-jar", "/app/backend_delivery.jar"]
