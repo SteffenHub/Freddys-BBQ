@@ -12,6 +12,6 @@ FROM eclipse-temurin:21
 
 EXPOSE 8080
 
-COPY --from=builder /app/build/libs/freddy_bbq-0.0.1.jar /app/backend.jar
+COPY --from=builder /app/build/libs/freddy_bbq_backend_order-0.0.1.jar /app/backend_order.jar
 
-CMD ["java", "-jar", "/app/backend.jar"]
+CMD ["java", "-jar", "/app/backend_order.jar"]
