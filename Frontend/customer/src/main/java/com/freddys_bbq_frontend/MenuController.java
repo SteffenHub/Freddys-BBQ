@@ -22,7 +22,7 @@ public class MenuController {
 
   private final RestTemplate restTemplate;
 
-  @Value("${BACKEND_URL:http://localhost:8080}")
+  @Value("${ORDER_BACKEND_URL:http://localhost:8080}")
   private String backendUrl;
 
   @Autowired

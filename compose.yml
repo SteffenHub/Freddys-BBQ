@@ -1,26 +1,42 @@
 name: freddys-bbq
 
 services:
-  frontend:
-    container_name: frontend
-    build: frontend
+  frontend-customer:
+    container_name: Frontend-Customer
+    build: Frontend/customer
     ports:
       - "4200:4200"
     environment:
-      - BACKEND_URL=http://backend:8080
+      - ORDER_BACKEND_URL=http://backend-order:8080
+      - DELIVERY_BACKEND_URL=http://backend-delivery:8081
     depends_on:
-        - backend_order
+      - backend-order
+      - backend-delivery
+      
+  frontend-intern:
+    container_name: Frontend-Intern
+    build: Frontend/Intern
+    ports:
+      - "4300:4300"
+    environment:
+      - ORDER_BACKEND_URL=http://backend-order:8080
+      - DELIVERY_BACKEND_URL=http://backend-delivery:8081
+    depends_on:
+        - backend-order
+        - backend-delivery
 
-  backend_order:
+  backend-order:
     container_name: Backend-Order
     build: Backend/order
     ports:
       - "8080:8080"
+    environment:
+      - DELIVERY_BACKEND_URL=http://backend-delivery:8081
 
-  backend_delivery:
+  backend-delivery:
     container_name: Backend-Delivery
     build: Backend/delivery
     ports:
       - "8081:8081"
     depends_on:
-      - backend_order
+      - backend-order

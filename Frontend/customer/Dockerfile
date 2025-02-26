@@ -12,6 +12,6 @@ FROM eclipse-temurin:21
 
 EXPOSE 4200
 
-COPY --from=builder /app/build/libs/freddy_bbq_frontend-0.0.1.jar /app/frontend.jar
+COPY --from=builder /app/build/libs/freddy_bbq_frontend_customer-0.0.1.jar /app/frontend_customer.jar
 
-CMD ["java", "-jar", "/app/frontend.jar"]
+CMD ["java", "-jar", "/app/frontend_customer.jar"]
