@@ -1,0 +1,10 @@
+ors:
+  engine:
+    profile_default:
+      build:
+        source_file: files/hamburg-latest.osm.pbf
+    profiles:
+      driving-car:
+        enabled: true
+server:
+   port: 8090

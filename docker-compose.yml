@@ -21,6 +21,7 @@ services:
     environment:
       - ORDER_BACKEND_URL=http://backend-order:8080
       - DELIVERY_BACKEND_URL=http://backend-delivery:8081
+      - MAP_SERVICE_URL=http://map-service:8090
     depends_on:
         - backend-order
         - backend-delivery
@@ -40,3 +41,9 @@ services:
       - "8081:8081"
     depends_on:
       - backend-order
+
+  map-service:
+    container_name: Map-Service
+    build: Backend/map
+    ports:
+      - "8090:8090"
