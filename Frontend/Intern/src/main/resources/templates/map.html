@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route anzeigen</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            width: 100%;
+            height: 90vh;
+        }
+    </style>
+</head>
+<body>
+    <h1>Route von Start zu Ziel</h1>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Die festen Koordinaten für Start und Ziel
+        var startLat = 53.551086;
+        var startLon = 9.993682;
+        var endLat = 53.542708;
+        var endLon = 9.978556;
+        
+        // Karte initialisieren
+        var map = L.map('map').setView([startLat, startLon], 13); // Startpunkt setzen
+
+        // OpenStreetMap Tiles verwenden
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Route aus den OpenRouteService-Daten abfragen und zeichnen
+        function getRoute() {
+            var requestUrl = `/map/route?startLon=${startLon}&startLat=${startLat}&endLon=${endLon}&endLat=${endLat}`;
+
+            fetch(requestUrl)
+                .then(response => response.json())
+                .then(data => {
+                    // Die Route aus den erhaltenen JSON-Daten extrahieren
+                    var routeCoordinates = data.features[0].geometry.coordinates;
+
+                    // Array mit den Routen-Koordinaten für die Polyline erstellen
+                    var latLngs = routeCoordinates.map(function(coord) {
+                        return [coord[1], coord[0]]; // Konvertiere von [lon, lat] zu [lat, lon]
+                    });
+
+                    // Route als Polyline auf der Karte darstellen
+                    var routeLine = L.polyline(latLngs, {color: 'blue', weight: 4}).addTo(map);
+
+                    // Karte zoomt zur Route
+                    map.fitBounds(routeLine.getBounds());
+
+                    // Start- und Zielmarkierungen setzen
+                    var startMarker = L.marker(latLngs[0]).addTo(map).bindPopup("Start").openPopup();
+                    var endMarker = L.marker(latLngs[latLngs.length - 1]).addTo(map).bindPopup("Ziel").openPopup();
+                })
+                .catch(error => console.log('Fehler beim Abrufen der Route:', error));
+        }
+
+        // Die Route abfragen, wenn die Seite geladen wird
+        getRoute();
+    </script>
+</body>
+</html>
