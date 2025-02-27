@@ -14,4 +14,4 @@ RUN mkdir -p /app/files && curl -o /app/files/hamburg-latest.osm.pbf https://dow
 
 EXPOSE 8090
 
-CMD ["java", "-jar", "ors.jar", "ors-config.yml"]
+CMD ["java", "-Xms200m", "-Xmx400m", "-jar", "ors.jar", "ors-config.yml"]

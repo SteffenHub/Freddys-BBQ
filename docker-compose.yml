@@ -47,3 +47,7 @@ services:
     build: Backend/map
     ports:
       - "8090:8090"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
