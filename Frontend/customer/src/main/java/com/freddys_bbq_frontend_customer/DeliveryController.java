@@ -1,8 +1,8 @@
-package com.freddys_bbq_frontend;
+package com.freddys_bbq_frontend_customer;
 
 
-import com.freddys_bbq_frontend.model.Delivery;
-import com.freddys_bbq_frontend.model.Order;
+import com.freddys_bbq_frontend_customer.model.Delivery;
+import com.freddys_bbq_frontend_customer.model.Order;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

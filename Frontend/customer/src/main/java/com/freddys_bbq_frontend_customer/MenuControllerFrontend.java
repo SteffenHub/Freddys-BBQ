@@ -1,6 +1,6 @@
-package com.freddys_bbq_frontend;
+package com.freddys_bbq_frontend_customer;
 
-import com.freddys_bbq_frontend.model.MenuItem;
+import com.freddys_bbq_frontend_customer.model.MenuItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/")
-public class MenuController {
+public class MenuControllerFrontend {
 
   private final RestTemplate restTemplate;
 
@@ -26,7 +26,7 @@ public class MenuController {
   private String backendUrl;
 
   @Autowired
-  public MenuController(RestTemplate restTemplate) {
+  public MenuControllerFrontend(RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
   }
 

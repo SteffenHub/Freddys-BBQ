@@ -1,4 +1,4 @@
-package com.freddys_bbq_frontend.model;
+package com.freddys_bbq_frontend_intern.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

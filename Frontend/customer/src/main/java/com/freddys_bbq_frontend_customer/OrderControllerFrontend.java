@@ -1,7 +1,7 @@
-package com.freddys_bbq_frontend;
+package com.freddys_bbq_frontend_customer;
 
-import com.freddys_bbq_frontend.model.MenuItem;
-import com.freddys_bbq_frontend.model.Order;
+import com.freddys_bbq_frontend_customer.model.MenuItem;
+import com.freddys_bbq_frontend_customer.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +17,12 @@ import org.springframework.web.client.RestTemplate;
 
 @Controller
 @RequestMapping("/order")
-public class OrderController {
+public class OrderControllerFrontend {
 
   private final RestTemplate restTemplate;
 
   @Autowired
-  public OrderController(RestTemplate restTemplate) {
+  public OrderControllerFrontend(RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
   }
 

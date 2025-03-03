@@ -1,4 +1,4 @@
-package com.freddys_bbq_frontend.model;
+package com.freddys_bbq_frontend_customer.model;
 
 import java.util.UUID;
 

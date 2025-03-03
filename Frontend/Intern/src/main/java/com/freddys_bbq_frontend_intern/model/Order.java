@@ -1,20 +1,18 @@
-package com.freddys_bbq_frontend.model;
+package com.freddys_bbq_frontend_intern.model;
 
 import java.util.UUID;
 
 
-public class MenuItem {
+public class Order {
+
 
     private UUID id;
 
     private String name;
 
-    private Integer price;
+    private MenuItem drink;
 
-    private boolean drink = false;
-
-    public MenuItem() {
-    }
+    private MenuItem food;
 
     public UUID getId() {
         return id;
@@ -32,24 +30,25 @@ public class MenuItem {
         this.name = name;
     }
 
-    public boolean isDrink() {
+    public MenuItem getDrink() {
         return drink;
     }
 
-    public void setDrink(boolean drink) {
+    public void setDrink(MenuItem drink) {
         this.drink = drink;
     }
 
-    public Integer getPrice() {
-        return price;
+    public MenuItem getFood() {
+        return food;
     }
 
-    public void setPrice(Integer price) {
-        this.price = price;
+    public void setFood(MenuItem food) {
+        this.food = food;
     }
 
     @Override
     public String toString() {
-        return String.format("MenuItem<id: %s, name: %s, price: %s>", id, name, price);
+        return String.format("Order<id: %s, drink: %s, food: %s>", id, food, drink);
     }
+
 }

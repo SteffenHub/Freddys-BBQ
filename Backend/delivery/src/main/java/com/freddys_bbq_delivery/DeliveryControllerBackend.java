@@ -12,11 +12,11 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/delivery")
-public class DeliveryController {
+public class DeliveryControllerBackend {
 
     private final DeliveryRepository deliveryRepository;
 
-    public DeliveryController(DeliveryRepository deliveryRepository) {
+    public DeliveryControllerBackend(DeliveryRepository deliveryRepository) {
         this.deliveryRepository = deliveryRepository;
     }
 

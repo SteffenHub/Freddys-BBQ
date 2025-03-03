@@ -1,4 +1,4 @@
-package com.freddys_bbq_frontend;
+package com.freddys_bbq_frontend_intern;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,7 +1,7 @@
-package com.freddys_bbq_frontend;
+package com.freddys_bbq_frontend_intern;
 
 
-import com.freddys_bbq_frontend.model.Delivery;
+import com.freddys_bbq_frontend_intern.model.Delivery;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,14 +13,14 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/delivery")
-public class DeliveryController {
+public class DeliveryControllerFrontend {
 
     @Value("${DELIVERY_BACKEND_URL:http://localhost:8081}")
     private String deliveryBackendUrl;
 
     private final RestTemplate restTemplate;
 
-    public DeliveryController(RestTemplate restTemplate) {
+    public DeliveryControllerFrontend(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

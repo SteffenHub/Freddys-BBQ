@@ -1,4 +1,4 @@
-package com.freddys_bbq_frontend.config;
+package com.freddys_bbq_frontend_intern.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

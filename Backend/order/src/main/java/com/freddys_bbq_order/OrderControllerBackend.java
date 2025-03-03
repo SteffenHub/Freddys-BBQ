@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Controller
 @RequestMapping("/orders")
-public class OrderController {
+public class OrderControllerBackend {
 
     @Value("${DELIVERY_BACKEND_URL:http://localhost:8081}")
     private String deliveryBackendUrl;
@@ -26,7 +26,7 @@ public class OrderController {
 
     private final RestTemplate restTemplate;
 
-    public OrderController(MenuItemRepository menuItemRepository, OrderRepository orderRepository, RestTemplate restTemplate) {
+    public OrderControllerBackend(MenuItemRepository menuItemRepository, OrderRepository orderRepository, RestTemplate restTemplate) {
         this.menuItemRepository = menuItemRepository;
         this.orderRepository = orderRepository;
         this.restTemplate = restTemplate;

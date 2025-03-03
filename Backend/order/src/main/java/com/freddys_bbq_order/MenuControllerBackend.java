@@ -10,11 +10,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/menu")
-public class MenuController {
+public class MenuControllerBackend {
 
   private final MenuItemRepository menuItemRepository;
 
-  public MenuController(MenuItemRepository menuItemRepository) {
+  public MenuControllerBackend(MenuItemRepository menuItemRepository) {
     this.menuItemRepository = menuItemRepository;
   }
 
