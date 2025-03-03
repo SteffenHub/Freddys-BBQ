@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/map")
+@RequestMapping("/intern/map")
 public class MapController {
 
     @Value("${MAP_SERVICE_URL:http://localhost:8090}")

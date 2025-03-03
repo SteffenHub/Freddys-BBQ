@@ -27,11 +27,11 @@ public class OrderControllerFrontend {
   }
 
   @Value("${ORDER_BACKEND_URL:http://localhost:8080}")
-  private String backendUrl;
+  private String orderBackendUrl;
 
   @GetMapping("/{id}")
   public String getOrder(@PathVariable UUID id, Model model) {
-    ResponseEntity<Order> response = restTemplate.getForEntity(backendUrl + "/orders/" + id, Order.class);
+    ResponseEntity<Order> response = restTemplate.getForEntity(orderBackendUrl + "/api/order/orders/" + id, Order.class);
     if (response.getStatusCode().is2xxSuccessful()) {
       model.addAttribute("order", response.getBody());
     }else{
@@ -45,9 +45,9 @@ public class OrderControllerFrontend {
   public String showOrderForm(Model model) {
 
     try {
-      ResponseEntity<MenuItem[]> response = restTemplate.getForEntity(backendUrl + "/menu-items?drink=true", MenuItem[].class);
+      ResponseEntity<MenuItem[]> response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu-items?drink=true", MenuItem[].class);
       Iterable<MenuItem> drinks = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
-      response = restTemplate.getForEntity(backendUrl + "/menu-items?drink=false", MenuItem[].class);
+      response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu-items?drink=false", MenuItem[].class);
       Iterable<MenuItem> foods = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
 
       model.addAttribute("drinks", drinks);
@@ -77,7 +77,7 @@ public class OrderControllerFrontend {
 
       // POST-Request an das Backend senden
       ResponseEntity<UUID> response = restTemplate.postForEntity(
-              backendUrl + "/orders",
+              orderBackendUrl + "/api/order/orders",
               orderRequest,
               UUID.class
       );

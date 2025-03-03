@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/delivery")
+@RequestMapping("/intern/delivery")
 public class DeliveryControllerFrontend {
 
     @Value("${DELIVERY_BACKEND_URL:http://localhost:8081}")
@@ -27,7 +27,7 @@ public class DeliveryControllerFrontend {
     @GetMapping
     public String getAllDeliveries(Model model) {
 
-        ResponseEntity<Delivery[]> response = restTemplate.getForEntity(deliveryBackendUrl + "/delivery", Delivery[].class);
+        ResponseEntity<Delivery[]> response = restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", Delivery[].class);
         if (response.getStatusCode().is2xxSuccessful()) {
             model.addAttribute("deliveries", response.getBody());
         }else{
@@ -40,7 +40,7 @@ public class DeliveryControllerFrontend {
     @PostMapping("/start")
     public ResponseEntity<String> startDelivery(@RequestBody UUID id) {
         //UUID uuid = UUID.fromString(id);
-        ResponseEntity<String> response = restTemplate.postForEntity(deliveryBackendUrl + "/delivery/start", id, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(deliveryBackendUrl + "/api/delivery/delivery/start", id, String.class);
         if (response.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity.ok("Lieferung gestartet");
         }else{

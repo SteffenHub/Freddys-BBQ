@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/delivery")
+@RequestMapping("/api/delivery/delivery")
 public class DeliveryControllerBackend {
 
     private final DeliveryRepository deliveryRepository;

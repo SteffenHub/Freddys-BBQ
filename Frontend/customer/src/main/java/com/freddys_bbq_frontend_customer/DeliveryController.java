@@ -31,7 +31,7 @@ public class DeliveryController {
 
     @GetMapping("status/{id}")
     public ResponseEntity<String> getDeliveryStatus(@PathVariable UUID id) {
-        ResponseEntity<Delivery> response = restTemplate.getForEntity(deliveryBackendUrl + "/delivery/" + id, Delivery.class);
+        ResponseEntity<Delivery> response = restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery/" + id, Delivery.class);
         if (response.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity.status(HttpStatus.OK).body("{\"status\": \"" + Objects.requireNonNull(response.getBody()).getStatus() + "\"}");
         }else{
@@ -42,7 +42,7 @@ public class DeliveryController {
     @GetMapping("/{id}")
     public String getOrder(@PathVariable UUID id, Model model) {
 
-        ResponseEntity<Delivery> response = restTemplate.getForEntity(deliveryBackendUrl + "/delivery/" + id, Delivery.class);
+        ResponseEntity<Delivery> response = restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery/" + id, Delivery.class);
         if (response.getStatusCode().is2xxSuccessful()) {
             model.addAttribute("delivery", response.getBody());
         }else{

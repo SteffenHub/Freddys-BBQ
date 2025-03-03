@@ -23,7 +23,7 @@ public class MenuControllerFrontend {
   private final RestTemplate restTemplate;
 
   @Value("${ORDER_BACKEND_URL:http://localhost:8080}")
-  private String backendUrl;
+  private String orderBackendUrl;
 
   @Autowired
   public MenuControllerFrontend(RestTemplate restTemplate) {
@@ -33,7 +33,7 @@ public class MenuControllerFrontend {
   @GetMapping
   public String index(Model model) {
     try {
-      ResponseEntity<MenuItem[]> response = restTemplate.getForEntity(this.backendUrl + "/menu", MenuItem[].class);
+      ResponseEntity<MenuItem[]> response = restTemplate.getForEntity(this.orderBackendUrl + "/api/order/menu", MenuItem[].class);
 
       List<MenuItem> menuItems = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
 

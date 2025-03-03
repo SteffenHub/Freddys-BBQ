@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 @Controller
-@RequestMapping("/orders")
+@RequestMapping("/api/order/orders")
 public class OrderControllerBackend {
 
     @Value("${DELIVERY_BACKEND_URL:http://localhost:8081}")
@@ -55,7 +55,7 @@ public class OrderControllerBackend {
             orderRepository.save(order);
 
 
-            ResponseEntity<String> response = restTemplate.postForEntity(deliveryBackendUrl + "/delivery", order, String.class);
+            ResponseEntity<String> response = restTemplate.postForEntity(deliveryBackendUrl + "/api/delivery/delivery", order, String.class);
             if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new IllegalArgumentException("The order could not be forwarded");
             }

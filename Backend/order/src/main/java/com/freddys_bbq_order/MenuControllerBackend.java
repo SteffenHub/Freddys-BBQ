@@ -9,7 +9,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/menu")
+@RequestMapping("/api/order/menu")
 public class MenuControllerBackend {
 
   private final MenuItemRepository menuItemRepository;

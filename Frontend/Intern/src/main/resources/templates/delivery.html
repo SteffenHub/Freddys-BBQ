@@ -36,7 +36,7 @@
     </style>
     <script>
         function startDelivery(orderId, button) {
-            fetch('/delivery/start', {
+            fetch('/intern/delivery/start', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderId) // ✅ UUID als String
