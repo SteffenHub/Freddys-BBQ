@@ -20,31 +20,37 @@ import java.util.List;
 @RequestMapping("/")
 public class MenuControllerFrontend {
 
-  private final RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-  @Value("${ORDER_BACKEND_URL:http://localhost:8080}")
-  private String orderBackendUrl;
+    @Value("${ORDER_BACKEND_URL:http://localhost:8080}")
+    private String orderBackendUrl;
 
-  @Autowired
-  public MenuControllerFrontend(RestTemplate restTemplate) {
-    this.restTemplate = restTemplate;
-  }
-
-  @GetMapping
-  public String index(Model model) {
-    try {
-      ResponseEntity<MenuItem[]> response = restTemplate.getForEntity(this.orderBackendUrl + "/api/order/menu", MenuItem[].class);
-
-      List<MenuItem> menuItems = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
-
-      model.addAttribute("menuItems", menuItems);
-
-    } catch (RestClientException e) {
-      model.addAttribute("errorMessage", "The menu cannot be loaded. Please try again later (The Backend does not answer)");
-      model.addAttribute("menuItems", Collections.emptyList());
+    @Autowired
+    public MenuControllerFrontend(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
-    return "index";
-  }
+    @GetMapping
+    public String index(Model model) {
+        try {
+            ResponseEntity<MenuItem[]> response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Drink", MenuItem[].class);
+            Iterable<MenuItem> drinks = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
+            response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Main Course", MenuItem[].class);
+            Iterable<MenuItem> meals = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
+            response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Side", MenuItem[].class);
+            Iterable<MenuItem> sides = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
+
+            model.addAttribute("drinks", drinks);
+            model.addAttribute("meals", meals);
+            model.addAttribute("sides", sides);
+
+        } catch (RestClientException e) {
+            model.addAttribute("errorMessage", "The menu cannot be loaded. Please try again later (The Backend does not answer)");
+            model.addAttribute("drinks", Collections.emptyList());
+            model.addAttribute("meals", Collections.emptyList());
+            model.addAttribute("sides", Collections.emptyList());
+        }
+        return "index";
+    }
 
 }

@@ -45,11 +45,11 @@ public class OrderControllerFrontend {
   public String showOrderForm(Model model) {
 
     try {
-      ResponseEntity<MenuItem[]> response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu-items?category=Drink", MenuItem[].class);
+      ResponseEntity<MenuItem[]> response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Drink", MenuItem[].class);
       Iterable<MenuItem> drinks = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
-      response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu-items?category=Main Course", MenuItem[].class);
+      response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Main Course", MenuItem[].class);
       Iterable<MenuItem> meals = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
-      response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu-items?category=Side", MenuItem[].class);
+      response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Side", MenuItem[].class);
       Iterable<MenuItem> sides = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
 
       model.addAttribute("drinks", drinks);
