@@ -65,7 +65,7 @@
                     tableBody.innerHTML = ""; // Delete table existing body
 
                     if (data.length === 0) {
-                        tableBody.innerHTML = "<tr><td colspan='6'>Currently no deliveries.</td></tr>";
+                        tableBody.innerHTML = "<tr><td colspan='7'>Currently no deliveries.</td></tr>";
                         return;
                     }
 
@@ -76,7 +76,8 @@
                         <td>${delivery.order.id}</td>
                         <td>${delivery.order.name}</td>
                         <td>${delivery.order.drink.name}</td>
-                        <td>${delivery.order.food.name}</td>
+                        <td>${delivery.order.meal.name}</td>
+                        <td>${delivery.order.side.name}</td>
                         <td>${delivery.status}</td>
                         <td>
                             <button class="btn"
@@ -117,6 +118,7 @@
             <th>Customer</th>
             <th>Drink</th>
             <th>Meal</th>
+            <th>Side</th>
             <th>Status</th>
             <th>Action</th>
         </tr>

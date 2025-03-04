@@ -44,28 +44,27 @@ public class OrderControllerBackend {
             // Bestellte Objekte anhand der IDs finden
             MenuItem drink = menuItemRepository.findById(request.getDrinkId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid drink ID"));
-            MenuItem food = menuItemRepository.findById(request.getFoodId())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid food ID"));
+            MenuItem meal = menuItemRepository.findById(request.getMealId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid meal ID"));
+            MenuItem side = menuItemRepository.findById(request.getSideId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid Side ID"));
 
             Order order = new Order();
             order.setId(UUID.randomUUID());
             order.setName(request.getName());
             order.setDrink(drink);
-            order.setFood(food);
+            order.setMeal(meal);
+            order.setSide(side);
             orderRepository.save(order);
-
 
             ResponseEntity<String> response = restTemplate.postForEntity(deliveryBackendUrl + "/api/delivery/delivery", order, String.class);
             if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new IllegalArgumentException("The order could not be forwarded");
             }
-
             return ResponseEntity.status(HttpStatus.CREATED).body(order.getId());
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-
-
 }

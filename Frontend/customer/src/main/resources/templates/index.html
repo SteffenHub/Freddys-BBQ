@@ -100,7 +100,7 @@
   <div th:if="${menuItems.size() > 0}" class="menu-container">
     <div th:each="menuItem : ${menuItems}" class="menu-item">
       <span class="menu-item-name" th:text="${menuItem.name}"></span>
-      <span class="menu-item-price" th:text="${menuItem.price + ' €'}"></span>
+      <span class="menu-item-price" th:text="${menuItem.price + '0 €'}"></span>
     </div>
   </div>
 

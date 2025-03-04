@@ -37,7 +37,8 @@
 <p>Thank you for your order, <span th:text="${delivery?.getOrder()?.getName() ?: 'UNKNOWN'}"></span></p>
 <p>Your order ID: <span id=orderId th:text="${delivery?.getOrder()?.getId() ?: 'UNKNOWN'}"></span></p>
 <p>Selected Drink: <span th:text="${delivery?.getOrder()?.getDrink()?.getName() ?: 'UNKNOWN'}"></span></p>
-<p>Selected Food: <span th:text="${delivery.getOrder()?.getFood()?.getName() ?: 'UNKNOWN'}"></span></p>
+<p>Selected Meal: <span th:text="${delivery.getOrder()?.getMeal()?.getName() ?: 'UNKNOWN'}"></span></p>
+<p>Selected Side: <span th:text="${delivery.getOrder()?.getSide()?.getName() ?: 'UNKNOWN'}"></span></p>
 <p id="status">Loading...</p>
 </body>
 

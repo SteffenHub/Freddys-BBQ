@@ -25,8 +25,12 @@ public class Order {
   private MenuItem drink;
 
   @ManyToOne()
-  @JoinColumn(name = "food_id")
-  private MenuItem food;
+  @JoinColumn(name = "meal_id")
+  private MenuItem meal;
+
+  @ManyToOne()
+  @JoinColumn(name = "side_id")
+  private MenuItem side;
 
   public UUID getId() {
     return id;
@@ -52,17 +56,25 @@ public class Order {
     this.drink = drink;
   }
 
-  public MenuItem getFood() {
-    return food;
+  public MenuItem getMeal() {
+    return meal;
   }
 
-  public void setFood(MenuItem food) {
-    this.food = food;
+  public void setMeal(MenuItem meal) {
+    this.meal = meal;
+  }
+
+  public MenuItem getSide() {
+    return side;
+  }
+
+  public void setSide(MenuItem side) {
+    this.side = side;
   }
 
   @Override
   public String toString() {
-    return String.format("Order<id: %s, drink: %s, food: %s>", id, food, drink);
+    return String.format("Order<id: %s, drink: %s, meal: %s>", id, meal, drink);
   }
 
 }

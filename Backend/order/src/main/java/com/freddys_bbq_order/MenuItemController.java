@@ -22,11 +22,11 @@ public class MenuItemController {
   }
 
   @GetMapping
-  public Iterable<MenuItem> getAllItems(@RequestParam(required = false) Boolean drink) {
-      if (drink != null) {
-          return menuItemRepository.findByDrinkOrderByNameDesc(drink);
+  public Iterable<MenuItem> getAllItems(@RequestParam(required = false) String category) {
+      if (category != null) {
+          return menuItemRepository.findByCategory(category);
       }
-      return menuItemRepository.findByOrderByDrinkDescNameDesc();
+      return menuItemRepository.findAll();
   }
 
 }

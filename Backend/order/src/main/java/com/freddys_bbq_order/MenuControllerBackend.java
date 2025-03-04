@@ -20,6 +20,6 @@ public class MenuControllerBackend {
 
   @GetMapping
   public List<MenuItem> index(){
-    return (List<MenuItem>) menuItemRepository.findByOrderByDrinkDescNameDesc();
+    return (List<MenuItem>) menuItemRepository.findAll();
   }
 }
