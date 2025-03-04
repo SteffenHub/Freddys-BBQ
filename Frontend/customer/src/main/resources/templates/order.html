@@ -79,10 +79,16 @@
         <option th:each="drink : ${drinks}" th:value="${drink.getId()}" th:text="${drink.getName()}"></option>
       </select>
 
-      <label for="food">Select Food:</label>
-      <select id="food" name="foodId" required>
-        <option value="" disabled selected>Select a food</option>
-        <option th:each="food : ${foods}" th:value="${food.getId()}" th:text="${food.getName()}"></option>
+      <label for="meal">Select Meal:</label>
+      <select id="meal" name="mealId" required>
+        <option value="" disabled selected>Select a Meal</option>
+        <option th:each="meal : ${meals}" th:value="${meal.getId()}" th:text="${meal.getName()}"></option>
+      </select>
+
+      <label for="side">Select Side:</label>
+      <select id="side" name="sideId" required>
+        <option value="" disabled selected>Select a Side</option>
+        <option th:each="side : ${sides}" th:value="${side.getId()}" th:text="${side.getName()}"></option>
       </select>
 
       <button type="submit">Place Order</button>

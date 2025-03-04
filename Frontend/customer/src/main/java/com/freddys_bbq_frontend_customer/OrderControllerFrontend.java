@@ -45,18 +45,22 @@ public class OrderControllerFrontend {
   public String showOrderForm(Model model) {
 
     try {
-      ResponseEntity<MenuItem[]> response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu-items?drink=true", MenuItem[].class);
+      ResponseEntity<MenuItem[]> response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Drink", MenuItem[].class);
       Iterable<MenuItem> drinks = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
-      response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu-items?drink=false", MenuItem[].class);
-      Iterable<MenuItem> foods = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
+      response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Main Course", MenuItem[].class);
+      Iterable<MenuItem> meals = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
+      response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Side", MenuItem[].class);
+      Iterable<MenuItem> sides = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
 
       model.addAttribute("drinks", drinks);
-      model.addAttribute("foods", foods);
+      model.addAttribute("meals", meals);
+      model.addAttribute("sides", sides);
 
     } catch (RestClientException e) {
       model.addAttribute("errorMessage", "The menu cannot be loaded. Please try again later (The Backend does not answer)");
       model.addAttribute("drinks", Collections.emptyList());
-      model.addAttribute("foods", Collections.emptyList());
+      model.addAttribute("meals", Collections.emptyList());
+      model.addAttribute("sides", Collections.emptyList());
     }
 
     return "order";
@@ -66,14 +70,16 @@ public class OrderControllerFrontend {
   @PostMapping
   public String placeOrder(@RequestParam String name,
                            @RequestParam UUID drinkId,
-                           @RequestParam UUID foodId,
+                           @RequestParam UUID mealId,
+                           @RequestParam UUID sideId,
                            Model model) {
     try {
       // JSON-Objekt für Bestellung erstellen
       Map<String, Object> orderRequest = new HashMap<>();
       orderRequest.put("name", name);
       orderRequest.put("drinkId", drinkId);
-      orderRequest.put("foodId", foodId);
+      orderRequest.put("mealId", mealId);
+      orderRequest.put("sideId", sideId);
 
       // POST-Request an das Backend senden
       ResponseEntity<UUID> response = restTemplate.postForEntity(

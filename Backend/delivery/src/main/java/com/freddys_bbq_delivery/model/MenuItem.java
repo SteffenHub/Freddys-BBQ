@@ -7,19 +7,17 @@ public class MenuItem {
 
   private UUID id;
 
+  private String category;
+
   private String name;
 
-  private Integer price;
+  private double price;
 
   private boolean drink = false;
 
-  public MenuItem() {}
+  private String image;
 
-  public MenuItem(UUID id, String name, Integer price, boolean drink) {
-    this.id = id;
-    this.name = name;
-    this.price = price;
-    this.drink = drink;
+  public MenuItem() {
   }
 
   public UUID getId() {
@@ -28,6 +26,14 @@ public class MenuItem {
 
   public void setId(UUID id) {
     this.id = id;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
   }
 
   public String getName() {
@@ -46,17 +52,24 @@ public class MenuItem {
     this.drink = drink;
   }
 
-  public Integer getPrice() {
+  public double getPrice() {
     return price;
   }
 
-  public void setPrice(Integer price) {
+  public void setPrice(double price) {
     this.price = price;
+  }
+
+  public String getImage() {
+    return image;
+  }
+
+  public void setImage(String image) {
+    this.image = image;
   }
 
   @Override
   public String toString() {
     return String.format("MenuItem<id: %s, name: %s, price: %s>", id, name, price);
   }
-
 }

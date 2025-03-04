@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping("/api/order/menu-items")
+@RequestMapping("/api/order/menu")
 public class MenuItemController {
 
   @Autowired
@@ -22,11 +22,11 @@ public class MenuItemController {
   }
 
   @GetMapping
-  public Iterable<MenuItem> getAllItems(@RequestParam(required = false) Boolean drink) {
-      if (drink != null) {
-          return menuItemRepository.findByDrinkOrderByNameDesc(drink);
+  public Iterable<MenuItem> getAllItems(@RequestParam(required = false) String category) {
+      if (category != null) {
+          return menuItemRepository.findByCategory(category);
       }
-      return menuItemRepository.findByOrderByDrinkDescNameDesc();
+      return menuItemRepository.findAll();
   }
 
 }
