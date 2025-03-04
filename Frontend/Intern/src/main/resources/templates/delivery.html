@@ -43,56 +43,87 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        button.innerText = "In Lieferung";
+                        button.innerText = "Delivery started";
                         button.disabled = true;
                     } else {
-                        alert("Fehler beim Starten der Lieferung!");
+                        alert("Error starting delivery!");
                     }
                 })
-                .catch(error => console.error("Fehler:", error));
+                .catch(error => console.error("Error:", error));
         }
+
+        function fetchDeliveryStatus() {
+            fetch("/intern/delivery/get")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Error fetching deliveries");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    let tableBody = document.querySelector("#deliveries tbody");
+                    tableBody.innerHTML = ""; // Delete table existing body
+
+                    if (data.length === 0) {
+                        tableBody.innerHTML = "<tr><td colspan='6'>Currently no deliveries.</td></tr>";
+                        return;
+                    }
+
+                    data.forEach(delivery => {
+                        let row = document.createElement("tr");
+
+                        row.innerHTML = `
+                        <td>${delivery.order.id}</td>
+                        <td>${delivery.order.name}</td>
+                        <td>${delivery.order.drink.name}</td>
+                        <td>${delivery.order.food.name}</td>
+                        <td>${delivery.status}</td>
+                        <td>
+                            <button class="btn"
+                                ${delivery.status === "In Delivery" ? "disabled" : ""}
+                                onclick="startDelivery('${delivery.order.id}', this)">
+                                ${delivery.status === "Received" ? "Start Delivery" : "Delivery started"}
+                            </button>
+                        </td>
+                    `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching delivery data:", error);
+                    let errorMessage = document.getElementById("error-message");
+                    errorMessage.innerText = "Error: Deliveries could not be loaded!";
+                    errorMessage.style.display = "block";
+                });
+        }
+
+        // Polling every 5 seconds
+        setInterval(fetchDeliveryStatus, 5000);
+
+        // Initial retrieval of Deliveries
+        window.onload = fetchDeliveryStatus;
     </script>
 </head>
 <body>
 
-<h1>Lieferübersicht</h1>
+<h1>Delivery Overview</h1>
 
-<p th:if="${errorMessage}" class="error">
-    <span th:text="${errorMessage}"></span>
-</p>
+<p id="error-message" class="error" style="display: none;"></p>
 
-<table th:if="${not #lists.isEmpty(deliveries)}">
+<table id="deliveries">
     <thead>
-    <tr>
-        <th>Bestell-ID</th>
-        <th>Kunde</th>
-        <th>Getränk</th>
-        <th>Essen</th>
-        <th>Status</th>
-        <th>Aktion</th>
-    </tr>
+        <tr>
+            <th>Order-ID</th>
+            <th>Customer</th>
+            <th>Drink</th>
+            <th>Meal</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
     </thead>
     <tbody>
-    <tr th:each="delivery : ${deliveries}">
-        <td th:text="${delivery.order.id}"></td>
-        <td th:text="${delivery.order.name}"></td>
-        <td th:text="${delivery.order.drink.name}"></td>
-        <td th:text="${delivery.order.food.name}"></td>
-        <td th:text="${delivery.status}"></td>
-        <td>
-            <button class="btn"
-                    th:text="${delivery.status == 'Received' ? 'Lieferung starten' : 'In Lieferung'}"
-                    th:attr="onclick='startDelivery(\'' + ${delivery.order.id} + '\', this)'"
-                    th:disabled="${delivery.status == 'In Delivery'}">
-            </button>
-        </td>
-    </tr>
     </tbody>
 </table>
-
-<p th:if="${#lists.isEmpty(deliveries)}">
-    Keine Lieferungen vorhanden.
-</p>
 
 </body>
 </html>

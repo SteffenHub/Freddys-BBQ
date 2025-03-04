@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -24,16 +25,13 @@ public class DeliveryControllerFrontend {
         this.restTemplate = restTemplate;
     }
 
-    @GetMapping
-    public String getAllDeliveries(Model model) {
+    @GetMapping("/get")
+    public ResponseEntity<Delivery[]> getDeliveries() {
+        return restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", Delivery[].class);
+    }
 
-        ResponseEntity<Delivery[]> response = restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", Delivery[].class);
-        if (response.getStatusCode().is2xxSuccessful()) {
-            model.addAttribute("deliveries", response.getBody());
-        }else{
-            model.addAttribute("deliveries", new Delivery[]{});
-            model.addAttribute("errorMessage", "The Deliveries could not be found or the Backend does not answer");
-        }
+    @GetMapping
+    public String getDeliverySite() {
         return "delivery";
     }
 
