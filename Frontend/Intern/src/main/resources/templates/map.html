@@ -34,7 +34,7 @@
 
         // Route aus den OpenRouteService-Daten abfragen und zeichnen
         function getRoute() {
-            var requestUrl = `/map/route?startLon=${startLon}&startLat=${startLat}&endLon=${endLon}&endLat=${endLat}`;
+            var requestUrl = `/intern/map/route?startLon=${startLon}&startLat=${startLat}&endLon=${endLon}&endLat=${endLat}`;
 
             fetch(requestUrl)
                 .then(response => response.json())
