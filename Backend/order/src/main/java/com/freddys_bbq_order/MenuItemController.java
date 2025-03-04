@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping("/api/order/menu-items")
+@RequestMapping("/api/order/menu")
 public class MenuItemController {
 
   @Autowired
