@@ -9,24 +9,29 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.UUID;
 
+
 @SpringBootApplication
 public class DemoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
 	}
-	
+
 	@Bean
 	CommandLineRunner initDatabase(MenuItemRepository menuItemRepository) {
 		return args -> {
+			if (menuItemRepository.count() != 0) {
+				System.out.println("Found " + menuItemRepository.count() + " menu items in the database");
+			}
 			if (menuItemRepository.count() == 0) { // Prevent duplicate entries
+				System.out.println("The Database is empty -> fill with menu items");
 				// Main Courses
 				menuItemRepository.save(new MenuItem(
 						UUID.randomUUID(),
 						"Main Course",
-						"Coleslaw Salad",
-						4.8,
-						"https://unsplash.com/photos/btS7sL3jprM/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8N3x8Y29sZXNsYXclMjBzYWxhZHxlbnwwfHx8fDE3MTQzMzMzNDF8Mg&force=true&w=640"
+						"Freddy's Rib Special",
+						21.9,
+						"https://unsplash.com/photos/0hOHNA3M6Ds/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8OHx8cmlic3xlbnwwfHx8fDE3MTQyOTU0MjN8MA&force=true&w=640"
 				));
 				menuItemRepository.save(new MenuItem(
 						UUID.randomUUID(),
@@ -42,7 +47,7 @@ public class DemoApplication {
 						10.50,
 						"https://unsplash.com/photos/4qzaeR_sTYA/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8Mnx8bWFjJTIwYW5kJTIwY2hlZXNlfGVufDB8fHx8MTcxNDMzMzE4MHwy&force=true&w=640"
 				));
-				// Side
+				// Sides
 				menuItemRepository.save(new MenuItem(
 						UUID.randomUUID(),
 						"Side",
@@ -75,4 +80,5 @@ public class DemoApplication {
 			}
 		};
 	}
+
 }
