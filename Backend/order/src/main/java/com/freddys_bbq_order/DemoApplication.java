@@ -15,10 +15,15 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
+
 	@Bean
 	CommandLineRunner initDatabase(MenuItemRepository menuItemRepository) {
 		return args -> {
+			if (menuItemRepository.count() != 0) {
+				System.out.println("Found " + menuItemRepository.count() + " menu items in the database");
+			}
 			if (menuItemRepository.count() == 0) { // Prevent duplicate entries
+				System.out.println("The Database is empty -> fill with menu items");
 				// Main Courses
 				menuItemRepository.save(new MenuItem(
 						UUID.randomUUID(),
