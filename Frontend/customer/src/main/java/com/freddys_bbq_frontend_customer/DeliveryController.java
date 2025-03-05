@@ -23,6 +23,9 @@ public class DeliveryController {
     @Value("${DELIVERY_BACKEND_URL:http://localhost:8081}")
     private String deliveryBackendUrl;
 
+    @Value("${INTERN_FRONTEND_URL:http://localhost:4300}")
+    private String internFrontendUrl;
+
     private final RestTemplate restTemplate;
 
     public DeliveryController(RestTemplate restTemplate) {
@@ -50,5 +53,10 @@ public class DeliveryController {
             model.addAttribute("errorMessage", "The Order could not be found or the Backend does not answer");
         }
         return "order-info";
+    }
+
+    @GetMapping("/redirect-intern-delivery")
+    public ResponseEntity<String> redirectInternDelivery() {
+        return ResponseEntity.status(HttpStatus.OK).body(internFrontendUrl + "/intern/delivery");
     }
 }
