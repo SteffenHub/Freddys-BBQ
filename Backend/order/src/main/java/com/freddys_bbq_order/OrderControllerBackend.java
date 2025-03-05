@@ -3,6 +3,10 @@ package com.freddys_bbq_order;
 import com.freddys_bbq_order.model.MenuItem;
 import com.freddys_bbq_order.model.Order;
 import com.freddys_bbq_order.model.OrderRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +17,7 @@ import java.util.UUID;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+@Tag(name = "Order Management", description = "Endpoints for managing customer orders.")
 @Controller
 @RequestMapping("/api/order/orders")
 public class OrderControllerBackend {
@@ -32,12 +37,34 @@ public class OrderControllerBackend {
         this.restTemplate = restTemplate;
     }
 
+    /**
+     * Retrieves all orders from the database.
+     *
+     * @return A list of all orders.
+     */
+    @Operation(summary = "Get all orders", description = "Returns a list of all placed orders.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved orders"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping
     public ResponseEntity<Iterable<Order>> findAll() {
         Iterable<Order> orders = orderRepository.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(orders);
     }
 
+    /**
+     * Places a new order based on the provided order request.
+     *
+     * @param request The order request containing menu item IDs and customer details.
+     * @return The unique identifier (UUID) of the created order.
+     */
+    @Operation(summary = "Place an order", description = "Creates a new order and forwards it to the delivery service.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Order successfully created"),
+            @ApiResponse(responseCode = "400", description = "Invalid order request. Invalid id"),
+            @ApiResponse(responseCode = "500", description = "Failed to forward the order to delivery service")
+    })
     @PostMapping
     public ResponseEntity<UUID> placeOrder(@RequestBody OrderRequest request) {
         try {
