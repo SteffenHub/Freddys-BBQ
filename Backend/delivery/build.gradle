@@ -19,6 +19,9 @@ dependencies {
 	//implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	// OpenAPI
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+
 	// Web Dependencies
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 }
