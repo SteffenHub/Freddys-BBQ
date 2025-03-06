@@ -7,10 +7,10 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - ORDER_BACKEND_URL=http://freddys-bbq-main:8080
-      - DELIVERY_BACKEND_URL=http://freddys-bbq-main:8080
-      - INTERN_FRONTEND_URL=http://freddys-bbq-main:8080
-      - CUSTOMER_FRONTEND_URL=http://freddys-bbq-main:8080
+      - ORDER_BACKEND_URL=http://localhost:8080
+      - DELIVERY_BACKEND_URL=http://localhost:8080
+      - INTERN_FRONTEND_URL=http://localhost:8080
+      - CUSTOMER_FRONTEND_URL=http://localhost:8080
       - MAP_SERVICE_URL=http://map-service:8090
 
   map-service:
