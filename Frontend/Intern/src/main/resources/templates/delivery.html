@@ -53,14 +53,19 @@
         }
 
         function fetchDeliveryStatus() {
-            fetch("/intern/delivery/get")
+            const url = "/intern/delivery/get";
+            console.log("Fetching deliveries from:", url);
+
+            fetch(url)
                 .then(response => {
+                    console.log("Response received from:", url, "Status:", response.status);
                     if (!response.ok) {
                         throw new Error("Error fetching deliveries");
                     }
                     return response.json();
                 })
                 .then(data => {
+                    console.log("Fetched delivery data:", data);
                     let tableBody = document.querySelector("#deliveries tbody");
                     tableBody.innerHTML = ""; // Delete table existing body
 

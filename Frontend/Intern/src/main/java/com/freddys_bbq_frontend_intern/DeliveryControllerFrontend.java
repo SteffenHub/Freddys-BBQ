@@ -25,7 +25,10 @@ public class DeliveryControllerFrontend {
 
     @GetMapping("/get")
     public ResponseEntity<Delivery[]> getDeliveries() {
-        return restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", Delivery[].class);
+        System.out.println("Calling: " + deliveryBackendUrl + "/api/delivery/delivery");
+        ResponseEntity<Delivery[]> response = restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", Delivery[].class);
+        System.out.println(response);
+        return response;
     }
 
     @GetMapping
