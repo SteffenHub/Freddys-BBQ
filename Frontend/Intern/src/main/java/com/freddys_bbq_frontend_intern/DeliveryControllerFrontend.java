@@ -3,6 +3,7 @@ package com.freddys_bbq_frontend_intern;
 
 import com.freddys_bbq_frontend_intern.model.Delivery;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +25,12 @@ public class DeliveryControllerFrontend {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<Delivery[]> getDeliveries() {
-        System.out.println("Calling: " + deliveryBackendUrl + "/api/delivery/delivery");
-        ResponseEntity<Delivery[]> response = restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", Delivery[].class);
-        System.out.println(response);
-        return response;
+    public ResponseEntity<String> getDeliveries() {
+        //System.out.println("Calling: " + deliveryBackendUrl + "/api/delivery/delivery");
+        //ResponseEntity<Delivery[]> response = restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", Delivery[].class);
+        //System.out.println(response);
+        //return response;
+        return new ResponseEntity<>("Hey", HttpStatus.OK);
     }
 
     @GetMapping
