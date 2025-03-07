@@ -35,10 +35,10 @@ Ensure you have Docker Desktop installed and running.
   docker-compose up
 ```
 After running the command, the following services will be available:
-- Customer Frontend → http://localhost:4200
-- Staff Frontend → http://localhost:4300
-- Order Backend (API) → http://localhost:8080
-- Delivery Backend (API) → http://localhost:8081
+- Customer Frontend → [http://localhost:4200](http://localhost:4200)
+- Staff Frontend → [http://localhost:4300](http://localhost:4300)
+- Order Backend (API) → [http://localhost:8080](http://localhost:8080)
+- Delivery Backend (API) → [http://localhost:8081](http://localhost:8081)
 
 ### Running the Release Version
 To save costs when hosting on Render.com, the microservices are combined into a single deployment.  
