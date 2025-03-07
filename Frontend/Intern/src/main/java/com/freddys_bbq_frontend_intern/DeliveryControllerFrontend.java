@@ -25,14 +25,10 @@ public class DeliveryControllerFrontend {
         this.restTemplate = restTemplate;
     }
 
-    @GetMapping("/get-deliveries")
+    @GetMapping("/get")
     public ResponseEntity<?> getDeliveries() {
         try {
-            System.out.println("Calling: " + deliveryBackendUrl + "/api/delivery/delivery");
             ResponseEntity<String> response = restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", String.class);
-
-            System.out.println("Response Status: " + response.getStatusCode());
-            System.out.println("Response Body: " + response.getBody());
 
             ObjectMapper objectMapper = new ObjectMapper();
             Delivery[] deliveries = objectMapper.readValue(response.getBody(), Delivery[].class);

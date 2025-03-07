@@ -53,14 +53,11 @@
         }
 
         function fetchDeliveryStatus() {
-            const url = "/intern/delivery/get-deliveries";
+            const url = "/intern/delivery/get";
             console.log("Fetching deliveries from:", url);
 
             fetch(url)
                 .then(response => {
-                    console.log("Response received from:", url, "Status:", response.status);
-                    console.log(response);
-                    console.log(response.body);
                     if (!response.ok) {
                         throw new Error("Error fetching deliveries");
                     }
