@@ -24,13 +24,12 @@ public class DeliveryControllerFrontend {
         this.restTemplate = restTemplate;
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<String> getDeliveries() {
-        //System.out.println("Calling: " + deliveryBackendUrl + "/api/delivery/delivery");
-        //ResponseEntity<Delivery[]> response = restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", Delivery[].class);
-        //System.out.println(response);
-        //return response;
-        return new ResponseEntity<>("Hey", HttpStatus.OK);
+    @GetMapping("/get-deliveries")
+    public ResponseEntity<Delivery[]> getDeliveries() {
+        System.out.println("Calling: " + deliveryBackendUrl + "/api/delivery/delivery");
+        ResponseEntity<Delivery[]> response = restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", Delivery[].class);
+        System.out.println(response);
+        return response;
     }
 
     @GetMapping
