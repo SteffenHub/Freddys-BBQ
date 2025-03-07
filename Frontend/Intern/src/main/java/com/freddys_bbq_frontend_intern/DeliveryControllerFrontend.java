@@ -1,6 +1,7 @@
 package com.freddys_bbq_frontend_intern;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freddys_bbq_frontend_intern.model.Delivery;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -25,11 +26,22 @@ public class DeliveryControllerFrontend {
     }
 
     @GetMapping("/get-deliveries")
-    public ResponseEntity<Delivery[]> getDeliveries() {
-        System.out.println("Calling: " + deliveryBackendUrl + "/api/delivery/delivery");
-        ResponseEntity<Delivery[]> response = restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", Delivery[].class);
-        System.out.println(response);
-        return response;
+    public ResponseEntity<?> getDeliveries() {
+        try {
+            System.out.println("Calling: " + deliveryBackendUrl + "/api/delivery/delivery");
+            ResponseEntity<String> response = restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", String.class);
+
+            System.out.println("Response Status: " + response.getStatusCode());
+            System.out.println("Response Body: " + response.getBody());
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            Delivery[] deliveries = objectMapper.readValue(response.getBody(), Delivery[].class);
+
+            return ResponseEntity.ok(deliveries);
+        } catch (Exception e) {
+            System.err.println("Error fetching deliveries: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Error fetching deliveries");
+        }
     }
 
     @GetMapping
