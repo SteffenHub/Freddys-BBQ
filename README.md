@@ -1,63 +1,50 @@
-# 3_2 Mit Annotationen Spring Beans erzeugen
+# Freddy's BBQ
+Freddy's BBQ - Order & Delivery  
+This project provides backend and frontend services for managing food orders and deliveries at Freddy's BBQ.  
+It includes REST APIs for placing orders and tracking deliveries.
 
-### @Component
-- Auf Klassenebene vergeben (@ über Klassennamen)
-- Kennzeichnet Spring Beans
+## 📌 Entry Points
+- [Welcome Page (Menu)](https://freddys-bbq.onrender.com/)
+  - Displays the available menu items and initiates an order
+- [Delivery Overview (STAFF ONLY)](https://freddys-bbq.onrender.com/intern/delivery)
+  - Internal dashboard for tracking deliveries
+- [API Documentation (Swagger UI)](https://freddys-bbq.onrender.com/swagger-ui/index.html)
+  - Provides OpenAPI documentation for available REST endpoints
 
-### @Service
-- Auf Klassenebene vergeben (@ über Klassennamen)
-- Kennzeichnet Spring Beans mit Geschäftslogik
+## 🛠 Technologies Used
+- Backend:
+  - Java 21 (Spring Boot)
+  - Spring Web & REST in a microservice architecture
+  - Hibernate & Spring Data JPA (PostgreSQL)
+  - OpenAPI documentation using Springdoc Swagger UI
+  - Docker & Docker Compose for containerized deployment
+  - Gradle for build automation
+  - Deployment on Render.com
+- Frontend:
+  - Thymeleaf, HTML, CSS, JavaScript
+  - Server-side rendering with Spring Boot & Thymeleaf
+- Testing:
+  - JUnit & Mockito for unit and integration tests
+  - Testcontainers for database and service testing
 
-### @Bean
-- An Methoden vergeben (@ über Methodennamen)
-- Instanzen als Spring Beans vom IoC Container verwaltet
-
-### @Controller
-- Fürs Web
-
-### @Repository
-- Für die Persistenz
-
-
-# 4_7 Fehler robust behandeln
-
-### 1 Die Spring ResponseStatusException-Klasse
-- new ResponseStatusException(HttpStatus.NOT_FOUND)
-```java
-@GetMapping("/e1/{id}")  
-public DirtySecret getByIdE1(@PathVariable String id) {  
-    return this.repository.getById(id)  
-    .orElseThrow(() -> new ResponseStatusException(  
-        HttpStatus.NOT_FOUND,  
-        "Entry not found!"  
-    ));  
-}
+## 🚀 Deploy Locally
+### Run all Microservices using Docker Compose
+You can run all microservices using `docker-compose.yml`.
+Ensure you have Docker Desktop installed and running.
+```sh
+  docker-compose up
 ```
-### 2 Die Annotation @ResponseStatus an Exception-Klasse
-- @ResponseStatus(value=HttpStatus.NOT_FOUND)
-```java
-@GetMapping("/e2/{id}")
-public DirtySecret getByIdE2(@PathVariable String id) {
-    return this.repository.getById(id)
-    .orElseThrow(() -> new NoSecretFoundWebException());
-}
+After running the command, the following services will be available:
+- Customer Frontend → http://localhost:4200
+- Staff Frontend → http://localhost:4300
+- Order Backend (API) → http://localhost:8080
+- Delivery Backend (API) → http://localhost:8081
 
-@ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class NoSecretFoundWebException extends RuntimeException {}
-```
+### Running the Release Version
+To save costs when hosting on Render.com, the microservices are combined into a single deployment.  
+The release version merges all required services into one application (see `Dockerfile` in the root directory).
 
-### 3 Eigene Exception-Handler-Methode mit @ExcpetionHandle
-```java
-@GetMapping("/e3/{id}")
-public DirtySecret getByIdE3(@PathVariable String id) {
-    return this.repository.getById(id)
-    .orElseThrow(() -> new NoSecretFoundException());
-}
-
-@ExceptionHandler({NoSecretFoundException.class})
-public ResponseEntity<String> handleNoSecretException() {
-    return ResponseEntity.internalServerError().body("No Entry found!");
-}
-
-public class NoSecretFoundException extends RuntimeException{}
+To start the release version:
+```sh
+  docker-compose -f docker-compose-release.yml up
 ```
