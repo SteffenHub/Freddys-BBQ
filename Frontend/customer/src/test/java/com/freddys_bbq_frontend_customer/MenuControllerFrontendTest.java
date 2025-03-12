@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.ui.Model;
@@ -32,6 +33,8 @@ class MenuControllerFrontendTest {
     @Mock
     private Model model;
 
+    private final String orderBackendUrl = "http://localhost:8080";
+
     private MenuItem drinkItem;
     private MenuItem mealItem;
     private MenuItem sideItem;
@@ -39,6 +42,7 @@ class MenuControllerFrontendTest {
     @BeforeEach
     void setUp() {
         menuController = new MenuControllerFrontend(restTemplate);
+        ReflectionTestUtils.setField(menuController, "orderBackendUrl", "http://localhost:8080");
         drinkItem = new MenuItem();
         drinkItem.setName("Cola");
         drinkItem.setCategory("Drink");
@@ -60,11 +64,11 @@ class MenuControllerFrontendTest {
 
     @Test
     void shouldLoadMenuItemsSuccessfully() {
-        when(restTemplate.getForEntity(eq("null/api/order/menu?category=Drink"), eq(MenuItem[].class)))
+        when(restTemplate.getForEntity(eq(orderBackendUrl + "/api/order/menu?category=Drink"), eq(MenuItem[].class)))
                 .thenReturn(ResponseEntity.ok(new MenuItem[]{drinkItem}));
-        when(restTemplate.getForEntity(eq("null/api/order/menu?category=Main Course"), eq(MenuItem[].class)))
+        when(restTemplate.getForEntity(eq(orderBackendUrl + "/api/order/menu?category=Main Course"), eq(MenuItem[].class)))
                 .thenReturn(ResponseEntity.ok(new MenuItem[]{mealItem}));
-        when(restTemplate.getForEntity(eq("null/api/order/menu?category=Side"), eq(MenuItem[].class)))
+        when(restTemplate.getForEntity(eq(orderBackendUrl + "/api/order/menu?category=Side"), eq(MenuItem[].class)))
                 .thenReturn(ResponseEntity.ok(new MenuItem[]{sideItem}));
 
         String viewName = menuController.index(model);
@@ -79,7 +83,7 @@ class MenuControllerFrontendTest {
 
     @Test
     void shouldHandleBackendError() {
-        when(restTemplate.getForEntity("null/api/order/menu?category=Drink", MenuItem[].class))
+        when(restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Drink", MenuItem[].class))
                 .thenThrow(new RestClientException("error"));
 
         String viewName = menuController.index(model);
