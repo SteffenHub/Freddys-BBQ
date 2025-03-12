@@ -13,20 +13,21 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: test
-          POSTGRES_PASSWORD: test
-          POSTGRES_DB: testdb
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U test"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    # Currently not needed, uncomment if there is a need for a Postgres server
+    #services:
+    #  postgres:
+    #    image: postgres:latest
+    #    env:
+    #      POSTGRES_USER: test
+    #      POSTGRES_PASSWORD: test
+    #      POSTGRES_DB: testdb
+    #    ports:
+    #      - 5432:5432
+    #    options: >-
+    #      --health-cmd "pg_isready -U test"
+    #      --health-interval 10s
+    #      --health-timeout 5s
+    #      --health-retries 5
 
     steps:
       - name: Checkout Repository
