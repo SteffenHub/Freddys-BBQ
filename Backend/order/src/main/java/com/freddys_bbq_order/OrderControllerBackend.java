@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 import org.springframework.web.bind.annotation.*;
@@ -75,9 +76,7 @@ public class OrderControllerBackend {
                     .orElseThrow(() -> new IllegalArgumentException("Invalid meal ID"));
             MenuItem side = menuItemRepository.findById(request.getSideId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid Side ID"));
-
             Order order = new Order();
-            order.setId(UUID.randomUUID());
             order.setName(request.getName());
             order.setDrink(drink);
             order.setMeal(meal);
@@ -91,6 +90,7 @@ public class OrderControllerBackend {
             return ResponseEntity.status(HttpStatus.CREATED).body(order.getId());
 
         } catch (Exception e) {
+            System.out.println(Arrays.toString(e.getStackTrace()));
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
