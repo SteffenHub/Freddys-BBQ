@@ -13,8 +13,6 @@ public class MenuItem {
 
     private double price;
 
-    private boolean drink = false;
-
     private String image;
 
     public MenuItem() {
@@ -42,14 +40,6 @@ public class MenuItem {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public boolean isDrink() {
-        return drink;
-    }
-
-    public void setDrink(boolean drink) {
-        this.drink = drink;
     }
 
     public double getPrice() {
