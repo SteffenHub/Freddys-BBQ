@@ -26,21 +26,18 @@ public class DemoApplication {
 				System.out.println("The Database is empty -> fill with menu items");
 				// Main Courses
 				menuItemRepository.save(new MenuItem(
-						UUID.randomUUID(),
 						"Main Course",
 						"Freddy's Rib Special",
 						21.9,
 						"https://unsplash.com/photos/0hOHNA3M6Ds/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8OHx8cmlic3xlbnwwfHx8fDE3MTQyOTU0MjN8MA&force=true&w=640"
 						));
 				menuItemRepository.save(new MenuItem(
-						UUID.randomUUID(),
 						"Main Course",
 						"BBQ Burger and Fries",
 						16.5,
 						"https://unsplash.com/photos/uVPV_nV17Tw/download?ixid=M3wxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNzE0MzMzMzA4fA&force=true&w=640"
 				));
 				menuItemRepository.save(new MenuItem(
-						UUID.randomUUID(),
 						"Main Course",
 						"Mac and Cheese",
 						10.50,
@@ -48,14 +45,12 @@ public class DemoApplication {
 				));
 				// Sides
 				menuItemRepository.save(new MenuItem(
-						UUID.randomUUID(),
 						"Side",
 						"Coleslaw Salad",
 						4.8,
 						"https://unsplash.com/photos/btS7sL3jprM/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8N3x8Y29sZXNsYXclMjBzYWxhZHxlbnwwfHx8fDE3MTQzMzMzNDF8Mg&force=true&w=640"
 				));
 				menuItemRepository.save(new MenuItem(
-						UUID.randomUUID(),
 						"Side",
 						"Sweet Potatoe Mash",
 						6.8,
@@ -63,14 +58,12 @@ public class DemoApplication {
 				));
 				// Drinks
 				menuItemRepository.save(new MenuItem(
-						UUID.randomUUID(),
 						"Drink",
 						"Lemonade",
 						3.5,
 						"https://unsplash.com/photos/sSLqRCTJBvU/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8M3x8bGVtb25hZGV8ZW58MHx8fHwxNzE0MzMzNDYyfDI&force=true&w=640"
 				));
 				menuItemRepository.save(new MenuItem(
-						UUID.randomUUID(),
 						"Drink",
 						"Beer",
 						4.4,

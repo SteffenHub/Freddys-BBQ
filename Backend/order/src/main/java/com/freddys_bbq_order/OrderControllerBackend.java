@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 import org.springframework.web.bind.annotation.*;
@@ -66,7 +67,7 @@ public class OrderControllerBackend {
             @ApiResponse(responseCode = "500", description = "Failed to forward the order to delivery service")
     })
     @PostMapping
-    public ResponseEntity<UUID> placeOrder(@RequestBody OrderRequest request) {
+    public ResponseEntity<?> placeOrder(@RequestBody OrderRequest request) {
         try {
             // Bestellte Objekte anhand der IDs finden
             MenuItem drink = menuItemRepository.findById(request.getDrinkId())
@@ -75,9 +76,7 @@ public class OrderControllerBackend {
                     .orElseThrow(() -> new IllegalArgumentException("Invalid meal ID"));
             MenuItem side = menuItemRepository.findById(request.getSideId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid Side ID"));
-
             Order order = new Order();
-            order.setId(UUID.randomUUID());
             order.setName(request.getName());
             order.setDrink(drink);
             order.setMeal(meal);
@@ -86,11 +85,12 @@ public class OrderControllerBackend {
 
             ResponseEntity<String> response = restTemplate.postForEntity(deliveryBackendUrl + "/api/delivery/delivery", order, String.class);
             if (!response.getStatusCode().is2xxSuccessful()) {
-                throw new IllegalArgumentException("The order could not be forwarded");
+                return response;
             }
             return ResponseEntity.status(HttpStatus.CREATED).body(order.getId());
 
         } catch (Exception e) {
+            System.out.println(Arrays.toString(e.getStackTrace()));
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }

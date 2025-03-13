@@ -2,12 +2,15 @@ package com.freddys_bbq_order.model;
 
 import java.util.UUID;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class MenuItem {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
   private String category;
@@ -18,8 +21,7 @@ public class MenuItem {
 
   private String image;
 
-  public MenuItem(UUID id, String category, String name, double price, String image) {
-    this.id = id;
+  public MenuItem(String category, String name, double price, String image) {
     this.category = category;
     this.name = name;
     this.price = price;

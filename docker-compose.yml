@@ -9,7 +9,7 @@ services:
     environment:
       - ORDER_BACKEND_URL=http://backend-order:8080
       - DELIVERY_BACKEND_URL=http://backend-delivery:8081
-      - INTERN_FRONTEND_URL=http://frontend-intern:4300
+      - INTERN_FRONTEND_URL=http://localhost:4300
     depends_on:
       - backend-order
       - backend-delivery

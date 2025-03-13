@@ -57,7 +57,7 @@ public class Order {
 
   @Override
   public String toString() {
-    return String.format("Order<id: %s, drink: %s, meal: %s>", id, meal, drink);
+    return String.format("Order<id: %s, customer: %s, drink: %s, meal: %s, side: %s>", id, name, drink, meal, side);
   }
 
 }
