@@ -67,7 +67,7 @@ public class OrderControllerBackend {
             @ApiResponse(responseCode = "500", description = "Failed to forward the order to delivery service")
     })
     @PostMapping
-    public ResponseEntity<UUID> placeOrder(@RequestBody OrderRequest request) {
+    public ResponseEntity<?> placeOrder(@RequestBody OrderRequest request) {
         try {
             // Bestellte Objekte anhand der IDs finden
             MenuItem drink = menuItemRepository.findById(request.getDrinkId())
@@ -85,7 +85,7 @@ public class OrderControllerBackend {
 
             ResponseEntity<String> response = restTemplate.postForEntity(deliveryBackendUrl + "/api/delivery/delivery", order, String.class);
             if (!response.getStatusCode().is2xxSuccessful()) {
-                throw new IllegalArgumentException("The order could not be forwarded");
+                return response;
             }
             return ResponseEntity.status(HttpStatus.CREATED).body(order.getId());
 
