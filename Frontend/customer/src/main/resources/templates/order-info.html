@@ -59,7 +59,7 @@
             fetch("/delivery/redirect-intern-delivery")
                 .then(response => response.text())
                 .then(url => {
-                    window.location.href = url;
+                    window.open(url, "_blank");
                 })
                 .catch(error => console.error('Fehler beim Abrufen der Redirect-URL:', error));
         }
