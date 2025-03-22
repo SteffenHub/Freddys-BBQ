@@ -42,25 +42,25 @@ public class OrderControllerFrontend {
   }
 
   @GetMapping
-  public String showOrderForm(Model model) {
-
+  public String showOrderForm(@RequestParam(required = false) List<UUID> items, Model model) {
     try {
-      ResponseEntity<MenuItem[]> response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Drink", MenuItem[].class);
-      Iterable<MenuItem> drinks = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
-      response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Main Course", MenuItem[].class);
-      Iterable<MenuItem> meals = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
-      response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Side", MenuItem[].class);
-      Iterable<MenuItem> sides = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
-
-      model.addAttribute("drinks", drinks);
-      model.addAttribute("meals", meals);
-      model.addAttribute("sides", sides);
-
+      if (items != null || !items.isEmpty()) {
+        List<MenuItem> selectedItems = new ArrayList<>();
+        for (UUID id : items) {
+          ResponseEntity<MenuItem> response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?id=" + id, MenuItem.class);
+          // TODO handle not successful
+          if (response.getStatusCode().is2xxSuccessful()) {
+            selectedItems.add(response.getBody());
+          }
+        }
+        model.addAttribute("cartItems", selectedItems);
+      } else {
+        model.addAttribute("cartItems", new ArrayList<>());
+        model.addAttribute("errorMessage", "The Cart is empty");
+      }
     } catch (RestClientException e) {
       model.addAttribute("errorMessage", "The menu cannot be loaded. Please try again later (The Backend does not answer)");
-      model.addAttribute("drinks", Collections.emptyList());
-      model.addAttribute("meals", Collections.emptyList());
-      model.addAttribute("sides", Collections.emptyList());
+      model.addAttribute("cartItems", new ArrayList<>());
     }
 
     return "order";

@@ -69,27 +69,19 @@
       <span th:text="${errorMessage}"></span>
     </p>
 
+
+
     <form th:action="@{/order}" method="post">
+
+      <div th:if="${cartItems != null}">
+        <h2>Your Cart</h2>
+        <ul>
+          <li th:each="item : ${cartItems}" th:text="${item.name} + ' - ' + ${item.category} + ' - ' + ${item.price} + '€'"></li>
+        </ul>
+      </div>
+
       <label for="name">Your Name:</label>
       <input type="text" id="name" name="name" placeholder="Enter your name" required />
-
-      <label for="drink">Select Drink:</label>
-      <select id="drink" name="drinkId" required>
-        <option value="" disabled selected>Select a drink</option>
-        <option th:each="drink : ${drinks}" th:value="${drink.getId()}" th:text="${drink.getName()}"></option>
-      </select>
-
-      <label for="meal">Select Meal:</label>
-      <select id="meal" name="mealId" required>
-        <option value="" disabled selected>Select a Meal</option>
-        <option th:each="meal : ${meals}" th:value="${meal.getId()}" th:text="${meal.getName()}"></option>
-      </select>
-
-      <label for="side">Select Side:</label>
-      <select id="side" name="sideId" required>
-        <option value="" disabled selected>Select a Side</option>
-        <option th:each="side : ${sides}" th:value="${side.getId()}" th:text="${side.getName()}"></option>
-      </select>
 
       <button type="submit">Place Order</button>
     </form>

@@ -81,7 +81,105 @@
         .redirect-button:hover {
             background-color: #0056b3;
         }
+
+        .cart-sidebar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 300px;
+            height: 100vh;
+            background-color: #ffffff;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .cart-sidebar h2 {
+            margin-top: 0;
+        }
+
+        .cart-sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .cart-sidebar li {
+            margin-bottom: 10px;
+            font-size: 0.95em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .remove-btn {
+            background: none;
+            color: red;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .remove-btn:hover {
+            background-color: #790101;
+            color: white;
+        }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            updateCartSidebar();
+
+            const buttons = document.querySelectorAll(".add-to-cart-btn");
+            buttons.forEach(button => {
+                button.addEventListener("click", function () {
+                    const itemId = this.getAttribute("data-id");
+                    const itemName = this.getAttribute("data-name");
+                    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+                    cart.push({ id: itemId, name: itemName });
+                    localStorage.setItem("cart", JSON.stringify(cart));
+                    updateCartSidebar();
+                });
+            });
+        });
+
+        function updateCartSidebar() {
+            const cartItemsElement = document.getElementById("cart-items");
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+            cartItemsElement.innerHTML = "";
+
+            if (cart.length === 0) {
+                cartItemsElement.innerHTML = "<li>Your cart is empty</li>";
+                return;
+            }
+
+            cart.forEach((item, index) => {
+                const li = document.createElement("li");
+                li.textContent = "" + item.name;
+                const removeBtn = document.createElement("button");
+                removeBtn.textContent = "×";
+                removeBtn.className = "remove-btn";
+                removeBtn.onclick = function () {
+                    cart.splice(index, 1);
+                    localStorage.setItem("cart", JSON.stringify(cart));
+                    updateCartSidebar();
+                };
+                li.appendChild(removeBtn);
+                cartItemsElement.appendChild(li);
+            });
+        }
+
+        function goToOrderPage() {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            if (cart.length === 0) {
+                alert("Your cart is empty");
+                return;
+            }
+            const itemIds = cart.map(item => item.id);
+            window.location.href = "/order?items=" + itemIds.join(",");
+        }
+    </script>
 </head>
 
 <body>
@@ -98,6 +196,7 @@
     <div th:each="meal : ${meals}" class="menu-item">
         <span class="menu-item-name" th:text="${meal.name}"></span>
         <span class="menu-item-price" th:text="${meal.price + '0 €'}"></span>
+        <button class="add-to-cart-btn" th:attr="data-id=${meal.id}, data-name=${meal.name}">Add to cart</button>
     </div>
 </div>
 
@@ -107,6 +206,7 @@
     <div th:each="side : ${sides}" class="menu-item">
         <span class="menu-item-name" th:text="${side.name}"></span>
         <span class="menu-item-price" th:text="${side.price + '0 €'}"></span>
+        <button class="add-to-cart-btn" th:attr="data-id=${side.id}, data-name=${side.name}">Add to cart</button>
     </div>
 </div>
 
@@ -116,13 +216,18 @@
     <div th:each="drink : ${drinks}" class="menu-item">
         <span class="menu-item-name" th:text="${drink.name}"></span>
         <span class="menu-item-price" th:text="${drink.price + '0 €'}"></span>
+        <button class="add-to-cart-btn" th:attr="data-id=${drink.id}, data-name=${drink.name}">Add to cart</button>
     </div>
 </div>
 
-<!-- Button zur Weiterleitung -->
-<div class="button-container">
-    <a th:href="@{/order}" class="redirect-button">Place your Order!</a>
+<div class="cart-sidebar">
+    <h2>Your Cart</h2>
+    <ul id="cart-items">
+        <!-- Hier werden Cart-Items angezeigt -->
+    </ul>
+    <div class="button-container">
+        <button onclick="goToOrderPage()" class="redirect-button">Checkout</button>
+    </div>
 </div>
 </body>
-
 </html>
