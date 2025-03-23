@@ -71,12 +71,12 @@
 
 
 
-    <form th:action="@{/order}" method="post">
+    <form th:action="@{/order/place}" method="post">
 
       <div th:if="${cartItems != null}">
         <h2>Your Cart</h2>
         <ul>
-          <li th:each="item : ${cartItems}" th:text="${item.name} + ' - ' + ${item.category} + ' - ' + ${item.price} + '€'"></li>
+          <li th:each="item : ${cartItems}" th:text="${item.price} + '0€ ' + ${item.name}"></li>
         </ul>
       </div>
 

@@ -176,8 +176,20 @@
                 alert("Your cart is empty");
                 return;
             }
-            const itemIds = cart.map(item => item.id);
-            window.location.href = "/order?items=" + itemIds.join(",");
+
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.action = "/order";
+            form.style.display = "none";
+
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "items";
+            input.value = JSON.stringify(cart.map(item => item.id));
+            form.appendChild(input);
+
+            document.body.appendChild(form);
+            form.submit();
         }
     </script>
 </head>

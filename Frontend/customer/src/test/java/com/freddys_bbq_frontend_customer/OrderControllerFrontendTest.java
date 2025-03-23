@@ -97,7 +97,7 @@ class OrderControllerFrontendTest {
                 .thenReturn(ResponseEntity.ok(sideItem));
 
         List<UUID> cart = new ArrayList<>(){{add(drinkItem.getId());add(mealItem.getId());add(sideItem.getId());}};
-        String viewName = orderController.showOrderForm(cart, model);
+        String viewName = orderController.showOrderForm(cart.toString(), model);
 
         verify(model).addAttribute("cartItems", new ArrayList<>(){{add(drinkItem);add(mealItem);add(sideItem);}});
         verify(model, never()).addAttribute(eq("errorMessage"), anyString());
@@ -107,7 +107,7 @@ class OrderControllerFrontendTest {
 
     @Test
     void testEmptyCart() {
-        String viewName = orderController.showOrderForm(new ArrayList<>(), model);
+        String viewName = orderController.showOrderForm("[]", model);
 
         verify(model).addAttribute("cartItems", Collections.emptyList());
         verify(model).addAttribute("errorMessage", "The Cart is empty");
@@ -120,9 +120,19 @@ class OrderControllerFrontendTest {
         when(restTemplate.getForEntity(anyString(), eq(MenuItem.class)))
                 .thenThrow(new RestClientException("error"));
 
-        String viewName = orderController.showOrderForm(new ArrayList<>(){{add(UUID.randomUUID());}}, model);
+        String viewName = orderController.showOrderForm(new ArrayList<>(){{add(null);}}.toString(), model);
 
         verify(model).addAttribute("errorMessage", "The menu cannot be loaded. Please try again later (The Backend does not answer)");
+        verify(model).addAttribute("cartItems", Collections.emptyList());
+
+        assertThat(viewName).isEqualTo("order");
+    }
+
+    @Test
+    void shouldHandleCartError() {
+        String viewName = orderController.showOrderForm("[nothing here]", model);
+
+        verify(model).addAttribute("errorMessage", "Error loading the cart");
         verify(model).addAttribute("cartItems", Collections.emptyList());
 
         assertThat(viewName).isEqualTo("order");
