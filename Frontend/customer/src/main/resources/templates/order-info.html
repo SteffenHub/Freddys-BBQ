@@ -1,59 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Order Info</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
+    <link rel="icon" href="/freddy_icon.ico" type="image/x-icon"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            margin: 0 auto;
-            text-align: center;
-        }
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-        h1 {
-            font-size: 2em;
-            color: #333;
-        }
-
-        p {
-            font-size: 1.2em;
-            color: #555;
-            margin: 10px 0;
-        }
-
-        #status {
-            font-weight: bold;
-            color: #007bff;
-        }
-
-        button {
-            background-color: #007bff;
-            color: white;
-            font-size: 1.1em;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
     <script>
         function redirectToInternDelivery() {
             fetch("/delivery/redirect-intern-delivery")
@@ -65,10 +20,9 @@
         }
 
         function fetchDeliveryStatus() {
-            console.log("fetch delivery data")
-            let orderId = document.getElementById("orderId").innerText
+            let orderId = document.getElementById("orderId").innerText;
             if (orderId === "UNKNOWN") {
-                document.getElementById("status").innerText = "Status: ERROR: no orderId found";
+                document.getElementById("status").innerText = "Status: ERROR – no orderId found";
                 return;
             }
             fetch("/delivery/status/" + orderId)
@@ -79,31 +33,40 @@
                 .catch(error => console.error("Fehler beim Abrufen des Lieferstatus:", error));
         }
 
-        // Polling alle 5 Sekunden (5000 ms)
-        setInterval(fetchDeliveryStatus, 5000);
-
-        // Initiales Abrufen des Status
+        setInterval(fetchDeliveryStatus, 5000); // Poll every 5 seconds
         window.onload = fetchDeliveryStatus;
     </script>
 </head>
 
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <h2 class="card-title mb-4">✅ Order Successfully Placed!</h2>
 
-<body>
-<div class="container">
-    <p th:if="${errorMessage}" style="color: red; font-weight: bold;">
-        <span th:text="${errorMessage}"></span>
-    </p>
-    <h1>Order Successfully Placed!</h1>
-    <p>Thank you for your order, <span th:text="${delivery?.getOrder()?.getName() ?: 'UNKNOWN'}"></span></p>
-    <p>Your order ID: <span id=orderId th:text="${delivery?.getOrder()?.getId() ?: 'UNKNOWN'}"></span></p>
-    <p>Selected Items:</p>
-    <ul>
-        <li th:each="item : ${delivery?.order?.items}" th:text="${item.name}">Item Name</li>
-    </ul>
-    <p id="status">Loading...</p>
-    <button onclick="redirectToInternDelivery()">Go to the staff delivery overview</button>
+                    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+                    <p>Thank you for your order, <strong th:text="${delivery?.getOrder()?.getName() ?: 'UNKNOWN'}"></strong></p>
+                    <p>Your order ID: <code id="orderId" th:text="${delivery?.getOrder()?.getId() ?: 'UNKNOWN'}"></code></p>
+
+                    <hr>
+
+                    <h5 class="mb-3">🧾 Selected Items:</h5>
+                    <ul class="list-group mb-4">
+                        <li class="list-group-item" th:each="item : ${delivery?.order?.items}" th:text="${item.name}">Item</li>
+                    </ul>
+
+                    <p id="status" class="fw-bold text-primary">Loading...</p>
+
+                    <button onclick="redirectToInternDelivery()" class="btn btn-outline-primary w-100 mt-3">
+                        ➡️ Go to Staff Delivery Overview
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
 </body>
-
 </html>

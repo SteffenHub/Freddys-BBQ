@@ -1,131 +1,35 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Freddy's Menu</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="icon" href="/freddy_icon.ico" type="image/x-icon"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            margin: 20px 0;
-            color: #222;
-        }
-
-        .menu-container {
-            width: 80%;
-            max-width: 800px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-
-        .menu-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 10px;
-            border-bottom: 1px solid #eaeaea;
-        }
-
-        .menu-item:last-child {
-            border-bottom: none;
-        }
-
-        .menu-item-name {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-        .menu-item-price {
-            color: #555;
-            font-size: 1.1em;
-        }
-
-        .empty-message {
-            text-align: center;
-            font-size: 1.5em;
-            color: #999;
-        }
-
-        .button-container {
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-
-        .redirect-button {
-            padding: 12px 25px;
-            font-size: 1em;
-            color: white;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .redirect-button:hover {
-            background-color: #0056b3;
-        }
-
         .cart-sidebar {
-            position: fixed;
-            right: 0;
-            top: 0;
-            width: 300px;
-            height: 100vh;
-            background-color: #ffffff;
-            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            overflow-y: auto;
-            z-index: 1000;
-        }
-
-        .cart-sidebar h2 {
-            margin-top: 0;
-        }
-
-        .cart-sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .cart-sidebar li {
-            margin-bottom: 10px;
-            font-size: 0.95em;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            position: sticky;
+            top: 1rem;
         }
 
         .remove-btn {
             background: none;
-            color: red;
             border: none;
+            color: red;
             font-weight: bold;
             cursor: pointer;
             border-radius: 5px;
         }
 
         .remove-btn:hover {
-            background-color: #790101;
+            background: red;
             color: white;
         }
     </style>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             updateCartSidebar();
@@ -146,17 +50,18 @@
         function updateCartSidebar() {
             const cartItemsElement = document.getElementById("cart-items");
             const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
             cartItemsElement.innerHTML = "";
 
             if (cart.length === 0) {
-                cartItemsElement.innerHTML = "<li>Your cart is empty</li>";
+                cartItemsElement.innerHTML = "<li class='list-group-item text-muted'>Your cart is empty</li>";
                 return;
             }
 
             cart.forEach((item, index) => {
                 const li = document.createElement("li");
-                li.textContent = "" + item.name;
+                li.className = "list-group-item d-flex justify-content-between align-items-center";
+                li.textContent = item.name;
+
                 const removeBtn = document.createElement("button");
                 removeBtn.textContent = "×";
                 removeBtn.className = "remove-btn";
@@ -165,6 +70,7 @@
                     localStorage.setItem("cart", JSON.stringify(cart));
                     updateCartSidebar();
                 };
+
                 li.appendChild(removeBtn);
                 cartItemsElement.appendChild(li);
             });
@@ -194,51 +100,77 @@
     </script>
 </head>
 
-<body>
-<h1>Freddy's Menu</h1>
+<body class="bg-light">
+<div class="container mt-5">
+    <h1 class="text-center mb-4">🍖 Freddy's BBQ Menu</h1>
 
-<!-- Falls ein Fehler auftritt, zeige die Meldung an -->
-<p th:if="${errorMessage}" style="color: red; font-weight: bold;">
-    <span th:text="${errorMessage}"></span>
-</p>
+    <div class="row">
+        <div class="col-lg-8">
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-<p>Main Courses</p>
-<p th:if="${meals.size() == 0}" class="menu-container empty-message">No Main Courses found</p>
-<div class="menu-container">
-    <div th:each="meal : ${meals}" class="menu-item">
-        <span class="menu-item-name" th:text="${meal.name}"></span>
-        <span class="menu-item-price" th:text="${meal.price + '0 €'}"></span>
-        <button class="add-to-cart-btn" th:attr="data-id=${meal.id}, data-name=${meal.name}">Add to cart</button>
-    </div>
-</div>
+            <!-- Main Courses -->
+            <div class="card mb-4">
+                <div class="card-header fw-bold">Main Courses</div>
+                <ul class="list-group list-group-flush" th:if="${meals.size() > 0}">
+                    <li class="list-group-item d-flex justify-content-between align-items-center"
+                        th:each="meal : ${meals}">
+                        <span><strong th:text="${meal.name}">Burger</strong> <small class="text-muted">(<span th:text="${meal.price + '0€'}"></span>)</small></span>
+                        <button class="btn btn-sm btn-success add-to-cart-btn"
+                                th:attr="data-id=${meal.id}, data-name=${meal.name}">
+                            Add to cart
+                        </button>
+                    </li>
+                </ul>
+                <div class="card-body text-center text-muted" th:if="${meals.size() == 0}">No Main Courses found</div>
+            </div>
 
-<p>Sides</p>
-<p th:if="${sides.size() == 0}" class="menu-container empty-message">No Sides found</p>
-<div class="menu-container">
-    <div th:each="side : ${sides}" class="menu-item">
-        <span class="menu-item-name" th:text="${side.name}"></span>
-        <span class="menu-item-price" th:text="${side.price + '0 €'}"></span>
-        <button class="add-to-cart-btn" th:attr="data-id=${side.id}, data-name=${side.name}">Add to cart</button>
-    </div>
-</div>
+            <!-- Sides -->
+            <div class="card mb-4">
+                <div class="card-header fw-bold">Sides</div>
+                <ul class="list-group list-group-flush" th:if="${sides.size() > 0}">
+                    <li class="list-group-item d-flex justify-content-between align-items-center"
+                        th:each="side : ${sides}">
+                        <span><strong th:text="${side.name}">Fries</strong> <small class="text-muted">(<span th:text="${side.price + '0€'}"></span>)</small></span>
+                        <button class="btn btn-sm btn-success add-to-cart-btn"
+                                th:attr="data-id=${side.id}, data-name=${side.name}">
+                            Add to cart
+                        </button>
+                    </li>
+                </ul>
+                <div class="card-body text-center text-muted" th:if="${sides.size() == 0}">No Sides found</div>
+            </div>
 
-<p>Drinks</p>
-<p th:if="${drinks.size() == 0}" class="menu-container empty-message">No Drinks found</p>
-<div class="menu-container">
-    <div th:each="drink : ${drinks}" class="menu-item">
-        <span class="menu-item-name" th:text="${drink.name}"></span>
-        <span class="menu-item-price" th:text="${drink.price + '0 €'}"></span>
-        <button class="add-to-cart-btn" th:attr="data-id=${drink.id}, data-name=${drink.name}">Add to cart</button>
-    </div>
-</div>
+            <!-- Drinks -->
+            <div class="card mb-4">
+                <div class="card-header fw-bold">Drinks</div>
+                <ul class="list-group list-group-flush" th:if="${drinks.size() > 0}">
+                    <li class="list-group-item d-flex justify-content-between align-items-center"
+                        th:each="drink : ${drinks}">
+                        <span><strong th:text="${drink.name}">Cola</strong> <small class="text-muted">(<span th:text="${drink.price + '0€'}"></span>)</small></span>
+                        <button class="btn btn-sm btn-success add-to-cart-btn"
+                                th:attr="data-id=${drink.id}, data-name=${drink.name}">
+                            Add to cart
+                        </button>
+                    </li>
+                </ul>
+                <div class="card-body text-center text-muted" th:if="${drinks.size() == 0}">No Drinks found</div>
+            </div>
+        </div>
 
-<div class="cart-sidebar">
-    <h2>Your Cart</h2>
-    <ul id="cart-items">
-        <!-- Hier werden Cart-Items angezeigt -->
-    </ul>
-    <div class="button-container">
-        <button onclick="goToOrderPage()" class="redirect-button">Checkout</button>
+        <!-- cart -->
+        <div class="col-lg-4 cart-sidebar">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">🛒 Your Cart</h5>
+                </div>
+                <ul class="list-group list-group-flush" id="cart-items">
+                    <!-- items will be added here by js -->
+                </ul>
+                <div class="card-footer">
+                    <button class="btn btn-primary w-100" onclick="goToOrderPage()">Checkout</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </body>
