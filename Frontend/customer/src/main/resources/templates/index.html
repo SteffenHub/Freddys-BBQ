@@ -24,6 +24,10 @@
             border-radius: 5px;
         }
 
+        .prevent-touch-zoom{
+            touch-action: manipulation; /* Prevents double tap zoom on mobile devices */
+        }
+
         .remove-btn:hover {
             background: red;
             color: white;
@@ -64,7 +68,7 @@
 
                 const removeBtn = document.createElement("button");
                 removeBtn.textContent = "×";
-                removeBtn.className = "remove-btn";
+                removeBtn.className = "remove-btn prevent-touch-zoom";
                 removeBtn.onclick = function () {
                     cart.splice(index, 1);
                     localStorage.setItem("cart", JSON.stringify(cart));
@@ -115,7 +119,7 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center"
                         th:each="meal : ${meals}">
                         <span><strong th:text="${meal.name}">Burger</strong> <small class="text-muted">(<span th:text="${meal.price + '0€'}"></span>)</small></span>
-                        <button class="btn btn-sm btn-success add-to-cart-btn"
+                        <button class="btn btn-sm btn-success add-to-cart-btn prevent-touch-zoom"
                                 th:attr="data-id=${meal.id}, data-name=${meal.name}">
                             Add to cart
                         </button>
@@ -131,7 +135,7 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center"
                         th:each="side : ${sides}">
                         <span><strong th:text="${side.name}">Fries</strong> <small class="text-muted">(<span th:text="${side.price + '0€'}"></span>)</small></span>
-                        <button class="btn btn-sm btn-success add-to-cart-btn"
+                        <button class="btn btn-sm btn-success add-to-cart-btn prevent-touch-zoom"
                                 th:attr="data-id=${side.id}, data-name=${side.name}">
                             Add to cart
                         </button>
@@ -147,7 +151,7 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center"
                         th:each="drink : ${drinks}">
                         <span><strong th:text="${drink.name}">Cola</strong> <small class="text-muted">(<span th:text="${drink.price + '0€'}"></span>)</small></span>
-                        <button class="btn btn-sm btn-success add-to-cart-btn"
+                        <button class="btn btn-sm btn-success add-to-cart-btn prevent-touch-zoom"
                                 th:attr="data-id=${drink.id}, data-name=${drink.name}">
                             Add to cart
                         </button>
