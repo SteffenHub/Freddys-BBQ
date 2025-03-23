@@ -44,11 +44,11 @@ public class OrderControllerFrontend {
   @GetMapping
   public String showOrderForm(@RequestParam(required = false) List<UUID> items, Model model) {
     try {
-      if (items != null || !items.isEmpty()) {
+      if (items != null && !items.isEmpty()) {
         List<MenuItem> selectedItems = new ArrayList<>();
         for (UUID id : items) {
           ResponseEntity<MenuItem> response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?id=" + id, MenuItem.class);
-          // TODO handle not successful
+          // TODO handle & test not successful
           if (response.getStatusCode().is2xxSuccessful()) {
             selectedItems.add(response.getBody());
           }
