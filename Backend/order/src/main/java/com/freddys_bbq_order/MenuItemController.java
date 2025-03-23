@@ -31,24 +31,12 @@ public class MenuItemController {
         this.menuItemRepository = menuItemRepository;
     }
 
-    /**
-     * Adds a new menu item.
-     *
-     * @param menuItem The menu item to be saved.
-     * @return The saved menu item.
-     */
     @Operation(summary = "Add a new menu item", description = "Save the given menu item to the Database")
     @PostMapping
     public MenuItem post(@RequestBody MenuItem menuItem) {
         return this.menuItemRepository.save(menuItem);
     }
 
-    /**
-     * Retrieves all menu items, optionally filtered by category.
-     *
-     * @param category (Optional) The category of the menu items(Main Course, Side, Drink).
-     * @return A list of filtered or all menu items.
-     */
     @Operation(
             summary = "Get menu items",
             description = """
@@ -68,7 +56,6 @@ public class MenuItemController {
     public ResponseEntity<?> getAllItems(
             @RequestParam(required = false) String category,
             @RequestParam(required = false) UUID id) {
-        // TODO test the changes for this function
         if (category != null && id != null) {
             return ResponseEntity.badRequest().build();
         }
@@ -81,5 +68,4 @@ public class MenuItemController {
         }
         return ResponseEntity.ok(menuItemRepository.findAll());
     }
-
 }
