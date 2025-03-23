@@ -77,17 +77,13 @@ public class OrderControllerFrontend {
 
   @PostMapping("/place")
   public String placeOrder(@RequestParam String name,
-                           @RequestParam UUID drinkId,
-                           @RequestParam UUID mealId,
-                           @RequestParam UUID sideId,
+                           @RequestParam List<UUID> items,
                            Model model) {
     try {
-      // JSON-Objekt für Bestellung erstellen
+      // create json object for the order
       Map<String, Object> orderRequest = new HashMap<>();
       orderRequest.put("name", name);
-      orderRequest.put("drinkId", drinkId);
-      orderRequest.put("mealId", mealId);
-      orderRequest.put("sideId", sideId);
+      orderRequest.put("items", items);
 
       // POST-Request an das Backend senden
       ResponseEntity<UUID> response = restTemplate.postForEntity(

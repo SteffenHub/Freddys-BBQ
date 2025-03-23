@@ -1,19 +1,16 @@
 package com.freddys_bbq_frontend_intern.model;
 
-import java.util.UUID;
 
+import java.util.List;
+import java.util.UUID;
 
 public class Order {
 
     private UUID id;
 
+    private List<MenuItem> items;
+
     private String name;
-
-    private MenuItem drink;
-
-    private MenuItem meal;
-
-    private MenuItem side;
 
     public UUID getId() {
         return id;
@@ -21,6 +18,18 @@ public class Order {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public List<MenuItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<MenuItem> items) {
+        this.items = items;
+    }
+
+    public void addItem(MenuItem item) {
+        this.items.add(item);
     }
 
     public String getName() {
@@ -31,32 +40,8 @@ public class Order {
         this.name = name;
     }
 
-    public MenuItem getDrink() {
-        return drink;
-    }
-
-    public void setDrink(MenuItem drink) {
-        this.drink = drink;
-    }
-
-    public MenuItem getMeal() {
-        return meal;
-    }
-
-    public void setMeal(MenuItem meal) {
-        this.meal = meal;
-    }
-
-    public MenuItem getSide() {
-        return side;
-    }
-
-    public void setSide(MenuItem side) {
-        this.side = side;
-    }
-
     @Override
     public String toString() {
-        return String.format("Order<id: %s, customer: %s, drink: %s, meal: %s, side: %s>", id, name, drink, meal, side);
+        return "Order<id: " + id + ", customer: " + name + ", items: " + items + ">";
     }
 }

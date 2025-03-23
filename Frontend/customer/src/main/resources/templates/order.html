@@ -58,6 +58,23 @@
       background-color: #0056b3;
     }
   </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.querySelector("form");
+      form.addEventListener("submit", function (event) {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        if (cart.length === 0) {
+          event.preventDefault();
+          alert("Your cart is empty");
+          return;
+        }
+
+        const ids = cart.map(item => item.id);
+        document.getElementById("cart-items-input").value = ids.join(",");
+      });
+    });
+  </script>
+
 </head>
 
 <body>
@@ -82,6 +99,8 @@
 
       <label for="name">Your Name:</label>
       <input type="text" id="name" name="name" placeholder="Enter your name" required />
+
+      <input type="hidden" name="items" id="cart-items-input" />
 
       <button type="submit">Place Order</button>
     </form>

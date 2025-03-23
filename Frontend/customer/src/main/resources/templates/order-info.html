@@ -96,9 +96,10 @@
     <h1>Order Successfully Placed!</h1>
     <p>Thank you for your order, <span th:text="${delivery?.getOrder()?.getName() ?: 'UNKNOWN'}"></span></p>
     <p>Your order ID: <span id=orderId th:text="${delivery?.getOrder()?.getId() ?: 'UNKNOWN'}"></span></p>
-    <p>Selected Drink: <span th:text="${delivery?.getOrder()?.getDrink()?.getName() ?: 'UNKNOWN'}"></span></p>
-    <p>Selected Meal: <span th:text="${delivery.getOrder()?.getMeal()?.getName() ?: 'UNKNOWN'}"></span></p>
-    <p>Selected Side: <span th:text="${delivery.getOrder()?.getSide()?.getName() ?: 'UNKNOWN'}"></span></p>
+    <p>Selected Items:</p>
+    <ul>
+        <li th:each="item : ${delivery?.order?.items}" th:text="${item.name}">Item Name</li>
+    </ul>
     <p id="status">Loading...</p>
     <button onclick="redirectToInternDelivery()">Go to the staff delivery overview</button>
 </div>

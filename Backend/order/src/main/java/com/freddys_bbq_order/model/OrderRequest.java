@@ -1,37 +1,24 @@
 package com.freddys_bbq_order.model;
 
+import java.util.List;
 import java.util.UUID;
 
 public class OrderRequest {
 
-    public OrderRequest(String name, UUID drinkId, UUID mealId, UUID sideId) {
+    public OrderRequest(String name, List<UUID> items) {
         this.name = name;
-        this.drinkId = drinkId;
-        this.mealId = mealId;
-        this.sideId = sideId;
+        this.items = items;
     }
 
     private final String name;
 
-    private final UUID drinkId;
+    private final List<UUID> items;
 
-    private final UUID mealId;
-
-    private final UUID sideId;
-
-    public UUID getSideId() {
-        return sideId;
+    public List<UUID> getItems() {
+        return items;
     }
 
     public String getName() {
         return name;
-    }
-
-    public UUID getDrinkId() {
-        return drinkId;
-    }
-
-    public UUID getMealId() {
-        return mealId;
     }
 }

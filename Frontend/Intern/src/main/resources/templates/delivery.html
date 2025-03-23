@@ -79,9 +79,7 @@
                         row.innerHTML = `
                         <td>${delivery.order.id}</td>
                         <td>${delivery.order.name}</td>
-                        <td>${delivery.order.drink.name}</td>
-                        <td>${delivery.order.meal.name}</td>
-                        <td>${delivery.order.side.name}</td>
+                        <td>${delivery.order.items.toString()}</td>
                         <td>${delivery.status}</td>
                         <td>
                             <button class="btn"
@@ -120,9 +118,7 @@
         <tr>
             <th>Order-ID</th>
             <th>Customer</th>
-            <th>Drink</th>
-            <th>Meal</th>
-            <th>Side</th>
+            <th>Items</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
