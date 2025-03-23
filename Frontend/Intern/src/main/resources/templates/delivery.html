@@ -1,131 +1,104 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Lieferübersicht</title>
     <meta charset="UTF-8">
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 18px;
-            text-align: left;
-        }
-        th, td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        .error {
-            color: red;
-            font-weight: bold;
-        }
-        .btn {
-            padding: 8px 12px;
-            background-color: green;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .btn:disabled {
-            background-color: gray;
-            cursor: not-allowed;
-        }
-    </style>
+    <title>Delivery Overview</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         function startDelivery(orderId, button) {
             fetch('/intern/delivery/start', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderId) // ✅ UUID als String
+                body: JSON.stringify(orderId)
             })
                 .then(response => {
                     if (response.ok) {
-                        button.innerText = "Delivery started";
+                        button.innerText = "🚚 Delivery started";
                         button.disabled = true;
                     } else {
-                        alert("Error starting delivery!");
+                        alert("❌ Error starting delivery!");
                     }
                 })
                 .catch(error => console.error("Error:", error));
         }
 
         function fetchDeliveryStatus() {
-            const url = "/intern/delivery/get";
-            console.log("Fetching deliveries from:", url);
-
-            fetch(url)
+            fetch("/intern/delivery/get")
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Error fetching deliveries");
-                    }
+                    if (!response.ok) throw new Error("Error fetching deliveries");
                     return response.json();
                 })
                 .then(data => {
-                    console.log("Fetched delivery data:", data);
-                    let tableBody = document.querySelector("#deliveries tbody");
-                    tableBody.innerHTML = ""; // Delete table existing body
+                    const tableBody = document.querySelector("#deliveries tbody");
+                    tableBody.innerHTML = "";
 
                     if (data.length === 0) {
-                        tableBody.innerHTML = "<tr><td colspan='7'>Currently no deliveries.</td></tr>";
+                        tableBody.innerHTML = "<tr><td colspan='5' class='text-center text-muted'>Currently no deliveries.</td></tr>";
                         return;
                     }
 
                     data.forEach(delivery => {
-                        let row = document.createElement("tr");
+                        const itemsList = delivery.order.items.map(item => item.name).join(", ");
+                        const isDelivering = delivery.status === "In Delivery";
 
+                        const row = document.createElement("tr");
                         row.innerHTML = `
-                        <td>${delivery.order.id}</td>
-                        <td>${delivery.order.name}</td>
-                        <td>${delivery.order.items.toString()}</td>
-                        <td>${delivery.status}</td>
-                        <td>
-                            <button class="btn"
-                                ${delivery.status === "In Delivery" ? "disabled" : ""}
-                                onclick="startDelivery('${delivery.order.id}', this)">
-                                ${delivery.status === "Received" ? "Start Delivery" : "Delivery started"}
-                            </button>
-                        </td>
-                    `;
+                            <td><code>${delivery.order.id}</code></td>
+                            <td>${delivery.order.name}</td>
+                            <td>${itemsList}</td>
+                            <td><span class="badge ${isDelivering ? 'bg-primary' : 'bg-warning'}">${delivery.status}</span></td>
+                            <td>
+                                <button class="btn btn-sm ${isDelivering ? 'btn-secondary' : 'btn-success'}"
+                                    ${isDelivering ? 'disabled' : ''}
+                                    onclick="startDelivery('${delivery.order.id}', this)">
+                                    ${isDelivering ? '🚚 Delivery started' : '▶️ Start Delivery'}
+                                </button>
+                            </td>
+                        `;
                         tableBody.appendChild(row);
                     });
                 })
                 .catch(error => {
                     console.error("Error fetching delivery data:", error);
-                    let errorMessage = document.getElementById("error-message");
-                    errorMessage.innerText = "Error: Deliveries could not be loaded!";
+                    const errorMessage = document.getElementById("error-message");
+                    errorMessage.innerText = "❌ Error: Deliveries could not be loaded!";
                     errorMessage.style.display = "block";
                 });
         }
 
         // Polling every 5 seconds
         setInterval(fetchDeliveryStatus, 5000);
-
-        // Initial retrieval of Deliveries
         window.onload = fetchDeliveryStatus;
     </script>
 </head>
-<body>
 
-<h1>Delivery Overview</h1>
+<body class="bg-light">
+<div class="container py-5">
+    <h1 class="mb-4 text-center">📦 Delivery Overview</h1>
 
-<p id="error-message" class="error" style="display: none;"></p>
+    <div id="error-message" class="alert alert-danger text-center d-none"></div>
 
-<table id="deliveries">
-    <thead>
-        <tr>
-            <th>Order-ID</th>
-            <th>Customer</th>
-            <th>Items</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-
+    <div class="table-responsive">
+        <table id="deliveries" class="table table-hover align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Content dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 </html>
