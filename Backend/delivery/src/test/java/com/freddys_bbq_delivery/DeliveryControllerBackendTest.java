@@ -40,6 +40,9 @@ class DeliveryControllerBackendTest {
     private UUID orderId;
     private Delivery delivery;
     private Order order;
+    private MenuItem drink;
+    private MenuItem side;
+    private MenuItem meal;
 
     @BeforeEach
     void setUp() {
@@ -49,17 +52,17 @@ class DeliveryControllerBackendTest {
         orderId = UUID.randomUUID();
         order.setId(orderId);
 
-        MenuItem drink = new MenuItem();
+        drink = new MenuItem();
         drink.setId(UUID.randomUUID());
-        order.setDrink(drink);
+        order.addItem(drink);
 
-        MenuItem meal = new MenuItem();
+        meal = new MenuItem();
         meal.setId(UUID.randomUUID());
-        order.setMeal(meal);
+        order.addItem(meal);
 
-        MenuItem side = new MenuItem();
+        side = new MenuItem();
         side.setId(UUID.randomUUID());
-        order.setSide(side);
+        order.addItem(side);
 
         order.setName("Max Mustermann");
         delivery = new Delivery(order);
@@ -83,10 +86,13 @@ class DeliveryControllerBackendTest {
 
         // check the saved delivery is the same as given
         assertThat(savedDelivery.getOrder().getId()).isEqualTo(order.getId());
-        assertThat(savedDelivery.getOrder().getDrink().getId()).isEqualTo(order.getDrink().getId());
-        assertThat(savedDelivery.getOrder().getMeal().getId()).isEqualTo(order.getMeal().getId());
-        assertThat(savedDelivery.getOrder().getSide().getId()).isEqualTo(order.getSide().getId());
         assertThat(savedDelivery.getOrder().getName()).isEqualTo(order.getName());
+        assertThat(savedDelivery.getOrder().getItems().stream().anyMatch(item -> item.getId().equals(drink.getId())))
+                .isTrue();
+        assertThat(savedDelivery.getOrder().getItems().stream().anyMatch(item -> item.getId().equals(meal.getId())))
+                .isTrue();
+        assertThat(savedDelivery.getOrder().getItems().stream().anyMatch(item -> item.getId().equals(side.getId())))
+                .isTrue();
     }
 
     @Test

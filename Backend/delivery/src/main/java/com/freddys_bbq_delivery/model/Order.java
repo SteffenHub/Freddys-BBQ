@@ -1,6 +1,7 @@
 package com.freddys_bbq_delivery.model;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,6 +12,10 @@ public class Order {
   private List<MenuItem> items;
 
   private String name;
+
+  public Order() {
+    this.items = new ArrayList<>();
+  }
 
   public UUID getId() {
     return id;
