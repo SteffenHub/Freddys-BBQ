@@ -91,32 +91,49 @@ class OrderControllerFrontendTest {
 
     @Test
     void shouldShowOrderFormSuccessfully() {
-        when(restTemplate.getForEntity(anyString(), eq(MenuItem[].class)))
-                .thenReturn(ResponseEntity.ok(new MenuItem[]{drinkItem}))
-                .thenReturn(ResponseEntity.ok(new MenuItem[]{mealItem}))
-                .thenReturn(ResponseEntity.ok(new MenuItem[]{sideItem}));
+        when(restTemplate.getForEntity(anyString(), eq(MenuItem.class)))
+                .thenReturn(ResponseEntity.ok(drinkItem))
+                .thenReturn(ResponseEntity.ok(mealItem))
+                .thenReturn(ResponseEntity.ok(sideItem));
 
-        String viewName = orderController.showOrderForm(model);
+        List<UUID> cart = new ArrayList<>(){{add(drinkItem.getId());add(mealItem.getId());add(sideItem.getId());}};
+        String viewName = orderController.showOrderForm(cart.toString(), model);
 
-        verify(model).addAttribute("drinks", Collections.singletonList(drinkItem));
-        verify(model).addAttribute("meals", Collections.singletonList(mealItem));
-        verify(model).addAttribute("sides", Collections.singletonList(sideItem));
+        verify(model).addAttribute("cartItems", new ArrayList<>(){{add(drinkItem);add(mealItem);add(sideItem);}});
         verify(model, never()).addAttribute(eq("errorMessage"), anyString());
 
         assertThat(viewName).isEqualTo("order");
     }
 
     @Test
+    void testEmptyCart() {
+        String viewName = orderController.showOrderForm("[]", model);
+
+        verify(model).addAttribute("cartItems", Collections.emptyList());
+        verify(model).addAttribute("errorMessage", "The Cart is empty");
+
+        assertThat(viewName).isEqualTo("order");
+    }
+
+    @Test
     void shouldHandleBackendErrorOnShowOrderForm() {
-        when(restTemplate.getForEntity(anyString(), eq(MenuItem[].class)))
+        when(restTemplate.getForEntity(anyString(), eq(MenuItem.class)))
                 .thenThrow(new RestClientException("error"));
 
-        String viewName = orderController.showOrderForm(model);
+        String viewName = orderController.showOrderForm(new ArrayList<>(){{add(null);}}.toString(), model);
 
         verify(model).addAttribute("errorMessage", "The menu cannot be loaded. Please try again later (The Backend does not answer)");
-        verify(model).addAttribute("drinks", Collections.emptyList());
-        verify(model).addAttribute("meals", Collections.emptyList());
-        verify(model).addAttribute("sides", Collections.emptyList());
+        verify(model).addAttribute("cartItems", Collections.emptyList());
+
+        assertThat(viewName).isEqualTo("order");
+    }
+
+    @Test
+    void shouldHandleCartError() {
+        String viewName = orderController.showOrderForm("[nothing here]", model);
+
+        verify(model).addAttribute("errorMessage", "Error loading the cart");
+        verify(model).addAttribute("cartItems", Collections.emptyList());
 
         assertThat(viewName).isEqualTo("order");
     }
@@ -127,7 +144,7 @@ class OrderControllerFrontendTest {
         when(restTemplate.postForEntity(anyString(), any(), eq(UUID.class)))
                 .thenReturn(ResponseEntity.ok(orderResponseId));
 
-        String viewName = orderController.placeOrder("Max", UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), model);
+        String viewName = orderController.placeOrder("Max", new ArrayList<>(){{add(UUID.randomUUID()); add(UUID.randomUUID()); add(UUID.randomUUID());}}, model);
 
         assertThat(viewName).isEqualTo("redirect:/delivery/" + orderResponseId);
     }
@@ -137,7 +154,7 @@ class OrderControllerFrontendTest {
         when(restTemplate.postForEntity(anyString(), any(), eq(UUID.class)))
                 .thenThrow(new RestClientException("error"));
 
-        String viewName = orderController.placeOrder("Max", UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), model);
+        String viewName = orderController.placeOrder("Max", new ArrayList<>(){{add(UUID.randomUUID()); add(UUID.randomUUID()); add(UUID.randomUUID());}}, model);
 
         verify(model).addAttribute("errorMessage", "The Order cannot be placed");
         assertThat(viewName).isEqualTo("order");

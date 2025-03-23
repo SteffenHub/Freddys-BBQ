@@ -21,6 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import java.util.UUID;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -217,5 +219,48 @@ class MenuItemControllerIT {
         assertThat(finalItems).extracting(MenuItem::getCategory).doesNotContain("Side");
         assertThat(finalItems).extracting(MenuItem::getCategory).doesNotContain("Main Course");
 
+    }
+
+    @Test
+    void shouldRetrieveMenuItemsById() throws Exception {
+
+        MenuItem menuItemDrink = new MenuItem();
+        menuItemDrink.setName("menuItemDrink");
+        menuItemDrink.setCategory("Drink");
+        menuItemDrink.setPrice(7.99);
+        menuItemDrink.setImage("menuItemDrinkImage");
+
+        MvcResult postResult = mockMvc.perform(post("/api/order/menu")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(menuItemDrink)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String postResponse = postResult.getResponse().getContentAsString();
+        MenuItem postedItem = objectMapper.readValue(postResponse, new TypeReference<>() {});
+
+        MvcResult getResult = mockMvc.perform(get("/api/order/menu?id="+postedItem.getId()))
+                .andExpect(status().isOk())
+                .andReturn();
+        String getResponse = getResult.getResponse().getContentAsString();
+        MenuItem getItem = objectMapper.readValue(getResponse, new TypeReference<>() {});
+
+        assertThat(getItem.getName()).isEqualTo(postedItem.getName());
+        assertThat(getItem.getCategory()).isEqualTo(postedItem.getCategory());
+        assertThat(getItem.getImage()).isEqualTo(postedItem.getImage());
+        assertThat(getItem.getPrice()).isEqualTo(postedItem.getPrice());
+        assertThat(getItem.getId()).isEqualTo(postedItem.getId());
+    }
+
+    @Test
+    void shouldReturnNotFoundBadId() throws Exception {
+        mockMvc.perform(get("/api/order/menu?id="+UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturnBadRequestIdAndCategory() throws Exception {
+        mockMvc.perform(get("/api/order/menu?id="+ UUID.randomUUID()+"&category=Drink"))
+                .andExpect(status().isBadRequest());
     }
 }

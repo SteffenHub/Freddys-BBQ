@@ -1,14 +1,9 @@
 package com.freddys_bbq_order.model;
 
+import java.util.List;
 import java.util.UUID;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity()
 @Table(name = "bbq_order")
@@ -20,24 +15,24 @@ public class Order {
 
   private String name;
 
-  @ManyToOne()
-  @JoinColumn(name = "drink_id")
-  private MenuItem drink;
+  @ManyToMany
+  @JoinTable(
+          name = "order_items",
+          joinColumns = @JoinColumn(name = "order_id"),
+          inverseJoinColumns = @JoinColumn(name = "menu_item_id")
+  )
+  private List<MenuItem> items;
 
-  @ManyToOne()
-  @JoinColumn(name = "meal_id")
-  private MenuItem meal;
+  public List<MenuItem> getItems() {
+    return items;
+  }
 
-  @ManyToOne()
-  @JoinColumn(name = "side_id")
-  private MenuItem side;
+  public void setItems(List<MenuItem> items) {
+    this.items = items;
+  }
 
   public UUID getId() {
     return id;
-  }
-
-  public void setId(UUID id) {
-    this.id = id;
   }
 
   public String getName() {
@@ -48,33 +43,9 @@ public class Order {
     this.name = name;
   }
 
-  public MenuItem getDrink() {
-    return drink;
-  }
-
-  public void setDrink(MenuItem drink) {
-    this.drink = drink;
-  }
-
-  public MenuItem getMeal() {
-    return meal;
-  }
-
-  public void setMeal(MenuItem meal) {
-    this.meal = meal;
-  }
-
-  public MenuItem getSide() {
-    return side;
-  }
-
-  public void setSide(MenuItem side) {
-    this.side = side;
-  }
-
   @Override
   public String toString() {
-    return String.format("Order<id: %s, customer: %s, drink: %s, meal: %s, side: %s>", id, name, drink, meal, side);
+    return "Order<id: " + id + ", customer: " + name + ", items: " + items + ">";
   }
 
 }

@@ -32,6 +32,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -174,7 +176,7 @@ class OrderControllerBackendIT {
                 .thenReturn(new ResponseEntity<>("Delivery Created", HttpStatus.OK));
 
         // create new Order
-        OrderRequest orderRequest = new OrderRequest("Max Mustermann", drinkMenuItem.getId(), mainCourseMenuItem.getId(), sideMenuItem.getId());
+        OrderRequest orderRequest = new OrderRequest("Max Mustermann", new ArrayList<>(){{add(drinkMenuItem.getId()); add(mainCourseMenuItem.getId()); add(sideMenuItem.getId());}});
         MvcResult result = mockMvc.perform(post("/api/order/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderRequest)))
@@ -201,11 +203,11 @@ class OrderControllerBackendIT {
                 .isTrue();
         assertThat(orders.stream().anyMatch(order -> order.getName().equals("Max Mustermann")))
                 .isTrue();
-        assertThat(orders.stream().anyMatch(order -> order.getDrink().getId().equals(drinkMenuItem.getId())))
+        assertThat(orders.stream().anyMatch(order -> order.getItems().stream().anyMatch(item -> item.getId().equals(drinkMenuItem.getId()))))
                 .isTrue();
-        assertThat(orders.stream().anyMatch(order -> order.getMeal().getId().equals(mainCourseMenuItem.getId())))
+        assertThat(orders.stream().anyMatch(order -> order.getItems().stream().anyMatch(item -> item.getId().equals(mainCourseMenuItem.getId()))))
                 .isTrue();
-        assertThat(orders.stream().anyMatch(order -> order.getSide().getId().equals(sideMenuItem.getId())))
+        assertThat(orders.stream().anyMatch(order -> order.getItems().stream().anyMatch(item -> item.getId().equals(sideMenuItem.getId()))))
                 .isTrue();
     }
 
@@ -217,19 +219,7 @@ class OrderControllerBackendIT {
     @Test
     void shouldNotAcceptInvalidId() throws Exception {
         // create new Order wrong drink id
-        OrderRequest orderRequest = new OrderRequest("Max Mustermann", UUID.randomUUID(), mainCourseMenuItem.getId(), sideMenuItem.getId());
-        mockMvc.perform(post("/api/order/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(orderRequest)))
-                .andExpect(status().isBadRequest());
-        // create new Order wrong meal id
-        orderRequest = new OrderRequest("Max Mustermann", drinkMenuItem.getId(), UUID.randomUUID(), sideMenuItem.getId());
-        mockMvc.perform(post("/api/order/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(orderRequest)))
-                .andExpect(status().isBadRequest());
-        // create new Order wrong side id
-        orderRequest = new OrderRequest("Max Mustermann", drinkMenuItem.getId(), mainCourseMenuItem.getId(), UUID.randomUUID());
+        OrderRequest orderRequest = new OrderRequest("Max Mustermann", new ArrayList<>(){{add(UUID.randomUUID());}});
         mockMvc.perform(post("/api/order/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderRequest)))
@@ -251,7 +241,7 @@ class OrderControllerBackendIT {
                 .thenReturn(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
 
         // create new Order
-        OrderRequest orderRequest = new OrderRequest("Max Mustermann", drinkMenuItem.getId(), mainCourseMenuItem.getId(), sideMenuItem.getId());
+        OrderRequest orderRequest = new OrderRequest("Max Mustermann", new ArrayList<>(){{add(drinkMenuItem.getId()); add(mainCourseMenuItem.getId()); add(sideMenuItem.getId());}});
         mockMvc.perform(post("/api/order/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderRequest)))
@@ -265,7 +255,7 @@ class OrderControllerBackendIT {
      */
     @Test
     void testDeliveryServiceNotReachable() throws Exception {
-        OrderRequest orderRequest = new OrderRequest("Max Mustermann", drinkMenuItem.getId(), mainCourseMenuItem.getId(), sideMenuItem.getId());
+        OrderRequest orderRequest = new OrderRequest("Max Mustermann", new ArrayList<>(){{add(drinkMenuItem.getId()); add(mainCourseMenuItem.getId()); add(sideMenuItem.getId());}});
         mockMvc.perform(post("/api/order/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderRequest)))

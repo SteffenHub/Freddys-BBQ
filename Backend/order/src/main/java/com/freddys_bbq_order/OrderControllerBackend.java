@@ -12,8 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
-import java.util.Arrays;
-import java.util.UUID;
+import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -69,18 +70,18 @@ public class OrderControllerBackend {
     @PostMapping
     public ResponseEntity<?> placeOrder(@RequestBody OrderRequest request) {
         try {
-            // Bestellte Objekte anhand der IDs finden
-            MenuItem drink = menuItemRepository.findById(request.getDrinkId())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid drink ID"));
-            MenuItem meal = menuItemRepository.findById(request.getMealId())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid meal ID"));
-            MenuItem side = menuItemRepository.findById(request.getSideId())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid Side ID"));
+            // find the ordered menu items by id
+            List<MenuItem> items = new ArrayList<>();
+            for (UUID itemId : request.getItems()) {
+                Optional<MenuItem> item = menuItemRepository.findById(itemId);
+                if (item.isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                }
+                items.add(item.get());
+            }
             Order order = new Order();
             order.setName(request.getName());
-            order.setDrink(drink);
-            order.setMeal(meal);
-            order.setSide(side);
+            order.setItems(items);
             orderRepository.save(order);
 
             ResponseEntity<String> response = restTemplate.postForEntity(deliveryBackendUrl + "/api/delivery/delivery", order, String.class);

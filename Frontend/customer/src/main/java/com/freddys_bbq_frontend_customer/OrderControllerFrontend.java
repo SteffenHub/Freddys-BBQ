@@ -1,5 +1,9 @@
 package com.freddys_bbq_frontend_customer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freddys_bbq_frontend_customer.model.MenuItem;
 import com.freddys_bbq_frontend_customer.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,45 +45,45 @@ public class OrderControllerFrontend {
     return "order-info";
   }
 
-  @GetMapping
-  public String showOrderForm(Model model) {
-
+  @PostMapping
+  public String showOrderForm(@RequestParam("items") String items, Model model) {
     try {
-      ResponseEntity<MenuItem[]> response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Drink", MenuItem[].class);
-      Iterable<MenuItem> drinks = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
-      response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Main Course", MenuItem[].class);
-      Iterable<MenuItem> meals = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
-      response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?category=Side", MenuItem[].class);
-      Iterable<MenuItem> sides = response.getBody() != null ? Arrays.asList(response.getBody()) : Collections.emptyList();
-
-      model.addAttribute("drinks", drinks);
-      model.addAttribute("meals", meals);
-      model.addAttribute("sides", sides);
-
+      List<UUID> itemIds = new ObjectMapper().readValue(items, new TypeReference<>() {});
+      if (itemIds != null && !itemIds.isEmpty()) {
+        List<MenuItem> selectedItems = new ArrayList<>();
+        for (UUID id : itemIds) {
+          ResponseEntity<MenuItem> response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu?id=" + id, MenuItem.class);
+          // TODO handle & test not successful
+          if (response.getStatusCode().is2xxSuccessful()) {
+            selectedItems.add(response.getBody());
+          }
+        }
+        model.addAttribute("cartItems", selectedItems);
+      } else {
+        model.addAttribute("cartItems", new ArrayList<>());
+        model.addAttribute("errorMessage", "The Cart is empty");
+      }
     } catch (RestClientException e) {
       model.addAttribute("errorMessage", "The menu cannot be loaded. Please try again later (The Backend does not answer)");
-      model.addAttribute("drinks", Collections.emptyList());
-      model.addAttribute("meals", Collections.emptyList());
-      model.addAttribute("sides", Collections.emptyList());
+      model.addAttribute("cartItems", new ArrayList<>());
+    } catch (JsonProcessingException e) {
+      model.addAttribute("errorMessage", "Error loading the cart");
+      model.addAttribute("cartItems", new ArrayList<>());
     }
 
-    return "order";
+      return "order";
   }
 
 
-  @PostMapping
+  @PostMapping("/place")
   public String placeOrder(@RequestParam String name,
-                           @RequestParam UUID drinkId,
-                           @RequestParam UUID mealId,
-                           @RequestParam UUID sideId,
+                           @RequestParam List<UUID> items,
                            Model model) {
     try {
-      // JSON-Objekt für Bestellung erstellen
+      // create json object for the order
       Map<String, Object> orderRequest = new HashMap<>();
       orderRequest.put("name", name);
-      orderRequest.put("drinkId", drinkId);
-      orderRequest.put("mealId", mealId);
-      orderRequest.put("sideId", sideId);
+      orderRequest.put("items", items);
 
       // POST-Request an das Backend senden
       ResponseEntity<UUID> response = restTemplate.postForEntity(
