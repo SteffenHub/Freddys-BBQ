@@ -58,8 +58,12 @@ public class MenuControllerFrontend {
 
     @GetMapping("/validate-id")
     public ResponseEntity<Boolean> validateId(@RequestParam("itemId") UUID itemId) {
-        // TODO test
-        ResponseEntity<Boolean> response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu/validate-id?id=" + itemId, Boolean.class);
+        ResponseEntity<Boolean> response;
+        try {
+            response = restTemplate.getForEntity(orderBackendUrl + "/api/order/menu/validate-id?id=" + itemId, Boolean.class);
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
         if (!response.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity.internalServerError().build();
         }

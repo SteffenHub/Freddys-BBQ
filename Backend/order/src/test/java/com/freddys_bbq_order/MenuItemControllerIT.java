@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -262,5 +264,55 @@ class MenuItemControllerIT {
     void shouldReturnBadRequestIdAndCategory() throws Exception {
         mockMvc.perform(get("/api/order/menu?id="+ UUID.randomUUID()+"&category=Drink"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldValidateItemIdViaApi() throws Exception {
+        MenuItem menuItem = new MenuItem();
+        menuItem.setName("Test Item");
+        menuItem.setCategory("Side");
+        menuItem.setPrice(5.50);
+        menuItem.setImage("test-image.jpg");
+
+        MvcResult postResult = mockMvc.perform(post("/api/order/menu")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(menuItem)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String postResponse = postResult.getResponse().getContentAsString();
+        MenuItem postedItem = objectMapper.readValue(postResponse, new TypeReference<>() {});
+
+        MvcResult validateResult = mockMvc.perform(get("/api/order/menu/validate-id?id="+postedItem.getId()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String validateResponse = validateResult.getResponse().getContentAsString();
+        Boolean isValid = objectMapper.readValue(validateResponse, Boolean.class);
+
+        assertThat(isValid).isTrue();
+    }
+
+    @Test
+    void shouldReturnFalseForNonExistingItemId() throws Exception {
+        UUID randomId = UUID.randomUUID();
+
+        MvcResult result = mockMvc.perform(get("/api/order/menu/validate-id")
+                        .param("id", randomId.toString()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        Boolean isValid = objectMapper.readValue(response, Boolean.class);
+
+        assertThat(isValid).isFalse();
+    }
+
+    @Test
+    void shouldReturn400ForInvalidUUID() throws Exception {
+        mockMvc.perform(get("/api/order/menu/validate-id?id=not-a-valid-uuid"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("Invalid UUID format")))
+                .andReturn();
     }
 }
