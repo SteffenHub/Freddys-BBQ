@@ -134,7 +134,6 @@ public class DeliveryControllerBackend {
             }
     )
     @PostMapping("/delivered")
-    // TODO test
     public ResponseEntity<String> markAsDelivered(@RequestBody UUID id) {
         Optional<Delivery> delivery = this.deliveryRepository.getDeliveryByOrderId(id);
         if (delivery.isPresent()) {

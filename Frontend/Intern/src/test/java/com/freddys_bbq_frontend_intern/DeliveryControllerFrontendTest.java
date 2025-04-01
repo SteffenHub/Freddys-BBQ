@@ -88,23 +88,50 @@ class DeliveryControllerFrontendTest {
     @Test
     void shouldStartDeliverySuccessfully() {
         when(restTemplate.postForEntity(deliveryBackendUrl + "/api/delivery/delivery/start", orderId, String.class))
-                .thenReturn(ResponseEntity.ok("Lieferung gestartet"));
+                .thenReturn(ResponseEntity.ok("Delivery started"));
 
         ResponseEntity<String> response = deliveryControllerFrontend.startDelivery(orderId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo("Lieferung gestartet");
+        assertThat(response.getBody()).isEqualTo("Delivery started");
     }
 
     /**
      * Test startDelivery(UUID id), delivery not found
      */
     @Test
-    void shouldReturnNotFoundIfDeliveryDoesNotExist() {
+    void shouldReturnNotFoundIfDeliveryDoesNotExistStart() {
         when(restTemplate.postForEntity(deliveryBackendUrl + "/api/delivery/delivery/start", orderId, String.class))
                 .thenReturn(ResponseEntity.notFound().build());
 
         ResponseEntity<String> response = deliveryControllerFrontend.startDelivery(orderId);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Test markAsDelivered(UUID id)
+     */
+    @Test
+    void shouldMarkDeliveryAsDeliveredSuccessfully() {
+        when(restTemplate.postForEntity(deliveryBackendUrl + "/api/delivery/delivery/delivered", orderId, String.class))
+                .thenReturn(ResponseEntity.ok("Delivery marked as Delivered"));
+
+        ResponseEntity<String> response = deliveryControllerFrontend.markAsDelivered(orderId);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo("Delivery marked as Delivered");
+    }
+
+    /**
+     * Test markAsDelivered(UUID id), delivery not found
+     */
+    @Test
+    void shouldReturnNotFoundIfDeliveryDoesNotExistDelivered() {
+        when(restTemplate.postForEntity(deliveryBackendUrl + "/api/delivery/delivery/delivered", orderId, String.class))
+                .thenReturn(ResponseEntity.notFound().build());
+
+        ResponseEntity<String> response = deliveryControllerFrontend.markAsDelivered(orderId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
