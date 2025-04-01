@@ -45,14 +45,14 @@ public class DeliveryControllerBackend {
     )
     @PostMapping
     public ResponseEntity<String> createDelivery(@RequestBody Order order) {
-        this.deliveryRepository.addDelivery(new Delivery(order));
+        this.deliveryRepository.save(new Delivery(order));
         return ResponseEntity.status(HttpStatus.CREATED).body("Delivery created successfully");
     }
 
     /**
      * Retrieves a delivery based on the provided order ID.
      *
-     * @param id The UUID of the order.
+     * @param orderId The UUID of the order.
      * @return ResponseEntity containing the delivery details.
      */
     @Operation(
@@ -64,10 +64,10 @@ public class DeliveryControllerBackend {
                     @ApiResponse(responseCode = "400", description = "Invalid order ID", content = @Content)
             }
     )
-    @GetMapping("/{id}")
-    public ResponseEntity<Delivery> getOrder(@PathVariable UUID id) {
+    @GetMapping("/{orderId}")
+    public ResponseEntity<Delivery> getOrder(@PathVariable UUID orderId) {
         try {
-            Delivery delivery = this.deliveryRepository.getDeliveryByOrderId(id)
+            Delivery delivery = this.deliveryRepository.findByOrderId(orderId)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid Order ID"));
             return ResponseEntity.status(HttpStatus.OK).body(delivery);
         } catch (Exception e) {
@@ -90,14 +90,14 @@ public class DeliveryControllerBackend {
     )
     @GetMapping
     public ResponseEntity<Delivery[]> getOrder() {
-        Delivery[] deliveries = this.deliveryRepository.getDeliveries().toArray(new Delivery[0]);
+        Delivery[] deliveries = this.deliveryRepository.findAll().toArray(new Delivery[0]);
         return ResponseEntity.status(HttpStatus.OK).body(deliveries);
     }
 
     /**
      * Starts a delivery for a specific order.
      *
-     * @param id The UUID of the order whose delivery should start.
+     * @param deliveryId The UUID of the order whose delivery should start.
      * @return ResponseEntity with a success message or error message if the order is not found.
      */
     @Operation(
@@ -109,20 +109,24 @@ public class DeliveryControllerBackend {
             }
     )
     @PostMapping("/start")
-    public ResponseEntity<String> startDelivery(@RequestBody UUID id) {
-        Optional<Delivery> delivery = this.deliveryRepository.getDeliveryByOrderId(id);
-        if (delivery.isPresent()) {
-            delivery.get().setStatus("In Delivery");
+    public ResponseEntity<String> startDelivery(@RequestBody UUID deliveryId) {
+        Optional<Delivery> deliveryOpt = deliveryRepository.findById(deliveryId);
+        if (deliveryOpt.isPresent()) {
+            Delivery delivery = deliveryOpt.get();
+            delivery.setStatus("In Delivery");
+
+            deliveryRepository.save(delivery);
+
             return ResponseEntity.ok("Started Delivery");
-        }else{
-            return ResponseEntity.badRequest().body("order not found");
+        } else {
+            return ResponseEntity.badRequest().body("Delivery not found");
         }
     }
 
     /**
      * Mark a delivery as delivered
      *
-     * @param id The UUID of the order whose delivery should mark as delivery.
+     * @param deliveryId The UUID of the order whose delivery should mark as delivery.
      * @return ResponseEntity with a success message or error message if the order is not found.
      */
     @Operation(
@@ -134,10 +138,14 @@ public class DeliveryControllerBackend {
             }
     )
     @PostMapping("/delivered")
-    public ResponseEntity<String> markAsDelivered(@RequestBody UUID id) {
-        Optional<Delivery> delivery = this.deliveryRepository.getDeliveryByOrderId(id);
-        if (delivery.isPresent()) {
-            delivery.get().setStatus("Delivered");
+    public ResponseEntity<String> markAsDelivered(@RequestBody UUID deliveryId) {
+        Optional<Delivery> deliveryOpt = deliveryRepository.findById(deliveryId);
+        if (deliveryOpt.isPresent()) {
+            Delivery delivery = deliveryOpt.get();
+            delivery.setStatus("Delivered");
+
+            deliveryRepository.save(delivery);
+
             return ResponseEntity.ok("Delivery marked as Delivered");
         }else{
             return ResponseEntity.badRequest().body("order not found");

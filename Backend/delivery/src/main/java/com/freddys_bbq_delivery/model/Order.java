@@ -1,17 +1,27 @@
 package com.freddys_bbq_delivery.model;
 
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
+@Entity
+@Table(name = "bbq_order")
 public class Order {
 
+  @Id
   private UUID id;
 
-  private List<MenuItem> items;
-
   private String name;
+
+  @ManyToMany
+  @JoinTable(
+          name = "order_items",
+          joinColumns = @JoinColumn(name = "order_id"),
+          inverseJoinColumns = @JoinColumn(name = "menu_item_id")
+  )
+  private List<MenuItem> items;
 
   public Order() {
     this.items = new ArrayList<>();

@@ -9,13 +9,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        function startDelivery(orderId, button) {
+        function startDelivery(deliveryId, button) {
             button.disabled = true;
             button.textContent = "🔄 Loading...";
             fetch('/intern/delivery/start', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderId)
+                body: JSON.stringify(deliveryId)
             })
                 .then(response => {
                     if (!response.ok) {
@@ -29,13 +29,13 @@
                 });
         }
 
-        function markAsDelivered(orderId, button) {
+        function markAsDelivered(deliveryId, button) {
             button.disabled = true;
             button.textContent = "🔄 Loading...";
             fetch('/intern/delivery/delivered', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderId)
+                body: JSON.stringify(deliveryId)
             })
                 .then(response => {
                     if (!response.ok) {
@@ -84,8 +84,8 @@
                 <td>
                   ${
                                 isDelivering
-                                    ? `<button class="btn btn-sm btn-outline-success" onclick="markAsDelivered('${delivery.order.id}', this)">✅ Delivered</button>`
-                                    : `<button class="btn btn-sm btn-success" onclick="startDelivery('${delivery.order.id}', this)">▶️ Start Delivery</button>`
+                                    ? `<button class="btn btn-sm btn-outline-success" onclick="markAsDelivered('${delivery.id}', this)">✅ Delivered</button>`
+                                    : `<button class="btn btn-sm btn-success" onclick="startDelivery('${delivery.id}', this)">▶️ Start Delivery</button>`
                             }
                 </td>
               `;
