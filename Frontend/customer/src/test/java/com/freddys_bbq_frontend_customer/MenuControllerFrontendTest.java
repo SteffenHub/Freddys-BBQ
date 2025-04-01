@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.ui.Model;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -94,5 +96,50 @@ class MenuControllerFrontendTest {
         verify(model).addAttribute("sides", Collections.emptyList());
 
         assertThat(viewName).isEqualTo("index");
+    }
+
+    @Test
+    void shouldValidateItemId() {
+        UUID itemID = UUID.randomUUID();
+        when(restTemplate.getForEntity(
+                orderBackendUrl + "/api/order/menu/validate-id?id=" + itemID,
+                Boolean.class)
+        ).thenReturn(ResponseEntity.ok(true));
+
+        ResponseEntity<Boolean> response = menuController.validateId(itemID);
+
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(response.getBody()).isTrue();
+    }
+
+    @Test
+    void shouldReturnFalseForInvalidItemId() {
+        UUID itemID = UUID.randomUUID();
+        when(restTemplate.getForEntity(orderBackendUrl + "/api/order/menu/validate-id?id=" + itemID, Boolean.class))
+                .thenReturn(ResponseEntity.ok(false));
+
+        ResponseEntity<Boolean> response = menuController.validateId(itemID);
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(response.getBody()).isFalse();
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorWhenBackendFails() {
+        UUID itemID = UUID.randomUUID();
+        when(restTemplate.getForEntity(orderBackendUrl + "/api/order/menu/validate-id?id=" + itemID, Boolean.class))
+                .thenReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+
+        ResponseEntity<Boolean> response = menuController.validateId(itemID);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Test
+    void shouldHandleRestClientException() {
+        UUID itemID = UUID.randomUUID();
+        when(restTemplate.getForEntity(orderBackendUrl + "/api/order/menu/validate-id?id=" + itemID, Boolean.class))
+                .thenThrow(new RestClientException("Connection error"));
+
+        ResponseEntity<Boolean> response = menuController.validateId(itemID);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
