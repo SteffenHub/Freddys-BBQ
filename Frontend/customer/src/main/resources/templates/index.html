@@ -33,9 +33,9 @@
             color: white;
         }
     </style>
-
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", async function () {
+            await validateCartItems();
             updateCartSidebar();
 
             const buttons = document.querySelectorAll(".add-to-cart-btn");
@@ -50,6 +50,29 @@
                 });
             });
         });
+
+        async function validateCartItems() {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const validatedCart = [];
+
+            for (const item of cart) {
+                try {
+                    const response = await fetch(`/validate-id?itemId=${item.id}`);
+                    if (response.ok) {
+                        const isValid = await response.json();
+                        if (isValid === true) {
+                            validatedCart.push(item);
+                        }
+                    }
+                } catch (e) {
+                    console.warn("Validation failed for item", item.id);
+                }
+            }
+
+            if (validatedCart.length !== cart.length) {
+                localStorage.setItem("cart", JSON.stringify(validatedCart));
+            }
+        }
 
         function updateCartSidebar() {
             const cartItemsElement = document.getElementById("cart-items");

@@ -68,4 +68,15 @@ public class MenuItemController {
         }
         return ResponseEntity.ok(menuItemRepository.findAll());
     }
+
+    @GetMapping("/validate-id")
+    public ResponseEntity<Boolean> validateId(@RequestParam("id") UUID id) {
+        // TODO test and doc
+        Optional<MenuItem> item = menuItemRepository.findById(id);
+        if (item.isPresent()){
+            return ResponseEntity.ok(true);
+        }else{
+            return ResponseEntity.ok(false);
+        }
+    }
 }
