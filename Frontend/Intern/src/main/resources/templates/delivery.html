@@ -58,16 +58,14 @@
                     activeTableBody.innerHTML = "";
                     finishedTableBody.innerHTML = "";
 
-                    if (data.length === 0) {
-                        activeTableBody.innerHTML = "<tr><td colspan='5' class='text-center text-muted'>No active deliveries.</td></tr>";
-                        return;
-                    }
-
+                    let activeDeliveries = 0;
+                    let finishedDeliveries = 0;
                     data.forEach(delivery => {
                         const itemsList = delivery.order.items.map(item => item.name).join(", ");
                         const row = document.createElement("tr");
 
                         if (delivery.status === "Delivered") {
+                            finishedDeliveries += 1;
                             row.innerHTML = `
                 <td><code>${delivery.order.id}</code></td>
                 <td>${delivery.order.name}</td>
@@ -76,6 +74,7 @@
               `;
                             finishedTableBody.appendChild(row);
                         } else {
+                            activeDeliveries += 1;
                             const isDelivering = delivery.status === "In Delivery";
                             row.innerHTML = `
                 <td><code>${delivery.order.id}</code></td>
@@ -93,6 +92,12 @@
                             activeTableBody.appendChild(row);
                         }
                     });
+                    if (activeDeliveries === 0){
+                        activeTableBody.innerHTML = "<tr><td colspan='5' class='text-center text-muted'>No active deliveries.</td></tr>";
+                    }
+                    if (finishedDeliveries === 0){
+                        finishedTableBody.innerHTML = "<tr><td colspan='5' class='text-center text-muted'>No finished deliveries.</td></tr>";
+                    }
                 })
                 .catch(error => {
                     console.error("Error fetching delivery data:", error);
