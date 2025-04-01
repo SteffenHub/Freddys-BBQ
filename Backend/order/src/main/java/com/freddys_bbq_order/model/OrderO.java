@@ -1,50 +1,38 @@
-package com.freddys_bbq_delivery.model;
+package com.freddys_bbq_order.model;
 
+import java.util.List;
+import java.util.UUID;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 @Entity
 @Table(name = "bbq_order")
-public class Order {
+public class OrderO {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
   private String name;
 
   @ManyToMany
   @JoinTable(
-          name = "order_items",
+          name = "orders_join",
           joinColumns = @JoinColumn(name = "order_id"),
           inverseJoinColumns = @JoinColumn(name = "menu_item_id")
   )
-  private List<MenuItem> items;
+  private List<MenuItemO> items;
 
-  public Order() {
-    this.items = new ArrayList<>();
+  public List<MenuItemO> getItems() {
+    return items;
+  }
+
+  public void setItems(List<MenuItemO> items) {
+    this.items = items;
   }
 
   public UUID getId() {
     return id;
-  }
-
-  public void setId(UUID id) {
-    this.id = id;
-  }
-
-  public List<MenuItem> getItems() {
-    return items;
-  }
-
-  public void setItems(List<MenuItem> items) {
-    this.items = items;
-  }
-
-  public void addItem(MenuItem item) {
-    this.items.add(item);
   }
 
   public String getName() {
@@ -59,4 +47,5 @@ public class Order {
   public String toString() {
     return "Order<id: " + id + ", customer: " + name + ", items: " + items + ">";
   }
+
 }

@@ -1,7 +1,7 @@
 package com.freddys_bbq_delivery;
 
-import com.freddys_bbq_delivery.model.Delivery;
-import com.freddys_bbq_delivery.model.Order;
+import com.freddys_bbq_delivery.model.DeliveryD;
+import com.freddys_bbq_delivery.model.OrderD;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,8 +44,8 @@ public class DeliveryControllerBackend {
             }
     )
     @PostMapping
-    public ResponseEntity<String> createDelivery(@RequestBody Order order) {
-        this.deliveryRepository.save(new Delivery(order));
+    public ResponseEntity<String> createDelivery(@RequestBody OrderD order) {
+        this.deliveryRepository.save(new DeliveryD(order));
         return ResponseEntity.status(HttpStatus.CREATED).body("Delivery created successfully");
     }
 
@@ -60,14 +60,14 @@ public class DeliveryControllerBackend {
             description = "Fetches a delivery associated with the provided order ID.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Delivery found",
-                            content = @Content(schema = @Schema(implementation = Delivery.class))),
+                            content = @Content(schema = @Schema(implementation = DeliveryD.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid order ID", content = @Content)
             }
     )
     @GetMapping("/{orderId}")
-    public ResponseEntity<Delivery> getOrder(@PathVariable UUID orderId) {
+    public ResponseEntity<DeliveryD> getOrder(@PathVariable UUID orderId) {
         try {
-            Delivery delivery = this.deliveryRepository.findByOrderId(orderId)
+            DeliveryD delivery = this.deliveryRepository.findByOrderId(orderId)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid Order ID"));
             return ResponseEntity.status(HttpStatus.OK).body(delivery);
         } catch (Exception e) {
@@ -85,12 +85,12 @@ public class DeliveryControllerBackend {
             description = "Fetches all deliveries stored in the system.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "List of deliveries retrieved successfully",
-                            content = @Content(schema = @Schema(implementation = Delivery[].class)))
+                            content = @Content(schema = @Schema(implementation = DeliveryD[].class)))
             }
     )
     @GetMapping
-    public ResponseEntity<Delivery[]> getOrder() {
-        Delivery[] deliveries = this.deliveryRepository.findAll().toArray(new Delivery[0]);
+    public ResponseEntity<DeliveryD[]> getOrder() {
+        DeliveryD[] deliveries = this.deliveryRepository.findAll().toArray(new DeliveryD[0]);
         return ResponseEntity.status(HttpStatus.OK).body(deliveries);
     }
 
@@ -110,9 +110,9 @@ public class DeliveryControllerBackend {
     )
     @PostMapping("/start")
     public ResponseEntity<String> startDelivery(@RequestBody UUID deliveryId) {
-        Optional<Delivery> deliveryOpt = deliveryRepository.findById(deliveryId);
+        Optional<DeliveryD> deliveryOpt = deliveryRepository.findById(deliveryId);
         if (deliveryOpt.isPresent()) {
-            Delivery delivery = deliveryOpt.get();
+            DeliveryD delivery = deliveryOpt.get();
             delivery.setStatus("In Delivery");
 
             deliveryRepository.save(delivery);
@@ -139,9 +139,9 @@ public class DeliveryControllerBackend {
     )
     @PostMapping("/delivered")
     public ResponseEntity<String> markAsDelivered(@RequestBody UUID deliveryId) {
-        Optional<Delivery> deliveryOpt = deliveryRepository.findById(deliveryId);
+        Optional<DeliveryD> deliveryOpt = deliveryRepository.findById(deliveryId);
         if (deliveryOpt.isPresent()) {
-            Delivery delivery = deliveryOpt.get();
+            DeliveryD delivery = deliveryOpt.get();
             delivery.setStatus("Delivered");
 
             deliveryRepository.save(delivery);

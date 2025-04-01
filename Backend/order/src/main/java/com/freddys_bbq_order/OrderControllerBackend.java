@@ -1,7 +1,7 @@
 package com.freddys_bbq_order;
 
-import com.freddys_bbq_order.model.MenuItem;
-import com.freddys_bbq_order.model.Order;
+import com.freddys_bbq_order.model.MenuItemO;
+import com.freddys_bbq_order.model.OrderO;
 import com.freddys_bbq_order.model.OrderRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -50,8 +49,8 @@ public class OrderControllerBackend {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping
-    public ResponseEntity<Iterable<Order>> findAll() {
-        Iterable<Order> orders = orderRepository.findAll();
+    public ResponseEntity<Iterable<OrderO>> findAll() {
+        Iterable<OrderO> orders = orderRepository.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(orders);
     }
 
@@ -71,15 +70,15 @@ public class OrderControllerBackend {
     public ResponseEntity<?> placeOrder(@RequestBody OrderRequest request) {
         try {
             // find the ordered menu items by id
-            List<MenuItem> items = new ArrayList<>();
+            List<MenuItemO> items = new ArrayList<>();
             for (UUID itemId : request.getItems()) {
-                Optional<MenuItem> item = menuItemRepository.findById(itemId);
+                Optional<MenuItemO> item = menuItemRepository.findById(itemId);
                 if (item.isEmpty()) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
                 }
                 items.add(item.get());
             }
-            Order order = new Order();
+            OrderO order = new OrderO();
             order.setName(request.getName());
             order.setItems(items);
             orderRepository.save(order);

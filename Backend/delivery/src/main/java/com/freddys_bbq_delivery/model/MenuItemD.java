@@ -4,13 +4,12 @@ import jakarta.persistence.*;
 
 import java.util.UUID;
 
-
 @Entity
-public class MenuItem {
+@Table(name = "menu_items")
+public class MenuItemD {
 
   @Id
   private UUID id;
-
 
   private String category;
 
@@ -20,7 +19,7 @@ public class MenuItem {
 
   private String image;
 
-  public MenuItem() {
+  public MenuItemD() {
   }
 
   public UUID getId() {

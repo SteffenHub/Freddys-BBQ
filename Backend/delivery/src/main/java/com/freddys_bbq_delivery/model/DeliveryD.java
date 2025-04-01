@@ -3,8 +3,8 @@ package com.freddys_bbq_delivery.model;
 import jakarta.persistence.*;
 import java.util.UUID;
 
-@Entity
-public class Delivery {
+@Entity(name="delivery")
+public class DeliveryD {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -12,15 +12,15 @@ public class Delivery {
 
     @OneToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id")
-    private Order order;
+    private OrderD order;
 
     private String status;
 
-    public Delivery() {
+    public DeliveryD() {
         this.status = "Received";
     }
 
-    public Delivery(Order order) {
+    public DeliveryD(OrderD order) {
         this.order = order;
         this.status = "Received";
     }
@@ -29,11 +29,11 @@ public class Delivery {
         return id;
     }
 
-    public Order getOrder() {
+    public OrderD getOrder() {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(OrderD order) {
         this.order = order;
     }
 

@@ -1,6 +1,6 @@
 package com.freddys_bbq_order;
 
-import com.freddys_bbq_order.model.MenuItem;
+import com.freddys_bbq_order.model.MenuItemO;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,14 +66,14 @@ class MenuItemControllerIT {
                 .andReturn();
 
         // convert to list
-        List<MenuItem> menuItems = objectMapper.readValue(
+        List<MenuItemO> menuItems = objectMapper.readValue(
                 result.getResponse().getContentAsString(),
                 new TypeReference<>() {}
         );
 
         // assert all menu items loaded correctly
         assertThat(menuItems).hasSize(7);
-        assertThat(menuItems).extracting(MenuItem::getName)
+        assertThat(menuItems).extracting(MenuItemO::getName)
                 .containsExactlyInAnyOrder(
                         "Freddy's Rib Special",
                         "BBQ Burger and Fries",
@@ -88,7 +88,7 @@ class MenuItemControllerIT {
     @Order(2)
     @Test
     void shouldCreateMenuItem() throws Exception {
-        MenuItem menuItem = new MenuItem();
+        MenuItemO menuItem = new MenuItemO();
         menuItem.setName("menuItemDrink");
         menuItem.setCategory("Drink");
         menuItem.setPrice(2.99);
@@ -100,8 +100,8 @@ class MenuItemControllerIT {
                 .andReturn();
 
         String initialResponse = initialResult.getResponse().getContentAsString();
-        List<MenuItem> initialItems = objectMapper.readValue(initialResponse, new TypeReference<>() {});
-        assertThat(initialItems).extracting(MenuItem::getName).doesNotContain("menuItemDrink");
+        List<MenuItemO> initialItems = objectMapper.readValue(initialResponse, new TypeReference<>() {});
+        assertThat(initialItems).extracting(MenuItemO::getName).doesNotContain("menuItemDrink");
 
         // add the menu item
         mockMvc.perform(post("/api/order/menu")
@@ -119,19 +119,19 @@ class MenuItemControllerIT {
                 .andReturn();
 
         String finalResponse = finalResult.getResponse().getContentAsString();
-        List<MenuItem> finalItems = objectMapper.readValue(finalResponse, new TypeReference<>() {});
+        List<MenuItemO> finalItems = objectMapper.readValue(finalResponse, new TypeReference<>() {});
 
         // assert the menuItem is now in the response list
-        assertThat(finalItems).extracting(MenuItem::getName).contains(menuItem.getName());
-        assertThat(finalItems).extracting(MenuItem::getCategory).contains(menuItem.getCategory());
-        assertThat(finalItems).extracting(MenuItem::getPrice).contains(menuItem.getPrice());
-        assertThat(finalItems).extracting(MenuItem::getImage).contains(menuItem.getImage());
+        assertThat(finalItems).extracting(MenuItemO::getName).contains(menuItem.getName());
+        assertThat(finalItems).extracting(MenuItemO::getCategory).contains(menuItem.getCategory());
+        assertThat(finalItems).extracting(MenuItemO::getPrice).contains(menuItem.getPrice());
+        assertThat(finalItems).extracting(MenuItemO::getImage).contains(menuItem.getImage());
     }
 
 
     @Test
     void shouldRetrieveMenuItemsByCategoryMainCourse() throws Exception {
-        MenuItem menuItemMeal = new MenuItem();
+        MenuItemO menuItemMeal = new MenuItemO();
         menuItemMeal.setName("menuItemMeal");
         menuItemMeal.setCategory("Main Course");
         menuItemMeal.setPrice(7.99);
@@ -148,21 +148,21 @@ class MenuItemControllerIT {
                 .andReturn();
 
         String finalResponse = finalResult.getResponse().getContentAsString();
-        List<MenuItem> finalItems = objectMapper.readValue(finalResponse, new TypeReference<>() {});
+        List<MenuItemO> finalItems = objectMapper.readValue(finalResponse, new TypeReference<>() {});
 
         // assert the menuItem is in the response list
-        assertThat(finalItems).extracting(MenuItem::getName).contains(menuItemMeal.getName());
-        assertThat(finalItems).extracting(MenuItem::getCategory).contains(menuItemMeal.getCategory());
-        assertThat(finalItems).extracting(MenuItem::getPrice).contains(menuItemMeal.getPrice());
-        assertThat(finalItems).extracting(MenuItem::getImage).contains(menuItemMeal.getImage());
-        assertThat(finalItems).extracting(MenuItem::getCategory).doesNotContain("Side");
-        assertThat(finalItems).extracting(MenuItem::getCategory).doesNotContain("Drink");
+        assertThat(finalItems).extracting(MenuItemO::getName).contains(menuItemMeal.getName());
+        assertThat(finalItems).extracting(MenuItemO::getCategory).contains(menuItemMeal.getCategory());
+        assertThat(finalItems).extracting(MenuItemO::getPrice).contains(menuItemMeal.getPrice());
+        assertThat(finalItems).extracting(MenuItemO::getImage).contains(menuItemMeal.getImage());
+        assertThat(finalItems).extracting(MenuItemO::getCategory).doesNotContain("Side");
+        assertThat(finalItems).extracting(MenuItemO::getCategory).doesNotContain("Drink");
 
     }
 
     @Test
     void shouldRetrieveMenuItemsByCategorySide() throws Exception {
-        MenuItem menuItemSide = new MenuItem();
+        MenuItemO menuItemSide = new MenuItemO();
         menuItemSide.setName("menuItemSide");
         menuItemSide.setCategory("Side");
         menuItemSide.setPrice(7.99);
@@ -179,22 +179,22 @@ class MenuItemControllerIT {
                 .andReturn();
 
         String finalResponse = finalResult.getResponse().getContentAsString();
-        List<MenuItem> finalItems = objectMapper.readValue(finalResponse, new TypeReference<>() {});
+        List<MenuItemO> finalItems = objectMapper.readValue(finalResponse, new TypeReference<>() {});
 
         // assert the menuItem is in the response list
-        assertThat(finalItems).extracting(MenuItem::getName).contains(menuItemSide.getName());
-        assertThat(finalItems).extracting(MenuItem::getCategory).contains(menuItemSide.getCategory());
-        assertThat(finalItems).extracting(MenuItem::getPrice).contains(menuItemSide.getPrice());
-        assertThat(finalItems).extracting(MenuItem::getImage).contains(menuItemSide.getImage());
-        assertThat(finalItems).extracting(MenuItem::getCategory).doesNotContain("Main Course");
-        assertThat(finalItems).extracting(MenuItem::getCategory).doesNotContain("Drink");
+        assertThat(finalItems).extracting(MenuItemO::getName).contains(menuItemSide.getName());
+        assertThat(finalItems).extracting(MenuItemO::getCategory).contains(menuItemSide.getCategory());
+        assertThat(finalItems).extracting(MenuItemO::getPrice).contains(menuItemSide.getPrice());
+        assertThat(finalItems).extracting(MenuItemO::getImage).contains(menuItemSide.getImage());
+        assertThat(finalItems).extracting(MenuItemO::getCategory).doesNotContain("Main Course");
+        assertThat(finalItems).extracting(MenuItemO::getCategory).doesNotContain("Drink");
 
     }
 
     @Test
     void shouldRetrieveMenuItemsByCategoryDrink() throws Exception {
 
-        MenuItem menuItemDrink = new MenuItem();
+        MenuItemO menuItemDrink = new MenuItemO();
         menuItemDrink.setName("menuItemDrink");
         menuItemDrink.setCategory("Drink");
         menuItemDrink.setPrice(7.99);
@@ -211,22 +211,22 @@ class MenuItemControllerIT {
                 .andReturn();
 
         String finalResponse = finalResult.getResponse().getContentAsString();
-        List<MenuItem> finalItems = objectMapper.readValue(finalResponse, new TypeReference<>() {});
+        List<MenuItemO> finalItems = objectMapper.readValue(finalResponse, new TypeReference<>() {});
 
         // assert the menuItem is in the response list
-        assertThat(finalItems).extracting(MenuItem::getName).contains(menuItemDrink.getName());
-        assertThat(finalItems).extracting(MenuItem::getCategory).contains(menuItemDrink.getCategory());
-        assertThat(finalItems).extracting(MenuItem::getPrice).contains(menuItemDrink.getPrice());
-        assertThat(finalItems).extracting(MenuItem::getImage).contains(menuItemDrink.getImage());
-        assertThat(finalItems).extracting(MenuItem::getCategory).doesNotContain("Side");
-        assertThat(finalItems).extracting(MenuItem::getCategory).doesNotContain("Main Course");
+        assertThat(finalItems).extracting(MenuItemO::getName).contains(menuItemDrink.getName());
+        assertThat(finalItems).extracting(MenuItemO::getCategory).contains(menuItemDrink.getCategory());
+        assertThat(finalItems).extracting(MenuItemO::getPrice).contains(menuItemDrink.getPrice());
+        assertThat(finalItems).extracting(MenuItemO::getImage).contains(menuItemDrink.getImage());
+        assertThat(finalItems).extracting(MenuItemO::getCategory).doesNotContain("Side");
+        assertThat(finalItems).extracting(MenuItemO::getCategory).doesNotContain("Main Course");
 
     }
 
     @Test
     void shouldRetrieveMenuItemsById() throws Exception {
 
-        MenuItem menuItemDrink = new MenuItem();
+        MenuItemO menuItemDrink = new MenuItemO();
         menuItemDrink.setName("menuItemDrink");
         menuItemDrink.setCategory("Drink");
         menuItemDrink.setPrice(7.99);
@@ -239,13 +239,13 @@ class MenuItemControllerIT {
                 .andReturn();
 
         String postResponse = postResult.getResponse().getContentAsString();
-        MenuItem postedItem = objectMapper.readValue(postResponse, new TypeReference<>() {});
+        MenuItemO postedItem = objectMapper.readValue(postResponse, new TypeReference<>() {});
 
         MvcResult getResult = mockMvc.perform(get("/api/order/menu?id="+postedItem.getId()))
                 .andExpect(status().isOk())
                 .andReturn();
         String getResponse = getResult.getResponse().getContentAsString();
-        MenuItem getItem = objectMapper.readValue(getResponse, new TypeReference<>() {});
+        MenuItemO getItem = objectMapper.readValue(getResponse, new TypeReference<>() {});
 
         assertThat(getItem.getName()).isEqualTo(postedItem.getName());
         assertThat(getItem.getCategory()).isEqualTo(postedItem.getCategory());
@@ -268,7 +268,7 @@ class MenuItemControllerIT {
 
     @Test
     void shouldValidateItemIdViaApi() throws Exception {
-        MenuItem menuItem = new MenuItem();
+        MenuItemO menuItem = new MenuItemO();
         menuItem.setName("Test Item");
         menuItem.setCategory("Side");
         menuItem.setPrice(5.50);
@@ -281,7 +281,7 @@ class MenuItemControllerIT {
                 .andReturn();
 
         String postResponse = postResult.getResponse().getContentAsString();
-        MenuItem postedItem = objectMapper.readValue(postResponse, new TypeReference<>() {});
+        MenuItemO postedItem = objectMapper.readValue(postResponse, new TypeReference<>() {});
 
         MvcResult validateResult = mockMvc.perform(get("/api/order/menu/validate-id?id="+postedItem.getId()))
                 .andExpect(status().isOk())

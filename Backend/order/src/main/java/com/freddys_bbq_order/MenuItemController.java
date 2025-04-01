@@ -1,11 +1,10 @@
 package com.freddys_bbq_order;
 
-import com.freddys_bbq_order.model.MenuItem;
+import com.freddys_bbq_order.model.MenuItemO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -30,7 +29,7 @@ public class MenuItemController {
 
     @Operation(summary = "Add a new menu item", description = "Save the given menu item to the Database")
     @PostMapping
-    public MenuItem post(@RequestBody MenuItem menuItem) {
+    public MenuItemO post(@RequestBody MenuItemO menuItem) {
         return this.menuItemRepository.save(menuItem);
     }
 
@@ -60,7 +59,7 @@ public class MenuItemController {
             return ResponseEntity.ok(menuItemRepository.findByCategory(category));
         }
         if (id != null) {
-            Optional<MenuItem> item = menuItemRepository.findById(id);
+            Optional<MenuItemO> item = menuItemRepository.findById(id);
             return item.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
         }
         return ResponseEntity.ok(menuItemRepository.findAll());
@@ -82,7 +81,7 @@ public class MenuItemController {
     })
     @GetMapping("/validate-id")
     public ResponseEntity<Boolean> validateId(@RequestParam("id") UUID id) {
-        Optional<MenuItem> item = menuItemRepository.findById(id);
+        Optional<MenuItemO> item = menuItemRepository.findById(id);
         return ResponseEntity.ok(item.isPresent());
     }
 

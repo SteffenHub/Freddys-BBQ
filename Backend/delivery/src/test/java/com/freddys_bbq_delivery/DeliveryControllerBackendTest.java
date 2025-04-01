@@ -1,9 +1,9 @@
 package com.freddys_bbq_delivery;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freddys_bbq_delivery.model.Delivery;
-import com.freddys_bbq_delivery.model.MenuItem;
-import com.freddys_bbq_delivery.model.Order;
+import com.freddys_bbq_delivery.model.DeliveryD;
+import com.freddys_bbq_delivery.model.MenuItemD;
+import com.freddys_bbq_delivery.model.OrderD;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,39 +38,39 @@ class DeliveryControllerBackendTest {
 
     private MockMvc mockMvc;
     private UUID orderId;
-    private Delivery delivery;
-    private Order order;
-    private MenuItem drink;
-    private MenuItem side;
-    private MenuItem meal;
+    private DeliveryD delivery;
+    private OrderD order;
+    private MenuItemD drink;
+    private MenuItemD side;
+    private MenuItemD meal;
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(deliveryControllerBackend).build();
 
-        order = new Order();
+        order = new OrderD();
         orderId = UUID.randomUUID();
         order.setId(orderId);
 
-        drink = new MenuItem();
+        drink = new MenuItemD();
         drink.setId(UUID.randomUUID());
         order.addItem(drink);
 
-        meal = new MenuItem();
+        meal = new MenuItemD();
         meal.setId(UUID.randomUUID());
         order.addItem(meal);
 
-        side = new MenuItem();
+        side = new MenuItemD();
         side.setId(UUID.randomUUID());
         order.addItem(side);
 
         order.setName("Max Mustermann");
-        delivery = new Delivery(order);
+        delivery = new DeliveryD(order);
     }
 
     @Test
     void shouldCreateDelivery() throws Exception {
-        doNothing().when(deliveryRepository).addDelivery(any(Delivery.class));
+        doNothing().when(deliveryRepository).addDelivery(any(DeliveryD.class));
 
         // place an order
         mockMvc.perform(MockMvcRequestBuilders.post("/api/delivery/delivery")
@@ -80,9 +80,9 @@ class DeliveryControllerBackendTest {
                 .andExpect(content().string("Delivery created successfully"));
 
         // verify and get the saved delivery
-        ArgumentCaptor<Delivery> deliveryCaptor = ArgumentCaptor.forClass(Delivery.class);
+        ArgumentCaptor<DeliveryD> deliveryCaptor = ArgumentCaptor.forClass(DeliveryD.class);
         verify(deliveryRepository, times(1)).addDelivery(deliveryCaptor.capture());
-        Delivery savedDelivery = deliveryCaptor.getValue();
+        DeliveryD savedDelivery = deliveryCaptor.getValue();
 
         // check the saved delivery is the same as given
         assertThat(savedDelivery.getOrder().getId()).isEqualTo(order.getId());
@@ -105,7 +105,7 @@ class DeliveryControllerBackendTest {
 
         // Extract the JSON response as a Delivery object
         String jsonResponse = result.getResponse().getContentAsString();
-        Delivery actualDelivery = new ObjectMapper().readValue(jsonResponse, Delivery.class);
+        DeliveryD actualDelivery = new ObjectMapper().readValue(jsonResponse, DeliveryD.class);
 
         // assert retrieved delivery is correct
         assertThat(actualDelivery).isNotNull();
@@ -131,7 +131,7 @@ class DeliveryControllerBackendTest {
 
         // Extract the JSON response as a Delivery object
         String jsonResponse = result.getResponse().getContentAsString();
-        Delivery[] actualDeliveries = new ObjectMapper().readValue(jsonResponse, Delivery[].class);
+        DeliveryD[] actualDeliveries = new ObjectMapper().readValue(jsonResponse, DeliveryD[].class);
 
         // assert the list contains the correct delivery object
         assertThat(actualDeliveries).isNotNull();
