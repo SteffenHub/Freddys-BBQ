@@ -50,7 +50,17 @@ public class DeliveryControllerFrontend {
         //UUID uuid = UUID.fromString(id);
         ResponseEntity<String> response = restTemplate.postForEntity(deliveryBackendUrl + "/api/delivery/delivery/start", id, String.class);
         if (response.getStatusCode().is2xxSuccessful()) {
-            return ResponseEntity.ok("Lieferung gestartet");
+            return ResponseEntity.ok("Delivery started");
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/delivered")
+    public ResponseEntity<String> markAsDelivered(@RequestBody UUID id) {
+        ResponseEntity<String> response = restTemplate.postForEntity(deliveryBackendUrl + "/api/delivery/delivery/delivered", id, String.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.ok("Delivery marked as Delivered");
         }else{
             return ResponseEntity.notFound().build();
         }

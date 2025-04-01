@@ -118,4 +118,29 @@ public class DeliveryControllerBackend {
             return ResponseEntity.badRequest().body("order not found");
         }
     }
+
+    /**
+     * Mark a delivery as delivered
+     *
+     * @param id The UUID of the order whose delivery should mark as delivery.
+     * @return ResponseEntity with a success message or error message if the order is not found.
+     */
+    @Operation(
+            summary = "Mark a delivery as delivered",
+            description = "Changes the status of a given order's delivery to 'Delivered'.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Delivery marked successfully as Delivered"),
+                    @ApiResponse(responseCode = "400", description = "Order not found", content = @Content)
+            }
+    )
+    @PostMapping("/delivered")
+    public ResponseEntity<String> markAsDelivered(@RequestBody UUID id) {
+        Optional<Delivery> delivery = this.deliveryRepository.getDeliveryByOrderId(id);
+        if (delivery.isPresent()) {
+            delivery.get().setStatus("Delivered");
+            return ResponseEntity.ok("Delivery marked as Delivered");
+        }else{
+            return ResponseEntity.badRequest().body("order not found");
+        }
+    }
 }

@@ -153,7 +153,31 @@ class DeliveryControllerBackendTest {
     }
 
     @Test
-    void shouldReturnBadRequestIfOrderNotFound() throws Exception {
+    void shouldMarkDeliveryAsDelivered() throws Exception {
+        when(deliveryRepository.getDeliveryByOrderId(eq(orderId))).thenReturn(Optional.of(delivery));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/delivery/delivery/delivered")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("\"" + orderId + "\""))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Delivery marked as Delivered"));
+
+        assertThat(delivery.getStatus()).isEqualTo("Delivered");
+    }
+
+    @Test
+    void shouldReturnBadRequestIfOrderNotFoundAtDelivered() throws Exception {
+        when(deliveryRepository.getDeliveryByOrderId(eq(orderId))).thenReturn(Optional.empty());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/delivery/delivery/delivered")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("\"" + orderId + "\""))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("order not found"));
+    }
+
+    @Test
+    void shouldReturnBadRequestIfOrderNotFoundAtStart() throws Exception {
         when(deliveryRepository.getDeliveryByOrderId(eq(orderId))).thenReturn(Optional.empty());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/delivery/delivery/start")
