@@ -1,6 +1,7 @@
 package com.freddys_bbq_order;
 
-import com.freddys_bbq_order.model.MenuItem;
+import com.freddys_bbq_order.model.MenuItemO;
+import com.freddys_bbq_order.model.OrderO;
 import com.freddys_bbq_order.model.OrderRequest;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,11 +60,11 @@ class OrderControllerBackendIT {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private MenuItem mainCourseMenuItem;
+    private MenuItemO mainCourseMenuItem;
 
-    private MenuItem sideMenuItem;
+    private MenuItemO sideMenuItem;
 
-    private MenuItem drinkMenuItem;
+    private MenuItemO drinkMenuItem;
 
     @Value("${DELIVERY_BACKEND_URL:http://localhost:8081}")
     private String deliveryBackendUrl;
@@ -84,7 +85,7 @@ class OrderControllerBackendIT {
 
     @BeforeEach
     void setUp() throws Exception {
-        mainCourseMenuItem = new MenuItem();
+        mainCourseMenuItem = new MenuItemO();
         mainCourseMenuItem.setName("mainCourseMenuItem");
         mainCourseMenuItem.setCategory("Main Course");
         mainCourseMenuItem.setPrice(1.0);
@@ -99,10 +100,10 @@ class OrderControllerBackendIT {
                 .andExpect(jsonPath("$.price").value(mainCourseMenuItem.getPrice()))
                 .andExpect(jsonPath("$.image").value(mainCourseMenuItem.getImage())).andReturn();
         String jsonResponse = result.getResponse().getContentAsString();
-        MenuItem createdMenuItem = objectMapper.readValue(jsonResponse, MenuItem.class);
+        MenuItemO createdMenuItem = objectMapper.readValue(jsonResponse, MenuItemO.class);
         mainCourseMenuItem.setId(createdMenuItem.getId());
 
-        sideMenuItem = new MenuItem();
+        sideMenuItem = new MenuItemO();
         sideMenuItem.setName("sideMenuItem");
         sideMenuItem.setCategory("Side");
         sideMenuItem.setPrice(1.0);
@@ -117,10 +118,10 @@ class OrderControllerBackendIT {
                 .andExpect(jsonPath("$.price").value(sideMenuItem.getPrice()))
                 .andExpect(jsonPath("$.image").value(sideMenuItem.getImage())).andReturn();
         jsonResponse = result.getResponse().getContentAsString();
-        createdMenuItem = objectMapper.readValue(jsonResponse, MenuItem.class);
+        createdMenuItem = objectMapper.readValue(jsonResponse, MenuItemO.class);
         sideMenuItem.setId(createdMenuItem.getId());
 
-        drinkMenuItem = new MenuItem();
+        drinkMenuItem = new MenuItemO();
         drinkMenuItem.setName("drinkMenuItem");
         drinkMenuItem.setCategory("Drink");
         drinkMenuItem.setPrice(1.0);
@@ -135,7 +136,7 @@ class OrderControllerBackendIT {
                 .andExpect(jsonPath("$.price").value(drinkMenuItem.getPrice()))
                 .andExpect(jsonPath("$.image").value(drinkMenuItem.getImage())).andReturn();
         jsonResponse = result.getResponse().getContentAsString();
-        createdMenuItem = objectMapper.readValue(jsonResponse, MenuItem.class);
+        createdMenuItem = objectMapper.readValue(jsonResponse, MenuItemO.class);
         drinkMenuItem.setId(createdMenuItem.getId());
     }
 
@@ -152,7 +153,7 @@ class OrderControllerBackendIT {
                 .andReturn();
 
         // convert to list
-        List<com.freddys_bbq_order.model.Order> menuItems = objectMapper.readValue(
+        List<OrderO> menuItems = objectMapper.readValue(
                 result.getResponse().getContentAsString(),
                 new TypeReference<>() {}
         );
@@ -171,7 +172,7 @@ class OrderControllerBackendIT {
         // set up mockito
         Mockito.when(restTemplate.postForEntity(
                         eq("http://localhost:8081/api/delivery/delivery"),
-                        any(com.freddys_bbq_order.model.Order.class),
+                        any(OrderO.class),
                         eq(String.class)))
                 .thenReturn(new ResponseEntity<>("Delivery Created", HttpStatus.OK));
 
@@ -189,13 +190,13 @@ class OrderControllerBackendIT {
 
         // verify call from restTemplate
         Mockito.verify(restTemplate, times(1))
-                .postForEntity(eq("http://localhost:8081/api/delivery/delivery"), any(com.freddys_bbq_order.model.Order.class), eq(String.class));
+                .postForEntity(eq("http://localhost:8081/api/delivery/delivery"), any(OrderO.class), eq(String.class));
 
         // confirm the order can be found
         result = mockMvc.perform(get("/api/order/orders"))
                 .andExpect(status().isOk())
                 .andReturn();
-        List<com.freddys_bbq_order.model.Order> orders = objectMapper.readValue(
+        List<OrderO> orders = objectMapper.readValue(
                 result.getResponse().getContentAsString(),
                 new TypeReference<>() {}
         );
@@ -236,7 +237,7 @@ class OrderControllerBackendIT {
         // set up mockito
         Mockito.when(restTemplate.postForEntity(
                         eq("http://localhost:8081/api/delivery/delivery"),
-                        any(com.freddys_bbq_order.model.Order.class),
+                        any(OrderO.class),
                         eq(String.class)))
                 .thenReturn(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
 

@@ -1,10 +1,14 @@
 package com.freddys_bbq_delivery.model;
 
+import jakarta.persistence.*;
+
 import java.util.UUID;
 
+@Entity
+@Table(name = "menu_items")
+public class MenuItemD {
 
-public class MenuItem {
-
+  @Id
   private UUID id;
 
   private String category;
@@ -15,7 +19,7 @@ public class MenuItem {
 
   private String image;
 
-  public MenuItem() {
+  public MenuItemD() {
   }
 
   public UUID getId() {

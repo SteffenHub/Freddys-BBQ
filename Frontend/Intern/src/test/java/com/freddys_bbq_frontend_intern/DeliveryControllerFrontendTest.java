@@ -46,10 +46,9 @@ class DeliveryControllerFrontendTest {
      * Test getDeliveries()
      */
     @Test
-    void shouldReturnDeliveriesSuccessfully() throws Exception {
-        String deliveriesJson = objectMapper.writeValueAsString(deliveries);
-        when(restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", String.class))
-                .thenReturn(ResponseEntity.ok(deliveriesJson));
+    void shouldReturnDeliveriesSuccessfully(){
+        when(restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", Delivery[].class))
+                .thenReturn(ResponseEntity.ok(deliveries));
 
         ResponseEntity<?> response = deliveryControllerFrontend.getDeliveries();
 

@@ -45,8 +45,13 @@ services:
     build: Backend/delivery
     ports:
       - "8081:8081"
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+      - POSTGRES_URL=jdbc:postgresql://postgres:5432/orders
     depends_on:
       - backend-order
+      - postgres
 
   map-service:
     container_name: Map-Service

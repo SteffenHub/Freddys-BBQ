@@ -1,7 +1,6 @@
 package com.freddys_bbq_frontend_intern;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freddys_bbq_frontend_intern.model.Delivery;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -28,10 +27,8 @@ public class DeliveryControllerFrontend {
     @GetMapping("/get")
     public ResponseEntity<?> getDeliveries() {
         try {
-            ResponseEntity<String> response = restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", String.class);
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            Delivery[] deliveries = objectMapper.readValue(response.getBody(), Delivery[].class);
+            ResponseEntity<Delivery[]> response = restTemplate.getForEntity(deliveryBackendUrl + "/api/delivery/delivery", Delivery[].class);
+            Delivery[] deliveries = response.getBody();
 
             return ResponseEntity.ok(deliveries);
         } catch (Exception e) {
@@ -46,9 +43,8 @@ public class DeliveryControllerFrontend {
     }
 
     @PostMapping("/start")
-    public ResponseEntity<String> startDelivery(@RequestBody UUID id) {
-        //UUID uuid = UUID.fromString(id);
-        ResponseEntity<String> response = restTemplate.postForEntity(deliveryBackendUrl + "/api/delivery/delivery/start", id, String.class);
+    public ResponseEntity<String> startDelivery(@RequestBody UUID deliveryId) {
+        ResponseEntity<String> response = restTemplate.postForEntity(deliveryBackendUrl + "/api/delivery/delivery/start", deliveryId, String.class);
         if (response.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity.ok("Delivery started");
         }else{

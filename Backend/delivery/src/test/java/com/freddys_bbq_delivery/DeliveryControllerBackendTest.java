@@ -1,9 +1,9 @@
 package com.freddys_bbq_delivery;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freddys_bbq_delivery.model.Delivery;
-import com.freddys_bbq_delivery.model.MenuItem;
-import com.freddys_bbq_delivery.model.Order;
+import com.freddys_bbq_delivery.model.DeliveryD;
+import com.freddys_bbq_delivery.model.MenuItemD;
+import com.freddys_bbq_delivery.model.OrderD;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,39 +39,43 @@ class DeliveryControllerBackendTest {
 
     private MockMvc mockMvc;
     private UUID orderId;
-    private Delivery delivery;
-    private Order order;
-    private MenuItem drink;
-    private MenuItem side;
-    private MenuItem meal;
+    private DeliveryD delivery;
+    private OrderD order;
+    private MenuItemD drink;
+    private MenuItemD side;
+    private MenuItemD meal;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws NoSuchFieldException, IllegalAccessException {
         mockMvc = MockMvcBuilders.standaloneSetup(deliveryControllerBackend).build();
 
-        order = new Order();
+        order = new OrderD();
         orderId = UUID.randomUUID();
         order.setId(orderId);
 
-        drink = new MenuItem();
+        drink = new MenuItemD();
         drink.setId(UUID.randomUUID());
         order.addItem(drink);
 
-        meal = new MenuItem();
+        meal = new MenuItemD();
         meal.setId(UUID.randomUUID());
         order.addItem(meal);
 
-        side = new MenuItem();
+        side = new MenuItemD();
         side.setId(UUID.randomUUID());
         order.addItem(side);
 
         order.setName("Max Mustermann");
-        delivery = new Delivery(order);
+        delivery = new DeliveryD(order);
+        Field idField = DeliveryD.class.getDeclaredField("id");
+        idField.setAccessible(true);
+        idField.set(delivery, UUID.randomUUID());
     }
 
     @Test
     void shouldCreateDelivery() throws Exception {
-        doNothing().when(deliveryRepository).addDelivery(any(Delivery.class));
+        when(deliveryRepository.save(any(DeliveryD.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
         // place an order
         mockMvc.perform(MockMvcRequestBuilders.post("/api/delivery/delivery")
@@ -80,9 +85,9 @@ class DeliveryControllerBackendTest {
                 .andExpect(content().string("Delivery created successfully"));
 
         // verify and get the saved delivery
-        ArgumentCaptor<Delivery> deliveryCaptor = ArgumentCaptor.forClass(Delivery.class);
-        verify(deliveryRepository, times(1)).addDelivery(deliveryCaptor.capture());
-        Delivery savedDelivery = deliveryCaptor.getValue();
+        ArgumentCaptor<DeliveryD> deliveryCaptor = ArgumentCaptor.forClass(DeliveryD.class);
+        verify(deliveryRepository, times(1)).save(deliveryCaptor.capture());
+        DeliveryD savedDelivery = deliveryCaptor.getValue();
 
         // check the saved delivery is the same as given
         assertThat(savedDelivery.getOrder().getId()).isEqualTo(order.getId());
@@ -97,7 +102,7 @@ class DeliveryControllerBackendTest {
 
     @Test
     void shouldRetrieveDeliveryById() throws Exception {
-        when(deliveryRepository.getDeliveryByOrderId(eq(orderId))).thenReturn(Optional.of(delivery));
+        when(deliveryRepository.findByOrderId(eq(orderId))).thenReturn(Optional.of(delivery));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/delivery/delivery/" + orderId))
                 .andExpect(status().isOk())
@@ -105,7 +110,7 @@ class DeliveryControllerBackendTest {
 
         // Extract the JSON response as a Delivery object
         String jsonResponse = result.getResponse().getContentAsString();
-        Delivery actualDelivery = new ObjectMapper().readValue(jsonResponse, Delivery.class);
+        DeliveryD actualDelivery = new ObjectMapper().readValue(jsonResponse, DeliveryD.class);
 
         // assert retrieved delivery is correct
         assertThat(actualDelivery).isNotNull();
@@ -115,7 +120,7 @@ class DeliveryControllerBackendTest {
 
     @Test
     void shouldReturnBadRequestForInvalidId() throws Exception {
-        when(deliveryRepository.getDeliveryByOrderId(eq(orderId))).thenReturn(Optional.empty());
+        when(deliveryRepository.findByOrderId(eq(orderId))).thenReturn(Optional.empty());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/delivery/delivery/" + orderId))
                 .andExpect(status().isBadRequest());
@@ -123,7 +128,7 @@ class DeliveryControllerBackendTest {
 
     @Test
     void shouldRetrieveAllDeliveries() throws Exception {
-        when(deliveryRepository.getDeliveries()).thenReturn(List.of(delivery));
+        when(deliveryRepository.findAll()).thenReturn(List.of(delivery));
 
         MvcResult result =mockMvc.perform(MockMvcRequestBuilders.get("/api/delivery/delivery"))
                 .andExpect(status().isOk())
@@ -131,7 +136,7 @@ class DeliveryControllerBackendTest {
 
         // Extract the JSON response as a Delivery object
         String jsonResponse = result.getResponse().getContentAsString();
-        Delivery[] actualDeliveries = new ObjectMapper().readValue(jsonResponse, Delivery[].class);
+        DeliveryD[] actualDeliveries = new ObjectMapper().readValue(jsonResponse, DeliveryD[].class);
 
         // assert the list contains the correct delivery object
         assertThat(actualDeliveries).isNotNull();
@@ -141,11 +146,11 @@ class DeliveryControllerBackendTest {
 
     @Test
     void shouldStartDelivery() throws Exception {
-        when(deliveryRepository.getDeliveryByOrderId(eq(orderId))).thenReturn(Optional.of(delivery));
+        when(deliveryRepository.findById(eq(delivery.getId()))).thenReturn(Optional.of(delivery));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/delivery/delivery/start")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("\"" + orderId + "\""))
+                        .content("\"" + delivery.getId() + "\""))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Started Delivery"));
 
@@ -154,11 +159,11 @@ class DeliveryControllerBackendTest {
 
     @Test
     void shouldMarkDeliveryAsDelivered() throws Exception {
-        when(deliveryRepository.getDeliveryByOrderId(eq(orderId))).thenReturn(Optional.of(delivery));
+        when(deliveryRepository.findById(eq(delivery.getId()))).thenReturn(Optional.of(delivery));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/delivery/delivery/delivered")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("\"" + orderId + "\""))
+                        .content("\"" + delivery.getId() + "\""))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Delivery marked as Delivered"));
 
@@ -167,23 +172,23 @@ class DeliveryControllerBackendTest {
 
     @Test
     void shouldReturnBadRequestIfOrderNotFoundAtDelivered() throws Exception {
-        when(deliveryRepository.getDeliveryByOrderId(eq(orderId))).thenReturn(Optional.empty());
+        when(deliveryRepository.findById(eq(delivery.getId()))).thenReturn(Optional.empty());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/delivery/delivery/delivered")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("\"" + orderId + "\""))
+                        .content("\"" + delivery.getId() + "\""))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("order not found"));
     }
 
     @Test
     void shouldReturnBadRequestIfOrderNotFoundAtStart() throws Exception {
-        when(deliveryRepository.getDeliveryByOrderId(eq(orderId))).thenReturn(Optional.empty());
+        when(deliveryRepository.findById(eq(delivery.getId()))).thenReturn(Optional.empty());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/delivery/delivery/start")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("\"" + orderId + "\""))
+                        .content("\"" + delivery.getId() + "\""))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("order not found"));
+                .andExpect(content().string("Delivery not found"));
     }
 }

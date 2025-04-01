@@ -3,7 +3,11 @@ package com.freddys_bbq_frontend_intern.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.UUID;
+
 public class Delivery {
+
+    private UUID id;
 
     private final Order order;
 
@@ -25,5 +29,9 @@ public class Delivery {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public UUID getId() {
+        return id;
     }
 }
