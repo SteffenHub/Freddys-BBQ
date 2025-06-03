@@ -12,9 +12,13 @@ services:
       - INTERN_FRONTEND_URL=http://localhost:8080
       - CUSTOMER_FRONTEND_URL=http://localhost:8080
       - MAP_SERVICE_URL=http://map-service:8090
+      - MAIL_BACKEND_URL=http://localhost:8080
+      # Enter your Email credentials here
+      - MAIL_USERNAME
+      - MAIL_PASSWORD
 
-  map-service:
-    container_name: Map-Service
-    build: Backend/map
-    ports:
-      - "8090:8090"
+  #map-service:
+  #  container_name: Map-Service
+  #  build: Backend/map
+  #  ports:
+  #    - "8090:8090"

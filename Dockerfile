@@ -16,6 +16,10 @@ COPY Backend/order/src/main/java/com/freddys_bbq_order /app/src/main/java/com/fr
 RUN rm -f /app/src/main/java/com/freddys_bbq_order/DemoApplication.java
 RUN rm -rf /app/src/main/java/com/freddys_bbq_order/config
 
+# Backend Mail
+COPY Backend/mail/src/main/java/com/freddys_bbq_mail /app/src/main/java/com/freddys_bbq_mail
+RUN rm -f /app/src/main/java/com/freddys_bbq_mail/DemoApplication.java
+
 # Frontend Customer
 COPY Frontend/customer/src/main/java/com/freddys_bbq_frontend_customer /app/src/main/java/com/freddys_bbq_frontend_customer
 RUN rm -f /app/src/main/java/com/freddys_bbq_frontend_customer/DemoApplication.java
