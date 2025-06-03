@@ -40,6 +40,7 @@ After running the command, the following services will be available:
 - Staff Frontend → [http://localhost:4300](http://localhost:4300)
 - Order Backend (API) → [http://localhost:8080](http://localhost:8080)
 - Delivery Backend (API) → [http://localhost:8081](http://localhost:8081)
+- Mail Backend (API) → [http://localhost:8010](http://localhost:8010)
 
 ### Running the Release Version
 To save costs when hosting on Render.com, the microservices are combined into a single deployment.  
