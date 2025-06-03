@@ -1,0 +1,9 @@
+POST http://localhost:8010/sendMail
+Content-Type: application/json
+
+# Enter your Email under recipient to receive an actual Email
+{
+  "recipient": "example@email.com",
+  "msgBody": "Hello from Spring",
+  "subject": "Simple Email Message from Spring"
+}

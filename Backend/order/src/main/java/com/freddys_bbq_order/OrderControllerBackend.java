@@ -1,5 +1,6 @@
 package com.freddys_bbq_order;
 
+import com.freddys_bbq_order.model.EmailDetails;
 import com.freddys_bbq_order.model.MenuItemO;
 import com.freddys_bbq_order.model.OrderO;
 import com.freddys_bbq_order.model.OrderRequest;
@@ -25,6 +26,9 @@ public class OrderControllerBackend {
 
     @Value("${DELIVERY_BACKEND_URL:http://localhost:8081}")
     private String deliveryBackendUrl;
+
+    @Value("${MAIL_BACKEND_URL:http://localhost:8010}")
+    private String mailBackendUrl;
 
     private final MenuItemRepository menuItemRepository;
 
@@ -68,6 +72,9 @@ public class OrderControllerBackend {
     })
     @PostMapping
     public ResponseEntity<?> placeOrder(@RequestBody OrderRequest request) {
+        if (request.getName() == null || request.getEmail() == null || request.getItems() == null || request.getItems().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
         try {
             // find the ordered menu items by id
             List<MenuItemO> items = new ArrayList<>();
@@ -87,6 +94,17 @@ public class OrderControllerBackend {
             if (!response.getStatusCode().is2xxSuccessful()) {
                 return response;
             }
+            EmailDetails emailDetails = new EmailDetails();
+            emailDetails.setRecipient(request.getEmail());
+            emailDetails.setSubject("Freddy Comes to your House!");
+            StringBuilder message = new StringBuilder();
+            message.append(order.getName()).append(", Thank you for your order at Freddy's BBQ! \n \n");
+            for (MenuItemO item : order.getItems()) {
+                message.append(item.getName()).append("\n");
+            }
+            emailDetails.setMsgBody(message.toString());
+
+            restTemplate.postForEntity(mailBackendUrl + "/sendMail", emailDetails, String.class);
             return ResponseEntity.status(HttpStatus.CREATED).body(order.getId());
 
         } catch (Exception e) {

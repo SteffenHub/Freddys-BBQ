@@ -37,6 +37,7 @@ services:
       - POSTGRES_PASSWORD=admin
       - POSTGRES_USER=admin
       - POSTGRES_URL=jdbc:postgresql://postgres:5432/orders
+      - MAIL_BACKEND_URL=http://backend-mail:8010
     depends_on:
       - postgres
 
@@ -53,11 +54,21 @@ services:
       - backend-order
       - postgres
 
-  map-service:
-    container_name: Map-Service
-    build: Backend/map
+  backend-mail:
+    container_name: Backend-Mail
+    build: Backend/mail
     ports:
-      - "8090:8090"
+      - "8010:8010"
+    environment:
+      # Enter your Email credentials here
+      - MAIL_USERNAME
+      - MAIL_PASSWORD
+
+  #map-service:
+  #  container_name: Map-Service
+  #  build: Backend/map
+  #  ports:
+  #    - "8090:8090"
 
   postgres:
     image: 'postgres:latest'
