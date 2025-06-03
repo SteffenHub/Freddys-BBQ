@@ -15,7 +15,7 @@ RUN gradle build --no-daemon -PexcludeIT
 # 2. Spring Container
 FROM eclipse-temurin:21
 
-EXPOSE 8080
+EXPOSE 8010
 
 COPY --from=builder /app/build/libs/freddy_bbq_backend_mail-0.0.1.jar /app/backend_mail.jar
 

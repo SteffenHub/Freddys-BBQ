@@ -53,6 +53,16 @@ services:
       - backend-order
       - postgres
 
+  backend-mail:
+    container_name: Backend-Mail
+    build: Backend/mail
+    ports:
+      - "8010:8010"
+    environment:
+      # Enter your Email credentials here
+      - MAIL_USERNAME
+      - MAIL_PASSWORD
+
   #map-service:
   #  container_name: Map-Service
   #  build: Backend/map
