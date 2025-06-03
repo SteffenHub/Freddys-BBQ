@@ -46,7 +46,9 @@ public class EmailServiceImpl implements EmailService {
     public String sendMailWithAttachment(EmailDetails details) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper;
-
+        if (details.getAttachment() == null) {
+            return "Error while sending mail!!!";
+        }
         try {
             mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setFrom(sender);
