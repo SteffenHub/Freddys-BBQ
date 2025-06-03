@@ -3,7 +3,7 @@ Freddy's BBQ - Order & Delivery
 This project provides backend and frontend services for managing food orders and deliveries at Freddy's BBQ.  
 It includes REST APIs for placing orders and tracking deliveries.
 
-## 📌 Entry Points
+## 📌 Entry Points(Currently not available. Please Check: [Deploy Locally](#run-all-microservices-using-docker-compose))
 - [Welcome Page (Menu)](https://freddys-bbq.onrender.com/)
   - Displays the available menu items and initiates an order
 - [Delivery Overview (STAFF ONLY)](https://freddys-bbq.onrender.com/intern/delivery)
