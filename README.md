@@ -19,6 +19,7 @@ It includes REST APIs for placing orders and tracking deliveries.
   - OpenAPI documentation using Springdoc Swagger UI
   - Docker & Docker Compose for containerized deployment
   - Gradle for build automation
+  - SMTP Mails
   - Deployment on Render.com
 - Frontend:
   - Thymeleaf, HTML, CSS, JavaScript
