@@ -144,7 +144,7 @@ class OrderControllerFrontendTest {
         when(restTemplate.postForEntity(anyString(), any(), eq(UUID.class)))
                 .thenReturn(ResponseEntity.ok(orderResponseId));
 
-        String viewName = orderController.placeOrder("Max", new ArrayList<>(){{add(UUID.randomUUID()); add(UUID.randomUUID()); add(UUID.randomUUID());}}, model);
+        String viewName = orderController.placeOrder("Max", "mail@example.com", new ArrayList<>(){{add(UUID.randomUUID()); add(UUID.randomUUID()); add(UUID.randomUUID());}}, model);
 
         assertThat(viewName).isEqualTo("redirect:/delivery/" + orderResponseId);
     }
@@ -154,7 +154,7 @@ class OrderControllerFrontendTest {
         when(restTemplate.postForEntity(anyString(), any(), eq(UUID.class)))
                 .thenThrow(new RestClientException("error"));
 
-        String viewName = orderController.placeOrder("Max", new ArrayList<>(){{add(UUID.randomUUID()); add(UUID.randomUUID()); add(UUID.randomUUID());}}, model);
+        String viewName = orderController.placeOrder("Max","mail@example.com", new ArrayList<>(){{add(UUID.randomUUID()); add(UUID.randomUUID()); add(UUID.randomUUID());}}, model);
 
         verify(model).addAttribute("errorMessage", "The Order cannot be placed");
         assertThat(viewName).isEqualTo("order");

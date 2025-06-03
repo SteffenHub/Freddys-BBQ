@@ -76,6 +76,7 @@ public class OrderControllerFrontend {
 
   @PostMapping("/place")
   public String placeOrder(@RequestParam String name,
+                           @RequestParam String email,
                            @RequestParam List<UUID> items,
                            Model model) {
     try {
@@ -83,6 +84,7 @@ public class OrderControllerFrontend {
       Map<String, Object> orderRequest = new HashMap<>();
       orderRequest.put("name", name);
       orderRequest.put("items", items);
+      orderRequest.put("email", email);
 
       // POST-Request an das Backend senden
       ResponseEntity<UUID> response = restTemplate.postForEntity(
