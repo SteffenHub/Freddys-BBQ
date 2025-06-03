@@ -53,11 +53,11 @@ services:
       - backend-order
       - postgres
 
-  map-service:
-    container_name: Map-Service
-    build: Backend/map
-    ports:
-      - "8090:8090"
+  #map-service:
+  #  container_name: Map-Service
+  #  build: Backend/map
+  #  ports:
+  #    - "8090:8090"
 
   postgres:
     image: 'postgres:latest'

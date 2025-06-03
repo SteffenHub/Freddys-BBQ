@@ -1,0 +1,8 @@
+POST http://localhost:8010/sendMail
+Content-Type: application/json
+
+{
+  "recipient": "example@email.com",
+  "msgBody": "Hello from Spring",
+  "subject": "Simple Email Message from Spring"
+}
