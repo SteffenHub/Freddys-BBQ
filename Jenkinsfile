@@ -44,7 +44,7 @@ pipeline {
             }
         }
 
-        stage('Release') {
+        stage('Deploy') {
             when {
                 branch 'main'
             }
@@ -59,6 +59,28 @@ pipeline {
                 echo "Start container"
                 sh '''
                     docker-compose up -d
+                    docker-compose down --rmi all
+                '''
+                echo "Release completed"
+            }
+        }
+
+        stage('Deploy Release Version') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo "Branch is 'main', starting release process..."
+                echo "Prepare docker compose"
+                sh '''
+                apk update
+                apk add docker-cli-compose
+                docker compose version
+                '''
+                echo "Start container"
+                sh '''
+                    docker-compose-release up -d
+                    docker-compose-release down --rmi all
                 '''
                 echo "Release completed"
             }
