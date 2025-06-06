@@ -1,4 +1,3 @@
-// Just a test2 comment
 pipeline {
     agent {
         node {
