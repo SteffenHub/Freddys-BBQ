@@ -52,7 +52,9 @@ pipeline {
                 echo "Branch is 'main', starting release process..."
                 echo "Prepare docker compose"
                 sh '''
-                apk add --no-cache docker-compose-v2
+                apk update
+                apk add docker-cli-compose
+                docker compose version
                 '''
                 echo "Start container"
                 sh '''
