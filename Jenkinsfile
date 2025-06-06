@@ -79,8 +79,8 @@ pipeline {
                 '''
                 echo "Start container"
                 sh '''
-                    docker-compose-release up -d
-                    docker-compose-release down --rmi all
+                    docker-compose -f docker-compose-release.yml up -d
+                    docker-compose -f docker-compose-release.yml down --rmi all
                 '''
                 echo "Release completed"
             }
