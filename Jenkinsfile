@@ -58,7 +58,7 @@ pipeline {
                 '''
                 echo "Start container"
                 sh '''
-                    docker-compose up
+                    docker-compose up -d
                 '''
                 echo "Release completed"
             }
