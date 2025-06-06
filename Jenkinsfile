@@ -43,5 +43,15 @@ pipeline {
                 '''
             }
         }
+
+        stage('Release') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo "Branch is 'main', starting release process..."
+                sh 'echo "Release complete."'
+            }
+        }
     }
 }
