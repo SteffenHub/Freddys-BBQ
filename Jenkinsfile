@@ -50,7 +50,10 @@ pipeline {
             }
             steps {
                 echo "Branch is 'main', starting release process..."
-                sh 'echo "Release complete."'
+                sh '''
+                    docker-compose up
+                '''
+                echo "Release completed"
             }
         }
     }
