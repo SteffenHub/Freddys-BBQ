@@ -50,6 +50,9 @@ pipeline {
             }
             steps {
                 echo "Branch is 'main', starting release process..."
+                echo "Prepare docker compose"
+                apk add --no-cache docker-compose-v2
+                echo "Start container"
                 sh '''
                     docker-compose up
                 '''
