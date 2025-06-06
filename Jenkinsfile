@@ -17,18 +17,6 @@ pipeline {
             }
         }
 
-        stage('Prepare Environment') {
-            steps {
-                echo "setting permissions for gradlew..."
-                sh '''
-                    chmod +x Backend/delivery/gradlew
-                    chmod +x Backend/order/gradlew
-                    chmod +x Frontend/customer/gradlew
-                    chmod +x Frontend/Intern/gradlew
-                '''
-            }
-        }
-
         stage('Run Tests') {
             steps {
                 echo "Running tests for all modules..."
