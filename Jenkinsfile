@@ -18,19 +18,31 @@ pipeline {
         }
 
         stage('Run Tests') {
-            steps {
-                echo "Running tests for all modules..."
-                sh '''
-                    echo "Running Backend tests..."
-                    cd Backend/delivery && ./gradlew test && cd ../..
-                    cd Backend/order && ./gradlew test && cd ../..
-
-                    echo "Running Frontend tests..."
-                    cd Frontend/customer && ./gradlew test && cd ../..
-                    cd Frontend/Intern && ./gradlew test && cd ../..
-                '''
-            }
-        }
+                    parallel {
+                        stage('Backend Tests') {
+                            steps {
+                                echo "Running Backend tests..."
+                                dir('Backend/delivery') {
+                                    sh './gradlew test'
+                                }
+                                dir('Backend/order') {
+                                    sh './gradlew test'
+                                }
+                            }
+                        }
+                        stage('Frontend Tests') {
+                            steps {
+                                echo "Running Frontend tests..."
+                                dir('Frontend/customer') {
+                                    sh './gradlew test'
+                                }
+                                dir('Frontend/Intern') {
+                                    sh './gradlew test'
+                                }
+                            }
+                        }
+                    }
+                }
 
         stage('Deploy') {
             when {
