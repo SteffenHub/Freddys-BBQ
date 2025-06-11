@@ -1,0 +1,20 @@
+#
+# Add this file to your server in a folder named 'app' if you deploy with gitlab CI/CD
+# Rename it to 'docker-compose.yml'
+#
+services:
+  app:
+    image: registry.gitlab.com/<YOUR USER NAME>/freddys-bbq:latest
+    restart: unless-stopped
+    ports:
+      - "80:8080"
+    environment:
+      - ORDER_BACKEND_URL=http://localhost:8080
+      - DELIVERY_BACKEND_URL=http://localhost:8080
+      - INTERN_FRONTEND_URL=http://localhost:8080
+      - CUSTOMER_FRONTEND_URL=http://localhost:8080
+      #- MAP_SERVICE_URL=http://map-service:8090
+      - MAIL_BACKEND_URL=http://localhost:8080
+      # Enter your Email credentials here
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}

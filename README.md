@@ -13,20 +13,24 @@ It includes REST APIs for placing orders and tracking deliveries.
 
 ## 🛠 Technologies Used
 - Backend:
-  - Java 21 (Spring Boot)
-  - Spring Web & REST in a microservice architecture
-  - Hibernate & Spring Data JPA (PostgreSQL)
-  - OpenAPI documentation using Springdoc Swagger UI
-  - Docker & Docker Compose for containerized deployment
-  - Gradle for build automation
-  - SMTP Mails
-  - Deployment on Render.com
+  - **Java 21** (Spring Boot)
+  - **Spring Web & REST** in a microservice architecture
+  - **Hibernate & Spring Data JPA** (PostgreSQL)
+  - **OpenAPI** documentation using Springdoc Swagger UI
+  - **SMTP** Mails
 - Frontend:
-  - Thymeleaf, HTML, CSS, JavaScript
-  - Server-side rendering with Spring Boot & Thymeleaf
+  - **Thymeleaf, HTML, CSS, JavaScript**
 - Testing:
-  - JUnit & Mockito for unit and integration tests
-  - Testcontainers for database and service testing
+  - **JUnit & Mockito** for unit and integration tests
+  - **Testcontainers** for database and service testing
+- DevOps:
+  - **GitLab CI/CD Pipeline** with a Docker registry
+  - **GitHub CI Pipeline**
+  - **Jenkins CI/CD Pipeline**
+  - Deploy via **ssh on Hetzner**
+  - Deployment on **Render.com**
+  - **Docker & Docker Compose** for containerized deployment
+  - **Gradle** for build automation
 
 ## 🚀 Deploy Locally
 ### Run all Microservices using Docker Compose

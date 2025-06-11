@@ -1,0 +1,111 @@
+#
+# Make sure you have set the environment variables for the deployment
+# - SSH_USER: The ssh user for your server
+# - SSH_KEY: The private ssh key to connect to your server
+# - SERVER_IP: The server ip to connect to your server
+#
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  # Disables TLS, which is required for dind in GitLab CI
+  DOCKER_TLS_CERTDIR: ""
+  # Improves the performance of the dind driver
+  DOCKER_DRIVER: overlay2
+
+stages:
+  - test
+  - build
+  - deploy
+
+# Job to run the backend and frontend tests
+run-tests:
+  stage: test
+  image: docker:26-cli # Newer docker image required to install dependencies like openjdk21
+  
+  # Start the Docker daemon (Docker-in-Docker) as a service
+  services:
+    - name: docker:dind
+      alias: docker
+    
+  # Install Java and Gradle, as they are not included in the docker:26-cli image
+  before_script:
+    - apk add --no-cache openjdk21 gradle
+
+  # Cache Gradle dependencies to speed up future pipeline runs
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-gradle"
+    paths:
+      - .gradle/
+      - ~/.gradle/caches/
+
+  parallel:
+    matrix:
+      - MODULE:
+          - Backend/delivery
+          - Backend/order
+          - Frontend/customer
+          - Frontend/Intern
+  script:
+    - echo "--- Running tests for $MODULE ---"
+    - cd $MODULE && ./gradlew test
+
+
+
+# Job to build and push the Docker image after tests succeed
+docker-build:
+  stage: build
+  image: docker:stable
+
+  services:
+    - docker:dind
+
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+    - |
+      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+        docker tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" "$CI_REGISTRY_IMAGE:latest"
+        docker push "$CI_REGISTRY_IMAGE:latest"
+      fi
+
+  # Only run this job if a Dockerfile exists in the project
+  rules:
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - Dockerfile
+
+
+
+
+.setup_ssh: &setup_ssh
+    # Create the .ssh folder
+    - mkdir -p ~/.ssh
+    # paste the ssh key into the .ssh folder
+    - echo "$SSH_KEY" | base64 -d > ~/.ssh/id_rsa
+    # Make the shh accessible
+    - chmod 600 ~/.ssh/id_rsa
+    # Add the server ip as a known host
+    - ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
+
+.deploy_app: &deploy_app
+  - |
+    ssh $SSH_USER@$SERVER_IP "
+      ./app/deploy-app.sh '$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG'
+    "
+
+deploy_main:
+  stage: deploy
+  image: alpine:latest
+
+  needs:
+    - docker-build
+  before_script:
+    - apk add --no-cache openssh-client
+  script:
+    - *setup_ssh
+    - *deploy_app
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && $MAIL_PASSWORD && $MAIL_USERNAME'
+      when: manual
