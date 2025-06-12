@@ -78,3 +78,10 @@ services:
       - POSTGRES_USER=admin
     ports:
       - '5432:5432'
+
+  rabbitmq:
+    container_name: RabbitMQ
+    build: Backend/RabbitMQ
+    ports:
+      - "5672:5672"
+      - "15672:15672"
