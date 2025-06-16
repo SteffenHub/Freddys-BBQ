@@ -38,8 +38,11 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_URL=jdbc:postgresql://postgres:5432/orders
       - MAIL_BACKEND_URL=http://backend-mail:8010
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
     depends_on:
       - postgres
+      - rabbitmq
 
   backend-delivery:
     container_name: Backend-Delivery
@@ -63,6 +66,10 @@ services:
       # Enter your Email credentials here
       - MAIL_USERNAME
       - MAIL_PASSWORD
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+    depends_on:
+      - rabbitmq
 
   #map-service:
   #  container_name: Map-Service

@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +35,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmailController {
 
     private final EmailService emailService;
+
+    @Value("${rabbitmq.exchange.name}")
+    private String exchangeName;
+
+    @Value("${rabbitmq.routing.key}")
+    private String routingKey;
 
     /**
      * Constructor for dependency injection of {@link EmailService}.
@@ -70,6 +78,11 @@ public class EmailController {
     @PostMapping("/sendMail")
     public String sendMail(@RequestBody EmailDetails details) {
         return emailService.sendSimpleMail(details);
+    }
+
+    @RabbitListener(queues = "${rabbitmq.queue.name}")
+    public void sendMailRabbit(@RequestBody EmailDetails details) {
+        emailService.sendSimpleMail(details);
     }
 
     /**

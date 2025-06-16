@@ -28,6 +28,10 @@ dependencies {
 	// Mail Dependencies
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+	// RabbitMQ
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	testImplementation 'org.springframework.amqp:spring-rabbit-test'
+
 	// Database Dependencies
 	//runtimeOnly 'org.postgresql:postgresql'
 	//implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

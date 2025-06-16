@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,10 +37,19 @@ public class OrderControllerBackend {
 
     private final RestTemplate restTemplate;
 
-    public OrderControllerBackend(MenuItemRepository menuItemRepository, OrderRepository orderRepository, RestTemplate restTemplate) {
+    private final RabbitTemplate rabbitTemplate;
+
+    @Value("${rabbitmq.exchange.name}")
+    private String exchangeName;
+
+    @Value("${rabbitmq.routing.key}")
+    private String routingKey;
+
+    public OrderControllerBackend(MenuItemRepository menuItemRepository, OrderRepository orderRepository, RestTemplate restTemplate, RabbitTemplate rabbitTemplate) {
         this.menuItemRepository = menuItemRepository;
         this.orderRepository = orderRepository;
         this.restTemplate = restTemplate;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     /**
@@ -103,8 +113,11 @@ public class OrderControllerBackend {
                 message.append(item.getName()).append("\n");
             }
             emailDetails.setMsgBody(message.toString());
-
-            restTemplate.postForEntity(mailBackendUrl + "/sendMail", emailDetails, String.class);
+            if (exchangeName != null && !exchangeName.isEmpty() && routingKey != null && !routingKey.isEmpty()) {
+                rabbitTemplate.convertAndSend(exchangeName, routingKey, emailDetails);
+            }else {
+                restTemplate.postForEntity(mailBackendUrl + "/sendMail", emailDetails, String.class);
+            }
             return ResponseEntity.status(HttpStatus.CREATED).body(order.getId());
 
         } catch (Exception e) {
