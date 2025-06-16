@@ -1,0 +1,137 @@
+version: '1.0'
+
+services:
+  # --------------------------------------------------------------------
+  # REVERSE PROXY
+  # --------------------------------------------------------------------
+  traefik:
+    image: "traefik:v2.10"
+    container_name: traefik
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - public-network
+      - private-network
+
+  # --------------------------------------------------------------------
+  # Open Services
+  # --------------------------------------------------------------------
+  frontend-customer:
+    container_name: Frontend-Customer
+    image: registry.gitlab.com/<YOUR_USERNAME>/freddys-bbq/frontend-customer:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend-customer.rule=PathPrefix(`/`)"
+      - "traefik.http.services.frontend-customer.loadbalancer.server.port=4200"
+    environment:
+      - ORDER_BACKEND_URL=http://backend-order:8080
+      - DELIVERY_BACKEND_URL=http://backend-delivery:8081
+      - INTERN_FRONTEND_URL=http://116.202.9.0/intern
+    networks:
+      - public-network
+      - private-network
+    depends_on:
+      - backend-order
+      - backend-delivery
+
+  frontend-intern:
+    container_name: Frontend-Intern
+    image: registry.gitlab.com/<YOUR_USERNAME>/freddys-bbq/frontend-intern:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend-intern.rule=PathPrefix(`/intern`)"
+      - "traefik.http.middlewares.intern-stripprefix.stripprefix.prefixes=/intern"
+      - "traefik.http.routers.frontend-intern.middlewares=intern-stripprefix@docker"
+      - "traefik.http.services.frontend-intern.loadbalancer.server.port=4300"
+    environment:
+      - DELIVERY_BACKEND_URL=http://backend-delivery:8081
+      - MAP_SERVICE_URL=http://map-service:8090
+      - CUSTOMER_FRONTEND_URL=http://116.202.9.0/
+    networks:
+      - public-network
+      - private-network
+    depends_on:
+      - backend-order
+      - backend-delivery
+
+  # --------------------------------------------------------------------
+  # Intern Backend Services
+  # --------------------------------------------------------------------
+  backend-order:
+    container_name: Backend-Order
+    image: registry.gitlab.com/<YOUR_USERNAME>/freddys-bbq/backend-order:latest
+    environment:
+      - DELIVERY_BACKEND_URL=http://backend-delivery:8081
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+      - POSTGRES_URL=jdbc:postgresql://postgres:5432/orders
+      - MAIL_BACKEND_URL=http://backend-mail:8010
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+    networks:
+      - private-network
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  backend-delivery:
+    container_name: Backend-Delivery
+    image: registry.gitlab.com/<YOUR_USERNAME>/freddys-bbq/backend-delivery:latest
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+      - POSTGRES_URL=jdbc:postgresql://postgres:5432/orders
+    networks:
+      - private-network
+    depends_on:
+      - backend-order
+      - postgres
+
+  backend-mail:
+    container_name: Backend-Mail
+    image: registry.gitlab.com/<YOUR_USERNAME>/freddys-bbq/backend-mail:latest
+    environment:
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+    networks:
+      - private-network
+    depends_on:
+      - rabbitmq
+
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - POSTGRES_DB=orders
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - private-network
+
+  rabbitmq:
+    container_name: RabbitMQ
+    image: registry.gitlab.com/<YOUR_USERNAME>/freddys-bbq/backend-rabbitmq:latest
+    networks:
+      - private-network
+
+# --------------------------------------------------------------------
+# Network and Volumes definitions
+# --------------------------------------------------------------------
+networks:
+  public-network:
+    driver: bridge
+  private-network:
+    driver: bridge
+
+volumes:
+  postgres-data:

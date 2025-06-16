@@ -13,7 +13,7 @@ services:
     depends_on:
       - backend-order
       - backend-delivery
-      
+
   frontend-intern:
     container_name: Frontend-Intern
     build: Frontend/Intern
@@ -24,8 +24,8 @@ services:
       - MAP_SERVICE_URL=http://map-service:8090
       - CUSTOMER_FRONTEND_URL=http://frontend-customer:4200
     depends_on:
-        - backend-order
-        - backend-delivery
+      - backend-order
+      - backend-delivery
 
   backend-order:
     container_name: Backend-Order
@@ -42,7 +42,7 @@ services:
       - RABBIT_PORT=5672
     depends_on:
       - postgres
-      - rabbitmq
+      - backend-rabbitmq
 
   backend-delivery:
     container_name: Backend-Delivery
@@ -69,13 +69,7 @@ services:
       - RABBIT_HOST=rabbitmq
       - RABBIT_PORT=5672
     depends_on:
-      - rabbitmq
-
-  #map-service:
-  #  container_name: Map-Service
-  #  build: Backend/map
-  #  ports:
-  #    - "8090:8090"
+      - backend-rabbitmq
 
   postgres:
     image: 'postgres:latest'
@@ -86,9 +80,15 @@ services:
     ports:
       - '5432:5432'
 
-  rabbitmq:
-    container_name: RabbitMQ
+  backend-rabbitmq:
+    container_name: Backend-RabbitMQ
     build: Backend/RabbitMQ
     ports:
       - "5672:5672"
       - "15672:15672"
+
+  #map-service:
+  #  container_name: Map-Service
+  #  build: Backend/map
+  #  ports:
+  #    - "8090:8090"

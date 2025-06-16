@@ -1,6 +1,10 @@
 #!/bin/bash
 
 #
+# DEPRECATED: THIS SCRIPT IS NOT IN USE
+# It can be used to automatically export the environment variables located in a .env file
+#
+#
 # Add this file to your server in a folder named 'app' if you deploy with gitlab CI/CD.
 # It will be called by the CI/CD Gitlab Pipeline via ssh
 #
@@ -45,15 +49,15 @@ set -x
 echo "Configuration validation successful."
 
 echo 'login to the gitlab docker registry'
-docker login registry.gitlab.com -u <YOUR CI TOKEN USERNAME> -p <YOUR CI TOKEN>
+#docker login registry.gitlab.com -u <YOUR CI TOKEN USERNAME> -p <YOUR CI TOKEN>
 
 echo "Pulling latest image..."
-docker compose pull
+#docker compose pull
 
 echo "Stopping old and starting new container..."
-docker compose up -d --remove-orphans
+#docker compose up -d --remove-orphans
 
 echo "Cleaning up old images..."
-docker image prune -af
+#docker image prune -af
 
 echo "Deployment successful!"
