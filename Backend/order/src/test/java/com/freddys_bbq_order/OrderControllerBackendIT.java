@@ -48,7 +48,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestPropertySource(properties = "DELIVERY_BACKEND_URL=http://localhost:8081")
+@TestPropertySource(properties = {
+        "DELIVERY_BACKEND_URL=http://localhost:8081",
+        "rabbitmq.exchange.name=",
+        "rabbitmq.routing.key="
+})
 class OrderControllerBackendIT {
 
     @MockitoBean
